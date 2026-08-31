@@ -12,6 +12,8 @@ export interface AgentConfig {
   deskPosition: { x: number; y: number };
   capabilities: string[];
   tokenBudget: number;
+  /** Bu ajana ozel API anahtari. Bos ise saglayicinin genel .env anahtari kullanilir. */
+  apiKey?: string;
 }
 
 export interface AgentState extends AgentConfig {

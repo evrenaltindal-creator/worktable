@@ -144,6 +144,10 @@ function upsertAgent(agent) {
   else state.agents[idx] = agent;
 }
 
+function removeAgentFromState(id) {
+  state.agents = state.agents.filter((a) => a.id !== id);
+}
+
 function connectSocket() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   const url = `${proto}://${location.host}${TOKEN ? `?token=${encodeURIComponent(TOKEN)}` : ''}`;
@@ -154,8 +158,10 @@ function connectSocket() {
     if (type === 'bootstrap') {
       state.agents = payload.agents;
       state.tasks = payload.tasks;
-    } else if (type === 'agent_updated') {
+    } else if (type === 'agent_added' || type === 'agent_updated') {
       upsertAgent(payload);
+    } else if (type === 'agent_removed') {
+      removeAgentFromState(payload.id);
     } else if (type === 'task_created' || type === 'task_updated') {
       upsertTask(payload);
       if (!state.activeTaskId) state.activeTaskId = payload.id;

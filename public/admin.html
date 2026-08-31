@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Ofis · Yönetim</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>⚙️ Yönetim Paneli</h1>
+      <nav class="top-nav">
+        <a href="index.html">🏢 Ofis</a>
+        <a href="admin.html" class="active">⚙️ Yönetim</a>
+      </nav>
+    </header>
+
+    <main class="admin-main">
+      <section class="admin-section">
+        <div class="section-header">
+          <h2>Ajanlar</h2>
+          <button id="newAgentBtn">+ Yeni Ajan</button>
+        </div>
+        <p class="hint">
+          Her ajana kendi API anahtarını girebilirsiniz. Boş bırakılırsa sunucudaki
+          <code>.env</code> dosyasındaki genel anahtar (saglayiciya gore) kullanılır.
+        </p>
+        <div class="table-wrap">
+          <table class="agent-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Ad</th>
+                <th>Rol</th>
+                <th>Sağlayıcı</th>
+                <th>Model</th>
+                <th>Yetkinlikler</th>
+                <th>Token Kullanımı</th>
+                <th>API Anahtarı</th>
+                <th>Durum</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="agentTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-section">
+        <div class="section-header">
+          <h2>Projeler</h2>
+          <button id="newProjectBtn">+ Yeni Proje</button>
+        </div>
+        <div class="admin-projects">
+          <div id="taskList"></div>
+          <div id="taskDetail" hidden></div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="agentDialog">
+      <form id="agentForm" method="dialog">
+        <h2 id="agentDialogTitle">Yeni Ajan</h2>
+        <input type="hidden" name="id" />
+        <label>Ad <input name="name" required /></label>
+        <label>Rol <input name="role" required /></label>
+        <label>
+          Sağlayıcı
+          <select name="provider">
+            <option value="anthropic">anthropic</option>
+            <option value="openai">openai</option>
+            <option value="mock">mock (demo, anahtar gerektirmez)</option>
+          </select>
+        </label>
+        <label>Model <input name="model" required placeholder="örn. claude-sonnet-5" /></label>
+        <label>
+          API Anahtarı
+          <input name="apiKey" type="password" autocomplete="off" placeholder="Boş bırakılırsa .env kullanılır" />
+        </label>
+        <label>Yetkinlikler (virgülle ayırın) <input name="capabilities" placeholder="kod, tasarim" /></label>
+        <label>
+          Masa Konumu (x, y)
+          <span class="inline-fields">
+            <input name="deskX" type="number" min="1" value="1" />
+            <input name="deskY" type="number" min="1" value="1" />
+          </span>
+        </label>
+        <label>Token Bütçesi <input name="tokenBudget" type="number" min="1000" step="1000" value="150000" /></label>
+        <label>Renk <input name="avatarColor" type="color" value="#6c5ce7" /></label>
+        <menu>
+          <button type="submit" value="save">Kaydet</button>
+          <button type="button" id="cancelAgentDialog" class="secondary">Vazgeç</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <dialog id="newProjectDialog">
+      <form id="newProjectForm" method="dialog">
+        <h2>Yeni Proje</h2>
+        <label>
+          Başlık
+          <input name="title" required />
+        </label>
+        <label>
+          Açıklama
+          <textarea name="description" rows="4" required></textarea>
+        </label>
+        <label>
+          Gerekli yetkinlikler (virgülle ayırın)
+          <input name="capabilities" placeholder="kod, tasarim, arastirma" />
+        </label>
+        <menu>
+          <button type="submit" value="create">Oluştur</button>
+          <button type="button" id="cancelNewProject" class="secondary">Vazgeç</button>
+        </menu>
+      </form>
+    </dialog>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

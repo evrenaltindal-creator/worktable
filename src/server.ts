@@ -4,6 +4,13 @@ import http from 'http';
 import path from 'path';
 import { WebSocket, WebSocketServer } from 'ws';
 import { Orchestrator } from './orchestrator/Orchestrator';
+import { AgentState } from './types';
+
+/** API anahtarini asla istemciye gondermez; yerine sadece tanimli olup olmadigini isaretler. */
+function redactAgent(agent: AgentState) {
+  const { apiKey, ...rest } = agent;
+  return { ...rest, hasApiKey: Boolean(apiKey) };
+}
 
 const app = express();
 app.use(express.json());
@@ -29,7 +36,9 @@ const orchestrator = new Orchestrator();
 const clients = new Set<WebSocket>();
 
 orchestrator.onUpdate = (event, payload) => {
-  const data = JSON.stringify({ event, payload });
+  const outPayload =
+    event === 'agent_added' || event === 'agent_updated' ? redactAgent(payload as AgentState) : payload;
+  const data = JSON.stringify({ event, payload: outPayload });
   for (const client of clients) {
     if (client.readyState === WebSocket.OPEN) client.send(data);
   }
@@ -48,14 +57,58 @@ wss.on('connection', (ws, req) => {
   ws.send(
     JSON.stringify({
       event: 'bootstrap',
-      payload: { agents: orchestrator.listAgents(), tasks: orchestrator.listTasks() },
+      payload: { agents: orchestrator.listAgents().map(redactAgent), tasks: orchestrator.listTasks() },
     }),
   );
   ws.on('close', () => clients.delete(ws));
 });
 
 app.get('/api/agents', (_req, res) => {
-  res.json(orchestrator.listAgents());
+  res.json(orchestrator.listAgents().map(redactAgent));
+});
+
+app.post('/api/agents', (req, res) => {
+  const { id, name, role, provider, model, avatarColor, deskPosition, capabilities, tokenBudget, apiKey } =
+    req.body ?? {};
+  if (!name || !role || !provider || !model) {
+    res.status(400).json({ error: 'name, role, provider ve model zorunlu' });
+    return;
+  }
+  try {
+    const agent = orchestrator.addAgent({
+      id,
+      name,
+      role,
+      provider,
+      model,
+      avatarColor: avatarColor || '#636e72',
+      deskPosition: deskPosition && typeof deskPosition.x === 'number' ? deskPosition : { x: 1, y: 1 },
+      capabilities: Array.isArray(capabilities) ? capabilities : [],
+      tokenBudget: Number(tokenBudget) > 0 ? Number(tokenBudget) : 100000,
+      apiKey: apiKey || undefined,
+    });
+    res.status(201).json(redactAgent(agent));
+  } catch (err) {
+    res.status(400).json({ error: err instanceof Error ? err.message : String(err) });
+  }
+});
+
+app.put('/api/agents/:id', (req, res) => {
+  try {
+    const agent = orchestrator.updateAgent(req.params.id, req.body ?? {});
+    res.json(redactAgent(agent));
+  } catch (err) {
+    res.status(404).json({ error: err instanceof Error ? err.message : String(err) });
+  }
+});
+
+app.delete('/api/agents/:id', (req, res) => {
+  try {
+    orchestrator.removeAgent(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(404).json({ error: err instanceof Error ? err.message : String(err) });
+  }
 });
 
 app.get('/api/tasks', (_req, res) => {

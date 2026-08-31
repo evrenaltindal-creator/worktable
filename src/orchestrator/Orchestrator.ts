@@ -1,22 +1,109 @@
 import { randomUUID } from 'crypto';
-import { AgentState, Message, Task } from '../types';
-import { getProvider } from '../providers';
-import agentConfigs from '../config/agents.json';
+import { AgentConfig, AgentState, Message, Task } from '../types';
+import { getProvider, clearProviderCache } from '../providers';
+import { AgentStore } from '../store/AgentStore';
 
 const HANDOFF_THRESHOLD = 0.9;
 
-type UpdateEvent = 'agent_updated' | 'task_created' | 'task_updated';
+type UpdateEvent = 'agent_added' | 'agent_updated' | 'agent_removed' | 'task_created' | 'task_updated';
 type UpdateListener = (event: UpdateEvent, payload: unknown) => void;
+
+function slugify(input: string): string {
+  return (
+    input
+      .toLowerCase()
+      .replace(/ı/g, 'i')
+      .replace(/ş/g, 's')
+      .replace(/ğ/g, 'g')
+      .replace(/ü/g, 'u')
+      .replace(/ö/g, 'o')
+      .replace(/ç/g, 'c')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-+|-+$)/g, '') || randomUUID()
+  );
+}
+
+export type NewAgentInput = Omit<AgentConfig, 'id'> & { id?: string };
 
 export class Orchestrator {
   private agents = new Map<string, AgentState>();
   private tasks = new Map<string, Task>();
+  private store = new AgentStore();
   onUpdate: UpdateListener = () => {};
 
   constructor() {
-    for (const cfg of agentConfigs as AgentState[]) {
+    for (const cfg of this.store.load()) {
       this.agents.set(cfg.id, { ...cfg, tokensUsed: 0, status: 'idle' });
     }
+  }
+
+  private persistAgents() {
+    const configs: AgentConfig[] = [...this.agents.values()].map((a) => ({
+      id: a.id,
+      name: a.name,
+      role: a.role,
+      provider: a.provider,
+      model: a.model,
+      avatarColor: a.avatarColor,
+      deskPosition: a.deskPosition,
+      capabilities: a.capabilities,
+      tokenBudget: a.tokenBudget,
+      apiKey: a.apiKey,
+    }));
+    this.store.save(configs);
+  }
+
+  addAgent(input: NewAgentInput): AgentState {
+    const id = input.id?.trim() || slugify(input.name);
+    if (this.agents.has(id)) throw new Error(`"${id}" kimlikli bir ajan zaten var`);
+    const agent: AgentState = { ...input, id, tokensUsed: 0, status: 'idle' };
+    this.agents.set(id, agent);
+    this.persistAgents();
+    this.emit('agent_added', agent);
+    return agent;
+  }
+
+  updateAgent(id: string, patch: Partial<AgentConfig>): AgentState {
+    const agent = this.agents.get(id);
+    if (!agent) throw new Error('Ajan bulunamadi');
+
+    if (patch.apiKey === '') {
+      agent.apiKey = undefined;
+    } else if (typeof patch.apiKey === 'string') {
+      agent.apiKey = patch.apiKey;
+    }
+    if (patch.provider !== undefined || patch.apiKey !== undefined) {
+      clearProviderCache(agent.id);
+    }
+
+    const editableKeys: (keyof AgentConfig)[] = [
+      'name',
+      'role',
+      'provider',
+      'model',
+      'avatarColor',
+      'deskPosition',
+      'capabilities',
+      'tokenBudget',
+    ];
+    for (const key of editableKeys) {
+      if (patch[key] !== undefined) {
+        (agent as unknown as Record<string, unknown>)[key] = patch[key];
+      }
+    }
+
+    this.persistAgents();
+    this.emit('agent_updated', agent);
+    return agent;
+  }
+
+  removeAgent(id: string) {
+    const agent = this.agents.get(id);
+    if (!agent) throw new Error('Ajan bulunamadi');
+    this.agents.delete(id);
+    clearProviderCache(id);
+    this.persistAgents();
+    this.emit('agent_removed', { id });
   }
 
   listAgents(): AgentState[] {
@@ -115,7 +202,7 @@ export class Orchestrator {
     agent.currentTaskId = task.id;
     this.emit('agent_updated', agent);
 
-    const provider = getProvider(agent.provider);
+    const provider = getProvider(agent);
     const history = task.messages
       .filter((m) => m.authorType !== 'system')
       .map((m) => ({

@@ -37,16 +37,26 @@ Tarayicida `http://localhost:3000` adresini acin. Hicbir API anahtari
 girmezseniz ajanlar demo amacli sahte (mock) yanitlar uretir; uygulamanin
 tum akisini (tartisma, oneri, devir) anahtarsiz da deneyebilirsiniz.
 
-## Ajan ekleme / cikarma
+## Yonetim (admin) ekrani
 
-`src/config/agents.json` dosyasini duzenleyin. Her ajan icin:
+`http://localhost:3000/admin.html` uzerinden ofisin tum yonetimi tek ekrandan
+yapilir:
 
-- `provider`: `anthropic`, `openai` veya `mock`
-- `model`: o saglayicidaki model kimligi
-- `capabilities`: bu ajanin uzmanlik etiketleri (proje olustururken bu
-  etiketlerle eslesen ajanlar tartismaya katilir)
-- `deskPosition`: ofis izgarasinda `{x, y}` hucre konumu
-- `tokenBudget`: bu ajanin donemlik token butcesi (asilinca otomatik devir tetiklenir)
+- **Ajanlar**: yeni ajan ekleme/duzenleme/silme, her ajana ozel **API anahtari**
+  girme (bos birakilirsa saglayicinin genel `.env` anahtari kullanilir), model,
+  yetkinlik etiketleri, masa konumu ve token butcesini degistirme. Anahtarlar
+  sadece sunucu tarafinda `data/agents.json` icinde saklanir; API/arayuze asla
+  geri donmez (sadece "anahtar var/yok" bilgisi gosterilir).
+- **Projeler**: yeni proje/gorev yazma, devam eden projelerin sohbetini
+  goruntuleme/mesaj yazma ve nihai oneriyi onaylama - "Ofis" ekranindakiyle
+  ayni islevi buradan da yapabilirsiniz.
+
+Ajan roster'i artik `src/config/agents.default.json` (ilk calistirmada
+kopyalanan, anahtarsiz varsayilan sablon, git'e dahil) ile calisma zamaninda
+duzenlenen `data/agents.json` (gitignore'da, gercek anahtarlari icerir) olarak
+ikiye ayrilir. Var olan bir kurulumu sifirlamak icin `data/agents.json`
+dosyasini silmeniz yeterli; bir sonraki baslatmada varsayilanlardan yeniden
+olusturulur.
 
 Yeni bir saglayici eklemek icin `src/providers/` altina `Provider`
 arayuzunu (`complete()`) uygulayan yeni bir sinif yazip `providers/index.ts`
