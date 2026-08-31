@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Ofis</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>🏢 AI Ofis</h1>
+      <button id="newProjectBtn">+ Yeni Proje</button>
+    </header>
+
+    <main>
+      <section id="office" aria-label="Ofis"></section>
+
+      <aside id="sidebar">
+        <h2>Projeler</h2>
+        <div id="taskList"></div>
+        <div id="taskDetail" hidden></div>
+      </aside>
+    </main>
+
+    <dialog id="newProjectDialog">
+      <form id="newProjectForm" method="dialog">
+        <h2>Yeni Proje</h2>
+        <label>
+          Başlık
+          <input name="title" required />
+        </label>
+        <label>
+          Açıklama
+          <textarea name="description" rows="4" required></textarea>
+        </label>
+        <label>
+          Gerekli yetkinlikler (virgülle ayırın)
+          <input name="capabilities" placeholder="kod, tasarim, arastirma" />
+        </label>
+        <menu>
+          <button type="submit" value="create">Oluştur</button>
+          <button type="button" id="cancelNewProject">Vazgeç</button>
+        </menu>
+      </form>
+    </dialog>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

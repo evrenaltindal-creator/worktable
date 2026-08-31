@@ -1,0 +1,46 @@
+[
+  {
+    "id": "aylin",
+    "name": "Aylin",
+    "role": "Proje Yoneticisi",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "avatarColor": "#6c5ce7",
+    "deskPosition": { "x": 1, "y": 1 },
+    "capabilities": ["planlama", "koordinasyon", "ozetleme"],
+    "tokenBudget": 200000
+  },
+  {
+    "id": "kerem",
+    "name": "Kerem",
+    "role": "Yazilim Muhendisi",
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "avatarColor": "#00b894",
+    "deskPosition": { "x": 2, "y": 1 },
+    "capabilities": ["kod", "mimari", "debug"],
+    "tokenBudget": 200000
+  },
+  {
+    "id": "deniz",
+    "name": "Deniz",
+    "role": "Tasarimci",
+    "provider": "openai",
+    "model": "gpt-4o",
+    "avatarColor": "#e17055",
+    "deskPosition": { "x": 1, "y": 2 },
+    "capabilities": ["tasarim", "ui", "ux"],
+    "tokenBudget": 150000
+  },
+  {
+    "id": "mert",
+    "name": "Mert",
+    "role": "Arastirmaci",
+    "provider": "openai",
+    "model": "gpt-4o",
+    "avatarColor": "#0984e3",
+    "deskPosition": { "x": 2, "y": 2 },
+    "capabilities": ["arastirma", "analiz", "veri"],
+    "tokenBudget": 150000
+  }
+]

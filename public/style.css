@@ -1,0 +1,180 @@
+:root {
+  color-scheme: light dark;
+  --bg: #f4f3ef;
+  --panel: #ffffff;
+  --border: #e2e0da;
+  --text: #232221;
+  --muted: #706c66;
+  --accent: #6c5ce7;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+
+header h1 { font-size: 1.25rem; margin: 0; }
+
+button {
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: white;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+button.secondary {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1rem;
+  padding: 1rem;
+  align-items: start;
+}
+
+#office {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 150px;
+  gap: 1rem;
+  background: repeating-linear-gradient(45deg, #eceae3, #eceae3 10px, #e6e3da 10px, #e6e3da 20px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  min-height: 340px;
+}
+
+.desk {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  position: relative;
+}
+
+.desk .avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+}
+
+.desk .name { font-weight: 600; }
+.desk .role { color: var(--muted); font-size: 0.8rem; }
+
+.status-badge {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  color: white;
+}
+.status-idle { background: #95a5a6; }
+.status-working { background: #00b894; animation: pulse 1.4s infinite; }
+.status-discussing { background: #0984e3; animation: pulse 1.4s infinite; }
+.status-quota_low { background: #d63031; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
+.token-bar {
+  height: 5px;
+  border-radius: 999px;
+  background: #e2e0da;
+  overflow: hidden;
+}
+.token-bar-fill {
+  height: 100%;
+  background: #00b894;
+}
+.token-bar-fill.warn { background: #f39c12; }
+.token-bar-fill.danger { background: #d63031; }
+
+#sidebar {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+#taskList { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+
+.task-item {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+}
+.task-item.active { border-color: var(--accent); background: #f4f2ff; }
+.task-item .title { font-weight: 600; font-size: 0.9rem; }
+.task-item .status { font-size: 0.75rem; color: var(--muted); }
+
+#taskDetail { border-top: 1px solid var(--border); padding-top: 1rem; }
+
+.messages { display: flex; flex-direction: column; gap: 0.5rem; max-height: 320px; overflow-y: auto; margin-bottom: 0.75rem; }
+
+.msg { padding: 0.5rem 0.7rem; border-radius: 8px; font-size: 0.85rem; }
+.msg.system { background: #f1f0eb; color: var(--muted); font-style: italic; }
+.msg.agent { background: #f4f2ff; }
+.msg.user { background: #e8f7f0; align-self: flex-end; }
+.msg .author { font-weight: 600; display: block; margin-bottom: 0.15rem; font-size: 0.75rem; }
+
+.proposal-box {
+  border: 1px solid var(--accent);
+  background: #f9f8ff;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  white-space: pre-wrap;
+  font-size: 0.85rem;
+}
+
+.chat-input { display: flex; gap: 0.5rem; }
+.chat-input input { flex: 1; padding: 0.5rem; border-radius: 8px; border: 1px solid var(--border); }
+
+dialog {
+  border: none;
+  border-radius: 12px;
+  padding: 1.25rem;
+  width: min(420px, 90vw);
+}
+dialog form { display: flex; flex-direction: column; gap: 0.75rem; }
+dialog label { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.85rem; }
+dialog input, dialog textarea {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font: inherit;
+}
+dialog menu { display: flex; justify-content: flex-end; gap: 0.5rem; margin: 0; padding: 0; }
