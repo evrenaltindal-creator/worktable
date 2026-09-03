@@ -163,6 +163,8 @@ function connectSocket() {
       upsertAgent(payload);
     } else if (type === 'agent_removed') {
       removeAgentFromState(payload.id);
+    } else if (type === 'agents_reset') {
+      state.agents = payload;
     } else if (type === 'task_created' || type === 'task_updated') {
       upsertTask(payload);
       if (!state.activeTaskId) state.activeTaskId = payload.id;

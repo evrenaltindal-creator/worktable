@@ -36,8 +36,12 @@ const orchestrator = new Orchestrator();
 const clients = new Set<WebSocket>();
 
 orchestrator.onUpdate = (event, payload) => {
-  const outPayload =
-    event === 'agent_added' || event === 'agent_updated' ? redactAgent(payload as AgentState) : payload;
+  let outPayload: unknown = payload;
+  if (event === 'agent_added' || event === 'agent_updated') {
+    outPayload = redactAgent(payload as AgentState);
+  } else if (event === 'agents_reset') {
+    outPayload = (payload as AgentState[]).map(redactAgent);
+  }
   const data = JSON.stringify({ event, payload: outPayload });
   for (const client of clients) {
     if (client.readyState === WebSocket.OPEN) client.send(data);
@@ -65,6 +69,11 @@ wss.on('connection', (ws, req) => {
 
 app.get('/api/agents', (_req, res) => {
   res.json(orchestrator.listAgents().map(redactAgent));
+});
+
+app.post('/api/agents/reset-to-defaults', (_req, res) => {
+  const agents = orchestrator.resetAgentsToDefaults();
+  res.json(agents.map(redactAgent));
 });
 
 app.post('/api/agents', (req, res) => {

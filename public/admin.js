@@ -141,10 +141,29 @@ async function deleteAgent(id) {
   }
 }
 
+async function resetAgentsToDefaults() {
+  if (
+    !confirm(
+      'Ekip, ucretsiz Ollama ajanlariyla (Aylin, Kaan, Deniz, Mert) yeniden kurulacak.\n' +
+        'Eklediginiz ozel ajanlar ve girdiginiz API anahtarlari silinecek. Devam edilsin mi?',
+    )
+  ) {
+    return;
+  }
+  try {
+    const agents = await api('/api/agents/reset-to-defaults', { method: 'POST' });
+    state.agents = agents;
+    renderAgentTable();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
 function setupAgentDialog() {
   const dialog = document.getElementById('agentDialog');
   document.getElementById('newAgentBtn').addEventListener('click', () => openAgentDialog(null));
   document.getElementById('cancelAgentDialog').addEventListener('click', () => dialog.close());
+  document.getElementById('resetDefaultsBtn').addEventListener('click', resetAgentsToDefaults);
 
   document.getElementById('agentForm').addEventListener('submit', async (e) => {
     const form = e.target;
@@ -302,6 +321,8 @@ function connectSocket() {
       upsertAgent(payload);
     } else if (type === 'agent_removed') {
       removeAgentFromState(payload.id);
+    } else if (type === 'agents_reset') {
+      state.agents = payload;
     } else if (type === 'task_created' || type === 'task_updated') {
       upsertTask(payload);
       if (!state.activeTaskId) state.activeTaskId = payload.id;

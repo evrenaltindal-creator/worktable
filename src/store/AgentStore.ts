@@ -25,4 +25,9 @@ export class AgentStore {
     fs.mkdirSync(DATA_DIR, { recursive: true });
     fs.writeFileSync(DATA_FILE, JSON.stringify(agents, null, 2), 'utf-8');
   }
+
+  /** `data/agents.json` icinde ne olursa olsun, git'e dahil varsayilan roster'i dondurur. */
+  loadDefaults(): AgentConfig[] {
+    return JSON.parse(fs.readFileSync(DEFAULT_FILE, 'utf-8'));
+  }
 }

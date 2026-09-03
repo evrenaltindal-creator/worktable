@@ -214,6 +214,7 @@ dialog menu { display: flex; justify-content: flex-end; gap: 0.5rem; margin: 0; 
   margin-bottom: 0.5rem;
 }
 .section-header h2 { margin: 0; font-size: 1.05rem; }
+.header-actions { display: flex; gap: 0.5rem; }
 
 .hint { color: var(--muted); font-size: 0.8rem; margin: 0 0 0.75rem; }
 .hint code { background: #f1f0eb; padding: 0.1rem 0.3rem; border-radius: 4px; }

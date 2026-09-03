@@ -5,7 +5,7 @@ import { AgentStore } from '../store/AgentStore';
 
 const HANDOFF_THRESHOLD = 0.9;
 
-type UpdateEvent = 'agent_added' | 'agent_updated' | 'agent_removed' | 'task_created' | 'task_updated';
+type UpdateEvent = 'agent_added' | 'agent_updated' | 'agent_removed' | 'agents_reset' | 'task_created' | 'task_updated';
 type UpdateListener = (event: UpdateEvent, payload: unknown) => void;
 
 function slugify(input: string): string {
@@ -106,6 +106,19 @@ export class Orchestrator {
     clearProviderCache(id);
     this.persistAgents();
     this.emit('agent_removed', { id });
+  }
+
+  /** Ajan roster'ini git'e dahil varsayilanlara (ucretsiz Ollama ekibi) sifirlar. */
+  resetAgentsToDefaults(): AgentState[] {
+    for (const id of this.agents.keys()) clearProviderCache(id);
+    this.agents.clear();
+    for (const cfg of this.store.loadDefaults()) {
+      this.agents.set(cfg.id, { ...cfg, tokensUsed: 0, status: 'idle' });
+    }
+    this.persistAgents();
+    const agents = this.listAgents();
+    this.emit('agents_reset', agents);
+    return agents;
   }
 
   listAgents(): AgentState[] {

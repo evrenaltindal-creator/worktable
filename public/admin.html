@@ -20,11 +20,17 @@
       <section class="admin-section">
         <div class="section-header">
           <h2>Ajanlar</h2>
-          <button id="newAgentBtn">+ Yeni Ajan</button>
+          <span class="header-actions">
+            <button id="resetDefaultsBtn" class="secondary">Varsayılanlara Sıfırla</button>
+            <button id="newAgentBtn">+ Yeni Ajan</button>
+          </span>
         </div>
         <p class="hint">
-          Her ajana kendi API anahtarını girebilirsiniz. Boş bırakılırsa sunucudaki
-          <code>.env</code> dosyasındaki genel anahtar (saglayiciya gore) kullanılır.
+          "Varsayılanlara Sıfırla", ekibi ücretsiz Ollama ajanlarıyla (Aylin, Kaan,
+          Deniz, Mert) yeniden kurar - önceden eklediğiniz özel ajanları veya
+          anahtarları siler. Her ajana kendi API anahtarını da girebilirsiniz;
+          boş bırakılırsa sunucudaki <code>.env</code> dosyasındaki genel anahtar
+          (saglayiciya gore) kullanılır.
         </p>
         <div class="table-wrap">
           <table class="agent-table">
