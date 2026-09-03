@@ -55,9 +55,10 @@ ekibe katabilirsiniz, ama bu zorunlu degildir.
 indirmenize gerek yok. Dosyayi **dogrudan masaustune** koyup cift
 tiklamaniz yeterli:
 
-- Programi bilgisayarinizda bulamazsa (`%USERPROFILE%\AI-Ofis` klasorunde
-  yoksa) once kendisi indirir (`git clone`), sonra bagimliliklari kurar
-  (`npm install`).
+- Programi bilgisayarinizda bulamazsa once kendisi indirir (`git clone`),
+  sonra bagimliliklari kurar (`npm install`). Kurulum konumu: `F:` diski
+  varsa `F:\AI-Ofis` (C: dolu olan makineler icin), yoksa
+  `%USERPROFILE%\AI-Ofis`.
 - Bir sonraki tikladiginizda mevcut kurulumu bulup gunceller (`git pull`)
   ve dogrudan baslatir.
 - Sunucuyu baslatip birkac saniye sonra tarayicinizda otomatik olarak

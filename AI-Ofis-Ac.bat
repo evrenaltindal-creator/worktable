@@ -4,7 +4,14 @@ setlocal
 
 set "REPO_URL=https://github.com/evrenaltindal-creator/worktable.git"
 set "REPO_BRANCH=claude/ai-office-interface-rs3zgo"
-set "APP_DIR=%USERPROFILE%\AI-Ofis"
+
+rem C: diski dolu olan kullanicilar icin: F: varsa program oraya kurulur.
+if exist F:\ (
+  set "APP_DIR=F:\AI-Ofis"
+  set "NPM_CONFIG_CACHE=F:\AI-Ofis-npm-cache"
+) else (
+  set "APP_DIR=%USERPROFILE%\AI-Ofis"
+)
 
 where git >nul 2>nul
 if errorlevel 1 (
@@ -24,12 +31,18 @@ if errorlevel 1 (
   exit /b 1
 )
 
+echo Kurulum konumu: %APP_DIR%
+echo.
+
 if not exist "%APP_DIR%" (
   echo AI Ofis ilk kez indiriliyor, bu biraz surebilir...
   git clone --branch "%REPO_BRANCH%" "%REPO_URL%" "%APP_DIR%"
   if errorlevel 1 (
     echo.
-    echo HATA: Program indirilemedi. Internet baglantinizi kontrol edin.
+    echo HATA: Program indirilemedi.
+    echo - Yukarida "No space left on device" yaziyorsa diskiniz dolu:
+    echo   Geri Donusum Kutusu'nu bosaltip disk temizligi yapin.
+    echo - Baska bir hata varsa internet baglantinizi kontrol edin.
     pause
     exit /b 1
   )
@@ -47,6 +60,8 @@ if not exist node_modules (
   if errorlevel 1 (
     echo.
     echo HATA: npm install basarisiz oldu.
+    echo Bu genellikle disk alani dolmasindan kaynaklanir; diskinizde
+    echo yeterli bos alan oldugundan emin olup tekrar deneyin.
     pause
     exit /b 1
   )
