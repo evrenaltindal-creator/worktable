@@ -49,23 +49,26 @@ Tarayicida `http://localhost:3000` adresini acin. Isterseniz `.env`'e
 ajanlara anahtar girip Claude/GPT gibi ucretli bulut modellerini de
 ekibe katabilirsiniz, ama bu zorunlu degildir.
 
-### Windows: tek tikla acilan masaustu kisayolu
+### Windows: tek dosyayla kurulum (git clone/npm install gerekmez)
 
-Terminal komutlariyla ugrasmak istemiyorsaniz, depo icindeki
-`AI-Ofis-Ac.bat` dosyasini kullanarak bir masaustu kisayolu
-olusturabilirsiniz:
+`AI-Ofis-Ac.bat` dosyasi kendi kendine yeterlidir - projeyi onceden
+indirmenize gerek yok. Dosyayi **dogrudan masaustune** koyup cift
+tiklamaniz yeterli:
 
-1. Proje klasorunde `AI-Ofis-Ac.bat` dosyasina **sag tiklayin** ->
-   **"Kisayol olustur"**.
-2. Olusan kisayolu **masaustune surukleyin** (veya kesip masaustune
-   yapistirin).
-3. Istersen iz kisayolu yeniden adlandirin (orn. "AI Ofis") ve simgesini
-   degistirin (sag tik -> Ozellikler -> Simgeyi Degistir).
+- Programi bilgisayarinizda bulamazsa (`%USERPROFILE%\AI-Ofis` klasorunde
+  yoksa) once kendisi indirir (`git clone`), sonra bagimliliklari kurar
+  (`npm install`).
+- Bir sonraki tikladiginizda mevcut kurulumu bulup gunceller (`git pull`)
+  ve dogrudan baslatir.
+- Sunucuyu baslatip birkac saniye sonra tarayicinizda otomatik olarak
+  `http://localhost:3000` acar.
 
-Artik o kisayola cift tikladiginizda: gerekliyse bagimliliklari kurar,
-sunucuyu baslatir ve birkac saniye sonra tarayicinizda otomatik olarak
-`http://localhost:3000` acilir. Sunucuyu durdurmak icin acilan siyah
-"AI Ofis Sunucu" penceresini kapatmaniz yeterli.
+Gereksinim: bilgisayarinizda **Git** (https://git-scm.com/downloads) ve
+**Node.js** (https://nodejs.org) kurulu olmali - dosya bunlardan biri
+eksikse size hangisini kurmaniz gerektigini soyler.
+
+Sunucuyu durdurmek icin acilan siyah "AI Ofis Sunucu" penceresini
+kapatmaniz yeterli.
 
 (Ollama'nin ayrica `ollama serve` ile calisiyor olmasi gerekir - bunu
 sisteme kurulumdan sonra genelde otomatik baslar; degilse Ollama
