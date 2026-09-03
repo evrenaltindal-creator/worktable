@@ -70,13 +70,19 @@
           <select name="provider">
             <option value="anthropic">anthropic</option>
             <option value="openai">openai</option>
+            <option value="ollama">ollama (yerel, anahtar gerektirmez)</option>
             <option value="mock">mock (demo, anahtar gerektirmez)</option>
           </select>
         </label>
-        <label>Model <input name="model" required placeholder="örn. claude-sonnet-5" /></label>
+        <label>Model <input name="model" required placeholder="örn. claude-sonnet-5 veya llama3 (ollama)" /></label>
         <label>
-          API Anahtarı
-          <input name="apiKey" type="password" autocomplete="off" placeholder="Boş bırakılırsa .env kullanılır" />
+          API Anahtarı / Ollama Adresi
+          <input
+            name="apiKey"
+            type="password"
+            autocomplete="off"
+            placeholder="Boş bırakılırsa .env kullanılır (ollama için http://localhost:11434)"
+          />
         </label>
         <label>Yetkinlikler (virgülle ayırın) <input name="capabilities" placeholder="kod, tasarim" /></label>
         <label>

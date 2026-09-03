@@ -14,7 +14,7 @@ ayni isi yapabilecek baska bir ajana devredilir (handoff).
 src/
   types.ts              Ajan / gorev / mesaj veri modelleri
   config/agents.json     Ofisteki ajan roster'i (isim, rol, saglayici, masa konumu, token butcesi)
-  providers/             Saglayici soyutlamasi (Anthropic, OpenAI, anahtarsiz demo icin Mock)
+  providers/             Saglayici soyutlamasi (Anthropic, OpenAI, yerel Ollama, anahtarsiz demo icin Mock)
   orchestrator/          Gorev atama, ajanlar arasi tartisma, senteze varma, token bazli devir
   server.ts              Express + WebSocket sunucusu (REST API + gercek zamanli guncellemeler)
 public/                  Ofis arayuzu (masalar, sohbet paneli) - build adimi gerektirmez
@@ -36,6 +36,21 @@ npm run dev
 Tarayicida `http://localhost:3000` adresini acin. Hicbir API anahtari
 girmezseniz ajanlar demo amacli sahte (mock) yanitlar uretir; uygulamanin
 tum akisini (tartisma, oneri, devir) anahtarsiz da deneyebilirsiniz.
+
+### Ollama ile yerel model kullanma
+
+API anahtari olmadan gercek (mock olmayan) yanitlar almak icin bir ajani
+`ollama` saglayicisina cevirebilirsiniz:
+
+```bash
+ollama serve            # Ollama sunucusunu baslatir (varsayilan :11434)
+ollama pull llama3      # kullanmak istediginiz modeli indirin
+```
+
+Ardindan Yonetim ekraninda ilgili ajanin **Saglayici**sini `ollama`, modelini
+ise indirdiginiz model adi (orn. `llama3`) yapin. Ollama sunucusu varsayilan
+adresten farkli bir yerde calisiyorsa `.env` icindeki `OLLAMA_BASE_URL`
+degiskenini (veya ajana ozel "API Anahtari" alanina adresi yazarak) ayarlayin.
 
 ## Yonetim (admin) ekrani
 
@@ -85,7 +100,7 @@ eklemeniz onerilir.
 
 - Kalici depolama (su an gorevler/ajan durumu bellekte tutuluyor, sunucu
   yeniden baslayinca sifirlanir)
-- Daha fazla saglayici (Google Gemini, Mistral, yerel modeller)
+- Daha fazla saglayici (Google Gemini, Mistral)
 - Ajanlar arasi gercek zamanli/coklu-tur muzakere (su an sirali tek turlu)
 - Masa animasyonlari, avatarlar icin gorsel iyilestirme
 - Cok kullanicili kimlik dogrulama ve yetkilendirme

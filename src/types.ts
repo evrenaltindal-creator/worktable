@@ -1,6 +1,6 @@
 export type AgentStatus = 'idle' | 'working' | 'discussing' | 'quota_low';
 
-export type ProviderName = 'anthropic' | 'openai' | 'mock';
+export type ProviderName = 'anthropic' | 'openai' | 'ollama' | 'mock';
 
 export interface AgentConfig {
   id: string;
