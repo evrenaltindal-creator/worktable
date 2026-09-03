@@ -49,6 +49,28 @@ Tarayicida `http://localhost:3000` adresini acin. Isterseniz `.env`'e
 ajanlara anahtar girip Claude/GPT gibi ucretli bulut modellerini de
 ekibe katabilirsiniz, ama bu zorunlu degildir.
 
+### Windows: tek tikla acilan masaustu kisayolu
+
+Terminal komutlariyla ugrasmak istemiyorsaniz, depo icindeki
+`AI-Ofis-Ac.bat` dosyasini kullanarak bir masaustu kisayolu
+olusturabilirsiniz:
+
+1. Proje klasorunde `AI-Ofis-Ac.bat` dosyasina **sag tiklayin** ->
+   **"Kisayol olustur"**.
+2. Olusan kisayolu **masaustune surukleyin** (veya kesip masaustune
+   yapistirin).
+3. Istersen iz kisayolu yeniden adlandirin (orn. "AI Ofis") ve simgesini
+   degistirin (sag tik -> Ozellikler -> Simgeyi Degistir).
+
+Artik o kisayola cift tikladiginizda: gerekliyse bagimliliklari kurar,
+sunucuyu baslatir ve birkac saniye sonra tarayicinizda otomatik olarak
+`http://localhost:3000` acilir. Sunucuyu durdurmak icin acilan siyah
+"AI Ofis Sunucu" penceresini kapatmaniz yeterli.
+
+(Ollama'nin ayrica `ollama serve` ile calisiyor olmasi gerekir - bunu
+sisteme kurulumdan sonra genelde otomatik baslar; degilse Ollama
+uygulamasini bir kez elle acmaniz yeterli.)
+
 ## Yonetim (admin) ekrani
 
 `http://localhost:3000/admin.html` uzerinden ofisin tum yonetimi tek ekrandan
