@@ -307,6 +307,19 @@ function setupNewProjectDialog() {
 
 // ---- Genel ----
 
+function renderOfflineBadge(offlineOnly) {
+  const badge = document.getElementById('offlineBadge');
+  if (!badge) return;
+  badge.hidden = false;
+  if (offlineOnly) {
+    badge.textContent = '🔒 Çevrimdışı — veriler bilgisayarınızdan çıkmıyor';
+    badge.classList.remove('warn');
+  } else {
+    badge.textContent = '⚠️ Çevrimdışı mod kapalı — buluta veri gidebilir';
+    badge.classList.add('warn');
+  }
+}
+
 function connectSocket() {
   const proto = location.protocol === 'https:' ? 'wss' : 'ws';
   const url = `${proto}://${location.host}${TOKEN ? `?token=${encodeURIComponent(TOKEN)}` : ''}`;
@@ -317,6 +330,7 @@ function connectSocket() {
     if (type === 'bootstrap') {
       state.agents = payload.agents;
       state.tasks = payload.tasks;
+      renderOfflineBadge(payload.offlineOnly);
     } else if (type === 'agent_added' || type === 'agent_updated') {
       upsertAgent(payload);
     } else if (type === 'agent_removed') {

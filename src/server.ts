@@ -5,6 +5,7 @@ import path from 'path';
 import { WebSocket, WebSocketServer } from 'ws';
 import { Orchestrator } from './orchestrator/Orchestrator';
 import { AgentState } from './types';
+import { isOfflineOnly, offlineViolation } from './offline';
 
 /** API anahtarini asla istemciye gondermez; yerine sadece tanimli olup olmadigini isaretler. */
 function redactAgent(agent: AgentState) {
@@ -61,10 +62,18 @@ wss.on('connection', (ws, req) => {
   ws.send(
     JSON.stringify({
       event: 'bootstrap',
-      payload: { agents: orchestrator.listAgents().map(redactAgent), tasks: orchestrator.listTasks() },
+      payload: {
+        agents: orchestrator.listAgents().map(redactAgent),
+        tasks: orchestrator.listTasks(),
+        offlineOnly: isOfflineOnly(),
+      },
     }),
   );
   ws.on('close', () => clients.delete(ws));
+});
+
+app.get('/api/status', (_req, res) => {
+  res.json({ offlineOnly: isOfflineOnly() });
 });
 
 app.get('/api/agents', (_req, res) => {
@@ -81,6 +90,11 @@ app.post('/api/agents', (req, res) => {
     req.body ?? {};
   if (!name || !role || !provider || !model) {
     res.status(400).json({ error: 'name, role, provider ve model zorunlu' });
+    return;
+  }
+  const violation = offlineViolation(provider, baseUrl);
+  if (violation) {
+    res.status(400).json({ error: violation });
     return;
   }
   try {
@@ -104,6 +118,16 @@ app.post('/api/agents', (req, res) => {
 });
 
 app.put('/api/agents/:id', (req, res) => {
+  const existing = orchestrator.listAgents().find((a) => a.id === req.params.id);
+  const nextProvider = req.body?.provider ?? existing?.provider;
+  const nextBaseUrl = req.body?.baseUrl ?? existing?.baseUrl;
+  if (nextProvider) {
+    const violation = offlineViolation(nextProvider, nextBaseUrl);
+    if (violation) {
+      res.status(400).json({ error: violation });
+      return;
+    }
+  }
   try {
     const agent = orchestrator.updateAgent(req.params.id, req.body ?? {});
     res.json(redactAgent(agent));
@@ -172,6 +196,12 @@ const HOST = process.env.HOST ?? '0.0.0.0';
 
 server.listen(PORT, HOST, () => {
   console.log(`AI Ofis http://localhost:${PORT} adresinde calisiyor (HOST=${HOST})`);
+  if (isOfflineOnly()) {
+    console.log('CEVRIMDISI MOD ACIK: veriler bilgisayarinizdan disari cikmaz.');
+    console.log('(Bulut saglayicilari engellendi. Kapatmak icin .env: OFFLINE_ONLY=false)');
+  } else {
+    console.log('UYARI: Cevrimdisi mod KAPALI - bulut saglayicilarina veri gonderilebilir.');
+  }
   if (ACCESS_TOKEN) {
     console.log('Uzaktan erisim tokeni aktif: adrese ?token=... parametresiyle baglanin.');
   }

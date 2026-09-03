@@ -75,6 +75,29 @@ kapatmaniz yeterli.
 sisteme kurulumdan sonra genelde otomatik baslar; degilse Ollama
 uygulamasini bir kez elle acmaniz yeterli.)
 
+## Cevrimdisi mod (gizlilik) - VARSAYILAN OLARAK ACIK
+
+Bu program, yazdiklarinizin bilgisayarinizdan disari cikmamasi icin
+varsayilan olarak **cevrimdisi modda** calisir. Bu mod acikken:
+
+- **Bulut saglayicilari tamamen engellidir** - `anthropic` / `openai`
+  saglayicisi olan bir ajan ne Yonetim ekranindan kaydedilebilir, ne de
+  (elle `data/agents.json` duzenlenmis olsa dahi) istek gonderebilir.
+  Engel, veri gonderilmeden **once** devreye girer.
+- **Sadece yerel adreslere** baglanilir: Ollama adresi yalnizca
+  `localhost`, `127.0.0.1` veya yerel ag araliklarinda (`192.168.x.x`,
+  `10.x.x.x`, `172.16-31.x.x`) olabilir. Internetteki bir adrese
+  yonlendirme reddedilir.
+- Arayuzun ust kisminda **"🔒 Çevrimdışı"** rozeti gorunur; mod kapaliysa
+  bunun yerine turuncu bir uyari cikar.
+
+Ilk kurulumdan sonra programi acmak icin internet **gerekmez**. Yalnizca
+iki islem internet ister: ilk indirme (`git clone` + `npm install`) ve
+istege bagli guncelleme (`AI-Ofis-Guncelle.bat`).
+
+Bulut modellerini bilerek kullanmak isterseniz `.env` dosyasina
+`OFFLINE_ONLY=false` yazip sunucuyu yeniden baslatin.
+
 ## Yonetim (admin) ekrani
 
 `http://localhost:3000/admin.html` uzerinden ofisin tum yonetimi tek ekrandan

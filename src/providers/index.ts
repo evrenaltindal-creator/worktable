@@ -4,6 +4,7 @@ import { OpenAIProvider } from './OpenAIProvider';
 import { OllamaProvider } from './OllamaProvider';
 import { MockProvider } from './MockProvider';
 import { AgentState } from '../types';
+import { offlineViolation } from '../offline';
 
 const cache = new Map<string, Provider>();
 
@@ -13,8 +14,14 @@ const cache = new Map<string, Provider>();
  * degiskenine (ANTHROPIC_API_KEY / OPENAI_API_KEY) dusulur. Anahtar/adres
  * bulunamayan bulut saglayicilari icin cevrimdisi demo yanitlari ureten
  * MockProvider kullanilir. `ollama` API anahtari gerektirmez, sadece adres.
+ *
+ * Cevrimdisi mod acikken (varsayilan) veriyi internete gonderecek her
+ * saglayici burada - istek gonderilmeden once - engellenir.
  */
 export function getProvider(agent: AgentState): Provider {
+  const violation = offlineViolation(agent.provider, agent.baseUrl);
+  if (violation) throw new Error(violation);
+
   const cached = cache.get(agent.id);
   if (cached) return cached;
 

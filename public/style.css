@@ -30,6 +30,21 @@ header h1 { font-size: 1.25rem; margin: 0; }
 header > button { margin-left: auto; }
 
 .top-nav { display: flex; gap: 0.5rem; }
+
+.offline-badge {
+  font-size: 0.78rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: #e8f7f0;
+  color: #0b7a54;
+  border: 1px solid #b9e6d3;
+  white-space: nowrap;
+}
+.offline-badge.warn {
+  background: #fdf0e6;
+  color: #a35200;
+  border-color: #f3d3b4;
+}
 .top-nav a {
   color: var(--muted);
   text-decoration: none;
