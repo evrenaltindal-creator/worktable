@@ -14,7 +14,7 @@ ayni isi yapabilecek baska bir ajana devredilir (handoff).
 src/
   types.ts              Ajan / gorev / mesaj veri modelleri
   config/agents.json     Ofisteki ajan roster'i (isim, rol, saglayici, masa konumu, token butcesi)
-  providers/             Saglayici soyutlamasi (Anthropic, OpenAI, anahtarsiz demo icin Mock)
+  providers/             Saglayici soyutlamasi (Anthropic, OpenAI, Ollama/yerel modeller, anahtarsiz demo icin Mock)
   orchestrator/          Gorev atama, ajanlar arasi tartisma, senteze varma, token bazli devir
   server.ts              Express + WebSocket sunucusu (REST API + gercek zamanli guncellemeler)
 public/                  Ofis arayuzu (masalar, sohbet paneli) - build adimi gerektirmez
@@ -62,6 +62,23 @@ Yeni bir saglayici eklemek icin `src/providers/` altina `Provider`
 arayuzunu (`complete()`) uygulayan yeni bir sinif yazip `providers/index.ts`
 icindeki fabrikaya ekleyin.
 
+## Yerel modeller (Ollama)
+
+Kendi bilgisayarinizda `ollama serve` ile calisan bir modeli (orn.
+`ollama pull qwen2.5-coder:7b`) ekibe katmak icin Yonetim ekraninda
+"+ Yeni Ajan" ile saglayici olarak **ollama** secin, model adina
+`qwen2.5-coder:7b` yazin ve "Sunucu Adresi" alanina Ollama'nin adresini
+girin (varsayilan `http://localhost:11434`, bos birakilirsa bu kullanilir).
+Ollama icin API anahtari gerekmez. Varsayilan roster'da ("Kaan" adiyla)
+buna hazir bir ornek zaten var; eger daha once uygulamayi calistirdiysaniz
+ve `data/agents.json` olusmussa, bu yeni varsayilani gormek icin ya o
+dosyayi silip yeniden baslatin ya da ajani Yonetim ekranindan elle ekleyin.
+
+AI Ofis sunucusu ile Ollama'nin **ayni bilgisayarda** calismasi gerekir
+(varsayilan adres `localhost`); sunucuyu baska bir makinede/uzakta
+calistiriyorsaniz "Sunucu Adresi" alanina Ollama'nin agdaki gercek
+adresini (orn. `http://192.168.1.20:11434`) girmeniz gerekir.
+
 ## Token bazli otomatik devir
 
 `Orchestrator` her ajanin kumulatif `tokensUsed / tokenBudget` oranini
@@ -85,7 +102,7 @@ eklemeniz onerilir.
 
 - Kalici depolama (su an gorevler/ajan durumu bellekte tutuluyor, sunucu
   yeniden baslayinca sifirlanir)
-- Daha fazla saglayici (Google Gemini, Mistral, yerel modeller)
+- Daha fazla saglayici (Google Gemini, Mistral vb.)
 - Ajanlar arasi gercek zamanli/coklu-tur muzakere (su an sirali tek turlu)
 - Masa animasyonlari, avatarlar icin gorsel iyilestirme
 - Cok kullanicili kimlik dogrulama ve yetkilendirme

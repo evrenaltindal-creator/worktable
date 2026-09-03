@@ -49,6 +49,7 @@ export class Orchestrator {
       capabilities: a.capabilities,
       tokenBudget: a.tokenBudget,
       apiKey: a.apiKey,
+      baseUrl: a.baseUrl,
     }));
     this.store.save(configs);
   }
@@ -72,7 +73,7 @@ export class Orchestrator {
     } else if (typeof patch.apiKey === 'string') {
       agent.apiKey = patch.apiKey;
     }
-    if (patch.provider !== undefined || patch.apiKey !== undefined) {
+    if (patch.provider !== undefined || patch.apiKey !== undefined || patch.baseUrl !== undefined) {
       clearProviderCache(agent.id);
     }
 
@@ -85,6 +86,7 @@ export class Orchestrator {
       'deskPosition',
       'capabilities',
       'tokenBudget',
+      'baseUrl',
     ];
     for (const key of editableKeys) {
       if (patch[key] !== undefined) {
@@ -232,7 +234,7 @@ export class Orchestrator {
 
   private async runAgentTurnWithHandoff(task: Task, agent: AgentState, prompt: string): Promise<string> {
     if (this.usageRatio(agent) >= HANDOFF_THRESHOLD) {
-      return this.handoff(task, agent, prompt);
+      return this.handoff(task, agent, prompt, 'quota');
     }
     try {
       return await this.askAgent(agent, task, prompt);
@@ -241,24 +243,37 @@ export class Orchestrator {
       if (/429|rate.?limit|quota|insufficient/i.test(message)) {
         agent.status = 'quota_low';
         this.emit('agent_updated', agent);
-        return this.handoff(task, agent, prompt);
+        return this.handoff(task, agent, prompt, 'quota');
+      }
+      if (/econnrefused|fetch failed|network|timed?.?out/i.test(message)) {
+        agent.status = 'error';
+        this.emit('agent_updated', agent);
+        return this.handoff(task, agent, prompt, 'error', message);
       }
       throw err;
     }
   }
 
-  private async handoff(task: Task, fromAgent: AgentState, prompt: string): Promise<string> {
+  private async handoff(
+    task: Task,
+    fromAgent: AgentState,
+    prompt: string,
+    reason: 'quota' | 'error',
+    detail?: string,
+  ): Promise<string> {
     task.status = 'handed_off';
+    const cause =
+      reason === 'quota'
+        ? `${fromAgent.name}'in token kotasi azaldigi`
+        : `${fromAgent.name}'e ulasilamadigi${detail ? ` (${detail})` : ''}`;
+
     const next = this.pickAgent(task.requiredCapabilities, [...task.previousAgentIds]);
     if (!next) {
-      this.addSystemMessage(
-        task,
-        `${fromAgent.name}'in token kotasi bitti ve devredilecek uygun ajan bulunamadi.`,
-      );
+      this.addSystemMessage(task, `${cause} icin gorev devredilmek istendi ama uygun baska ajan bulunamadi.`);
       this.emit('task_updated', task);
       throw new Error('Devredilecek uygun ajan yok');
     }
-    this.addSystemMessage(task, `${fromAgent.name}'in token kotasi azaldigi icin gorev ${next.name}'e devredildi.`);
+    this.addSystemMessage(task, `${cause} icin gorev ${next.name}'e devredildi.`);
     task.previousAgentIds.push(next.id);
     this.emit('task_updated', task);
     return this.askAgent(next, task, prompt);

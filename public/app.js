@@ -8,6 +8,7 @@ const STATUS_LABEL = {
   working: 'Çalışıyor',
   discussing: 'Tartışıyor',
   quota_low: 'Kota Doldu',
+  error: 'Ulasilamadi',
   pending: 'Bekliyor',
   in_progress: 'Devam Ediyor',
   handed_off: 'Devrediliyor',

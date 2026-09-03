@@ -42,5 +42,17 @@
     "deskPosition": { "x": 2, "y": 2 },
     "capabilities": ["arastirma", "analiz", "veri"],
     "tokenBudget": 150000
+  },
+  {
+    "id": "kaan",
+    "name": "Kaan",
+    "role": "Yerel Kod Asistani (Ollama)",
+    "provider": "ollama",
+    "model": "qwen2.5-coder:7b",
+    "avatarColor": "#2d3436",
+    "deskPosition": { "x": 3, "y": 1 },
+    "capabilities": ["kod", "debug", "hizli-taslak"],
+    "tokenBudget": 1000000,
+    "baseUrl": "http://localhost:11434"
   }
 ]

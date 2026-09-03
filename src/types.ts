@@ -1,6 +1,6 @@
-export type AgentStatus = 'idle' | 'working' | 'discussing' | 'quota_low';
+export type AgentStatus = 'idle' | 'working' | 'discussing' | 'quota_low' | 'error';
 
-export type ProviderName = 'anthropic' | 'openai' | 'mock';
+export type ProviderName = 'anthropic' | 'openai' | 'ollama' | 'mock';
 
 export interface AgentConfig {
   id: string;
@@ -14,6 +14,8 @@ export interface AgentConfig {
   tokenBudget: number;
   /** Bu ajana ozel API anahtari. Bos ise saglayicinin genel .env anahtari kullanilir. */
   apiKey?: string;
+  /** Ollama gibi yerel/self-hosted saglayicilar icin sunucu adresi (orn. http://localhost:11434). */
+  baseUrl?: string;
 }
 
 export interface AgentState extends AgentConfig {

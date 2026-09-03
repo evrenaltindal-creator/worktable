@@ -8,6 +8,7 @@ const STATUS_LABEL = {
   working: 'Çalışıyor',
   discussing: 'Tartışıyor',
   quota_low: 'Kota Doldu',
+  error: 'Ulasilamadi',
   pending: 'Bekliyor',
   in_progress: 'Devam Ediyor',
   handed_off: 'Devrediliyor',
@@ -55,6 +56,12 @@ function removeAgentFromState(id) {
 
 // ---- Ajanlar ----
 
+function apiKeyCellLabel(agent) {
+  if (agent.provider === 'ollama') return `🖥️ ${escapeHtml(agent.baseUrl || 'http://localhost:11434')}`;
+  if (agent.provider === 'mock') return '➖ Gerekmez';
+  return agent.hasApiKey ? '✅ Ayarlı' : '⚠️ Yok (.env kullanılır)';
+}
+
 function renderAgentTable() {
   const body = document.getElementById('agentTableBody');
   body.innerHTML = '';
@@ -74,7 +81,7 @@ function renderAgentTable() {
         <div class="token-bar"><div class="token-bar-fill ${barClass}" style="width:${Math.min(100, ratio * 100)}%"></div></div>
         <small>${agent.tokensUsed.toLocaleString('tr-TR')} / ${agent.tokenBudget.toLocaleString('tr-TR')}</small>
       </td>
-      <td>${agent.hasApiKey ? '✅ Ayarlı' : '⚠️ Yok (.env kullanılır)'}</td>
+      <td>${apiKeyCellLabel(agent)}</td>
       <td><span class="status-badge status-${agent.status}">${STATUS_LABEL[agent.status] || agent.status}</span></td>
       <td class="row-actions">
         <button class="secondary small" data-edit="${agent.id}">Düzenle</button>
@@ -111,6 +118,7 @@ function openAgentDialog(agentId) {
     form.elements.deskY.value = agent.deskPosition.y;
     form.elements.tokenBudget.value = agent.tokenBudget;
     form.elements.avatarColor.value = agent.avatarColor;
+    form.elements.baseUrl.value = agent.baseUrl || '';
     form.elements.apiKey.placeholder = agent.hasApiKey
       ? 'Kayıtlı bir anahtar var (değiştirmek için yazın, silmek için boş bırakıp kaydedin)'
       : 'Boş bırakılırsa .env kullanılır';
@@ -158,6 +166,7 @@ function setupAgentDialog() {
       tokenBudget: Number(data.get('tokenBudget')) || 100000,
       avatarColor: data.get('avatarColor'),
       apiKey: data.get('apiKey') || '',
+      baseUrl: (data.get('baseUrl') || '').toString().trim() || undefined,
     };
     // Yeni ajanda apiKey bos ise gondermeyelim ki "anahtar yok" gibi davransin,
     // duzenlemede ise bos deger = mevcut anahtari temizle anlamina gelir.

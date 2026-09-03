@@ -68,7 +68,7 @@ app.get('/api/agents', (_req, res) => {
 });
 
 app.post('/api/agents', (req, res) => {
-  const { id, name, role, provider, model, avatarColor, deskPosition, capabilities, tokenBudget, apiKey } =
+  const { id, name, role, provider, model, avatarColor, deskPosition, capabilities, tokenBudget, apiKey, baseUrl } =
     req.body ?? {};
   if (!name || !role || !provider || !model) {
     res.status(400).json({ error: 'name, role, provider ve model zorunlu' });
@@ -86,6 +86,7 @@ app.post('/api/agents', (req, res) => {
       capabilities: Array.isArray(capabilities) ? capabilities : [],
       tokenBudget: Number(tokenBudget) > 0 ? Number(tokenBudget) : 100000,
       apiKey: apiKey || undefined,
+      baseUrl: baseUrl || undefined,
     });
     res.status(201).json(redactAgent(agent));
   } catch (err) {
