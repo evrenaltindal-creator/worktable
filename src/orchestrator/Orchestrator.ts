@@ -199,37 +199,51 @@ export class Orchestrator {
     return task;
   }
 
+  /** Hata mesajindan, ajanin devir gerektiren bir durumda olup olmadigini belirler. */
+  private classifyFailure(message: string): 'quota' | 'error' | null {
+    if (/429|rate.?limit|quota|insufficient/i.test(message)) return 'quota';
+    if (/econnrefused|fetch failed|network|timed?.?out/i.test(message)) return 'error';
+    return null;
+  }
+
   private async askAgent(agent: AgentState, task: Task, prompt: string): Promise<string> {
     agent.status = 'working';
     agent.currentTaskId = task.id;
     this.emit('agent_updated', agent);
 
-    const provider = getProvider(agent);
-    const history = task.messages
-      .filter((m) => m.authorType !== 'system')
-      .map((m) => ({
-        role: (m.authorType === 'user' ? 'user' : 'assistant') as 'user' | 'assistant',
-        content: `${m.authorName}: ${m.content}`,
-      }));
+    try {
+      const provider = getProvider(agent);
+      const history = task.messages
+        .filter((m) => m.authorType !== 'system')
+        .map((m) => ({
+          role: (m.authorType === 'user' ? 'user' : 'assistant') as 'user' | 'assistant',
+          content: `${m.authorName}: ${m.content}`,
+        }));
 
-    const systemPrompt = `Sen ${agent.name} adinda bir ${agent.role}sin. Yetkinliklerin: ${agent.capabilities.join(
-      ', ',
-    )}. Sanal bir ofiste diger yapay zeka calisma arkadaslarinla birlikte kullanicinin projeleri uzerinde calisiyorsun. Kisa, net ve uygulanabilir sekilde katki ver.`;
+      const systemPrompt = `Sen ${agent.name} adinda bir ${agent.role}sin. Yetkinliklerin: ${agent.capabilities.join(
+        ', ',
+      )}. Sanal bir ofiste diger yapay zeka calisma arkadaslarinla birlikte kullanicinin projeleri uzerinde calisiyorsun. Kisa, net ve uygulanabilir sekilde katki ver.`;
 
-    const result = await provider.complete(
-      { systemPrompt, messages: [...history, { role: 'user', content: prompt }] },
-      agent.model,
-    );
+      const result = await provider.complete(
+        { systemPrompt, messages: [...history, { role: 'user', content: prompt }] },
+        agent.model,
+      );
 
-    agent.tokensUsed += result.inputTokens + result.outputTokens;
-    this.addAgentMessage(task, agent, result.content);
-    this.emit('task_updated', task);
+      agent.tokensUsed += result.inputTokens + result.outputTokens;
+      this.addAgentMessage(task, agent, result.content);
+      this.emit('task_updated', task);
 
-    agent.status = this.usageRatio(agent) >= HANDOFF_THRESHOLD ? 'quota_low' : 'idle';
-    agent.currentTaskId = undefined;
-    this.emit('agent_updated', agent);
-
-    return result.content;
+      agent.status = this.usageRatio(agent) >= HANDOFF_THRESHOLD ? 'quota_low' : 'idle';
+      return result.content;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      const failure = this.classifyFailure(message);
+      agent.status = failure === 'quota' ? 'quota_low' : failure === 'error' ? 'error' : 'idle';
+      throw err;
+    } finally {
+      agent.currentTaskId = undefined;
+      this.emit('agent_updated', agent);
+    }
   }
 
   private async runAgentTurnWithHandoff(task: Task, agent: AgentState, prompt: string): Promise<string> {
@@ -240,15 +254,9 @@ export class Orchestrator {
       return await this.askAgent(agent, task, prompt);
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
-      if (/429|rate.?limit|quota|insufficient/i.test(message)) {
-        agent.status = 'quota_low';
-        this.emit('agent_updated', agent);
-        return this.handoff(task, agent, prompt, 'quota');
-      }
-      if (/econnrefused|fetch failed|network|timed?.?out/i.test(message)) {
-        agent.status = 'error';
-        this.emit('agent_updated', agent);
-        return this.handoff(task, agent, prompt, 'error', message);
+      const failure = this.classifyFailure(message);
+      if (failure) {
+        return this.handoff(task, agent, prompt, failure, failure === 'error' ? message : undefined);
       }
       throw err;
     }
@@ -276,7 +284,10 @@ export class Orchestrator {
     this.addSystemMessage(task, `${cause} icin gorev ${next.name}'e devredildi.`);
     task.previousAgentIds.push(next.id);
     this.emit('task_updated', task);
-    return this.askAgent(next, task, prompt);
+    // runAgentTurnWithHandoff (askAgent'i sarmalar) kullanilir ki bu yeni ajan da
+    // basarisiz olursa - previousAgentIds hep büyüdügünden sonlu adimda biterek -
+    // devir zinciri baska bir uygun ajana kadar devam etsin.
+    return this.runAgentTurnWithHandoff(task, next, prompt);
   }
 
   private async runDiscussion(task: Task) {

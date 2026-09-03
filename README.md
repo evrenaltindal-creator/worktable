@@ -27,15 +27,27 @@ donusturur -> WebSocket ile arayuze aninda yansir.
 
 ## Kurulum
 
+Varsayilan ekip tamamen **Ollama uzerinden calisan yerel modellerden**
+olusur - hicbir API anahtari veya ucret gerektirmez:
+
 ```bash
+# 1) Ollama kurulu degilse: https://ollama.com
+ollama pull llama3.1:8b
+ollama pull qwen2.5-coder:7b
+ollama pull mistral:7b
+ollama pull deepseek-coder:6.7b
+ollama serve   # genelde kurulumdan sonra zaten arka planda calisir
+
+# 2) Uygulama
 npm install
-cp .env.example .env   # en az bir API anahtari girin (ANTHROPIC_API_KEY / OPENAI_API_KEY)
+cp .env.example .env   # bos birakabilirsiniz, hicbir sey girmeniz gerekmez
 npm run dev
 ```
 
-Tarayicida `http://localhost:3000` adresini acin. Hicbir API anahtari
-girmezseniz ajanlar demo amacli sahte (mock) yanitlar uretir; uygulamanin
-tum akisini (tartisma, oneri, devir) anahtarsiz da deneyebilirsiniz.
+Tarayicida `http://localhost:3000` adresini acin. Isterseniz `.env`'e
+`ANTHROPIC_API_KEY` / `OPENAI_API_KEY` ekleyip veya Yonetim ekranindan
+ajanlara anahtar girip Claude/GPT gibi ucretli bulut modellerini de
+ekibe katabilirsiniz, ama bu zorunlu degildir.
 
 ## Yonetim (admin) ekrani
 
@@ -62,17 +74,29 @@ Yeni bir saglayici eklemek icin `src/providers/` altina `Provider`
 arayuzunu (`complete()`) uygulayan yeni bir sinif yazip `providers/index.ts`
 icindeki fabrikaya ekleyin.
 
-## Yerel modeller (Ollama)
+## Yerel modeller (Ollama) - varsayilan ve ucretsiz
 
-Kendi bilgisayarinizda `ollama serve` ile calisan bir modeli (orn.
-`ollama pull qwen2.5-coder:7b`) ekibe katmak icin Yonetim ekraninda
-"+ Yeni Ajan" ile saglayici olarak **ollama** secin, model adina
-`qwen2.5-coder:7b` yazin ve "Sunucu Adresi" alanina Ollama'nin adresini
-girin (varsayilan `http://localhost:11434`, bos birakilirsa bu kullanilir).
-Ollama icin API anahtari gerekmez. Varsayilan roster'da ("Kaan" adiyla)
-buna hazir bir ornek zaten var; eger daha once uygulamayi calistirdiysaniz
-ve `data/agents.json` olusmussa, bu yeni varsayilani gormek icin ya o
-dosyayi silip yeniden baslatin ya da ajani Yonetim ekranindan elle ekleyin.
+Varsayilan 4 ajanin (Aylin, Kaan, Deniz, Mert) hepsi Ollama uzerinden
+calisir, hicbir API anahtari gerektirmez:
+
+| Ajan  | Rol                     | Model                  |
+|-------|-------------------------|-------------------------|
+| Aylin | Proje Yoneticisi        | `llama3.1:8b`           |
+| Kaan  | Yazilim Muhendisi       | `qwen2.5-coder:7b`      |
+| Deniz | Arastirmaci / Analist   | `mistral:7b`            |
+| Mert  | Test ve Kalite Kontrol  | `deepseek-coder:6.7b`   |
+
+Bu modelleri `ollama pull <model-adi>` ile indirip `ollama serve`'i
+calistirdiginizda ekip hazir olur. Farkli bir model kullanmak isterseniz
+Yonetim ekranindan ilgili ajani duzenleyip "Model" alanini degistirmeniz
+yeterli (o modeli de once `ollama pull` ile indirmeniz gerekir).
+
+Yeni bir Ollama ajani eklemek icin Yonetim ekraninda "+ Yeni Ajan" ile
+saglayici olarak **ollama** secin, model adini yazin ve "Sunucu Adresi"
+alanina Ollama'nin adresini girin (varsayilan `http://localhost:11434`,
+bos birakilirsa bu kullanilir). Eger daha once uygulamayi calistirdiysaniz
+ve eski (ucretli) varsayilanlarla bir `data/agents.json` olusmussa, yeni
+ucretsiz varsayilanlari gormek icin o dosyayi silip yeniden baslatin.
 
 AI Ofis sunucusu ile Ollama'nin **ayni bilgisayarda** calismasi gerekir
 (varsayilan adres `localhost`); sunucuyu baska bir makinede/uzakta
