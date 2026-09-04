@@ -225,6 +225,15 @@ app.post('/api/tasks/:id/message', async (req, res) => {
   }
 });
 
+app.delete('/api/tasks/:id', (req, res) => {
+  try {
+    orchestrator.deleteTask(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(404).json({ error: err instanceof Error ? err.message : String(err) });
+  }
+});
+
 app.post('/api/tasks/:id/approve', (req, res) => {
   try {
     const task = orchestrator.approveTask(req.params.id);

@@ -44,7 +44,9 @@ export type TaskStatus =
   | 'in_progress'
   | 'handed_off'
   | 'proposal_ready'
-  | 'completed';
+  | 'completed'
+  /** Program kapandiginda ortasinda kalmis gorev - mesaj yazarak devam edilebilir. */
+  | 'interrupted';
 
 export interface Task {
   id: string;

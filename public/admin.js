@@ -14,6 +14,7 @@ const STATUS_LABEL = {
   handed_off: 'Devrediliyor',
   proposal_ready: 'Öneri Hazır',
   completed: 'Tamamlandı',
+  interrupted: 'Yarım Kaldı',
 };
 
 function authHeaders(extra = {}) {
@@ -50,6 +51,20 @@ function renderMessageImages(msg) {
       return `<a href="${safe}" target="_blank" rel="noopener"><img class="msg-image" src="${safe}" alt="Üretilen tasarım" loading="lazy"></a>`;
     })
     .join('');
+}
+
+async function deleteTask(task) {
+  if (!confirm(`"${task.title}" projesi ve tüm sohbeti kalıcı olarak silinecek. Emin misiniz?`)) return;
+  try {
+    await api(`/api/tasks/${task.id}`, { method: 'DELETE' });
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+function removeTaskFromState(id) {
+  state.tasks = state.tasks.filter((t) => t.id !== id);
+  if (state.activeTaskId === id) state.activeTaskId = state.tasks[0]?.id ?? null;
 }
 
 function upsertTask(task) {
@@ -260,7 +275,10 @@ function renderTaskDetail() {
       : '';
 
   detail.innerHTML = `
-    <h3>${escapeHtml(task.title)}</h3>
+    <div class="task-detail-header">
+      <h3>${escapeHtml(task.title)}</h3>
+      <button class="secondary small danger-text" id="deleteTaskBtn">Sil</button>
+    </div>
     <p style="color:var(--muted);font-size:0.85rem">${escapeHtml(task.description)}</p>
     <div class="messages">${messagesHtml}</div>
     ${proposalHtml}
@@ -269,6 +287,8 @@ function renderTaskDetail() {
       <button type="submit">Gönder</button>
     </form>
   `;
+
+  document.getElementById('deleteTaskBtn').addEventListener('click', () => deleteTask(task));
 
   const approveBtn = document.getElementById('approveBtn');
   if (approveBtn) {
@@ -356,6 +376,8 @@ function connectSocket() {
     } else if (type === 'task_created' || type === 'task_updated') {
       upsertTask(payload);
       if (!state.activeTaskId) state.activeTaskId = payload.id;
+    } else if (type === 'task_removed') {
+      removeTaskFromState(payload.id);
     }
     renderAgentTable();
     renderTaskList();

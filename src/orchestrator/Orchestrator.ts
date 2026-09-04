@@ -1,11 +1,22 @@
 import { randomUUID } from 'crypto';
-import { AgentConfig, AgentState, Message, Task } from '../types';
+import { AgentConfig, AgentState, Message, Task, TaskStatus } from '../types';
 import { getProvider, clearProviderCache } from '../providers';
 import { AgentStore } from '../store/AgentStore';
+import { TaskStore } from '../store/TaskStore';
 
 const HANDOFF_THRESHOLD = 0.9;
 
-type UpdateEvent = 'agent_added' | 'agent_updated' | 'agent_removed' | 'agents_reset' | 'task_created' | 'task_updated';
+type UpdateEvent =
+  | 'agent_added'
+  | 'agent_updated'
+  | 'agent_removed'
+  | 'agents_reset'
+  | 'task_created'
+  | 'task_updated'
+  | 'task_removed';
+
+/** Program kapandiginda yarim kalmis sayilan gorev durumlari. */
+const RESUMABLE_STATES: TaskStatus[] = ['pending', 'discussing', 'in_progress', 'handed_off'];
 type UpdateListener = (event: UpdateEvent, payload: unknown) => void;
 
 function slugify(input: string): string {
@@ -29,12 +40,41 @@ export class Orchestrator {
   private agents = new Map<string, AgentState>();
   private tasks = new Map<string, Task>();
   private store = new AgentStore();
+  private taskStore = new TaskStore();
+  private taskSaveTimer: ReturnType<typeof setTimeout> | null = null;
   onUpdate: UpdateListener = () => {};
 
   constructor() {
     for (const cfg of this.store.load()) {
       this.agents.set(cfg.id, { ...cfg, tokensUsed: 0, status: 'idle' });
     }
+
+    // Kayitli gorevleri geri yukle. Program bir gorevin ortasinda
+    // kapandiysa o gorev sonsuza kadar "tartisiliyor" gorunmesin diye
+    // "yarim kaldi" durumuna alinir - kullanici mesaj yazarak devam edebilir.
+    for (const task of this.taskStore.load()) {
+      if (RESUMABLE_STATES.includes(task.status)) {
+        task.status = 'interrupted';
+        this.addSystemMessage(task, 'Program kapandigi icin bu gorev yarim kaldi. Devam etmek icin bir mesaj yazin.');
+      }
+      this.tasks.set(task.id, task);
+    }
+  }
+
+  /**
+   * Gorevleri diske yazar. Her mesajda diske yazmamak icin kisa bir
+   * gecikmeyle toplanir (arka arkaya gelen degisiklikler tek yazimda birlesir).
+   */
+  private persistTasks() {
+    if (this.taskSaveTimer) return;
+    this.taskSaveTimer = setTimeout(() => {
+      this.taskSaveTimer = null;
+      try {
+        this.taskStore.save([...this.tasks.values()]);
+      } catch (err) {
+        console.error('Gorevler kaydedilemedi:', err);
+      }
+    }, 400);
   }
 
   private persistAgents() {
@@ -134,6 +174,11 @@ export class Orchestrator {
   }
 
   private emit(event: UpdateEvent, payload: unknown) {
+    // Gorevi degistiren her islem zaten bir olay yayinliyor; kaydetmeyi
+    // buraya baglayarak hicbir degisikligin kaydedilmeden kalmasini onleriz.
+    if (event === 'task_created' || event === 'task_updated' || event === 'task_removed') {
+      this.persistTasks();
+    }
     this.onUpdate(event, payload);
   }
 
@@ -202,6 +247,13 @@ export class Orchestrator {
     });
 
     return task;
+  }
+
+  deleteTask(taskId: string) {
+    const task = this.tasks.get(taskId);
+    if (!task) throw new Error('Gorev bulunamadi');
+    this.tasks.delete(taskId);
+    this.emit('task_removed', { id: taskId });
   }
 
   approveTask(taskId: string) {
@@ -365,6 +417,11 @@ export class Orchestrator {
   async userMessage(taskId: string, content: string) {
     const task = this.tasks.get(taskId);
     if (!task) throw new Error('Gorev bulunamadi');
+
+    // Kullanici yarim kalmis ya da bitmis bir goreve yazdiysa is yeniden basliyor.
+    if (['interrupted', 'completed', 'proposal_ready', 'pending'].includes(task.status)) {
+      task.status = 'in_progress';
+    }
 
     const msg: Message = {
       id: randomUUID(),

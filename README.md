@@ -212,6 +212,22 @@ koyarsaniz varsayilan is akisi yerine o kullanilir. Icindeki pozitif prompt
 metnini `%prompt%`, negatif prompt metnini `%negative%` yer tutucusuyla
 degistirmeniz yeterlidir.
 
+## Gorevlerin kaliciligi
+
+Projeler, sohbet gecmisi ve uretilen tasarimlar `data/tasks.json` icinde
+saklanir; programi kapatip actiginizda kaldiginiz yerden devam edersiniz.
+(`data/` gitignore'dadir - icerigi bilgisayarinizdan cikmaz.)
+
+- Program bir gorevin ortasinda kapanirsa o gorev **"Yarım Kaldı"** olarak
+  isaretlenir; bir mesaj yazdiginizda is kaldigi yerden devam eder.
+- Bir projeyi kalici olarak silmek icin gorev detayindaki **Sil** dugmesini
+  kullanin.
+- Yazma islemi once gecici dosyaya yapilip sonra tasinir; yazma sirasinda
+  bilgisayar kapansa bile mevcut kayit bozulmaz.
+
+Ajan token sayaclari kasitli olarak her acilista sifirlanir - yerel modeller
+ucretsiz oldugu icin kota takibi oturum bazinda tutulur.
+
 ## Token bazli otomatik devir
 
 `Orchestrator` her ajanin kumulatif `tokensUsed / tokenBudget` oranini

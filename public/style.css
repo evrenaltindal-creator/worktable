@@ -185,6 +185,14 @@ main {
 
 #taskDetail { border-top: 1px solid var(--border); padding-top: 1rem; }
 
+.task-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.task-detail-header h3 { margin: 0; font-size: 1rem; }
+
 .messages { display: flex; flex-direction: column; gap: 0.5rem; max-height: 320px; overflow-y: auto; margin-bottom: 0.75rem; }
 
 .msg { padding: 0.5rem 0.7rem; border-radius: 8px; font-size: 0.85rem; }
