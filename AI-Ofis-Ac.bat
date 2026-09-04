@@ -27,30 +27,48 @@ if errorlevel 1 (
   exit /b 1
 )
 
-if not exist "%APP_DIR%\package.json" (
-  echo Program henuz kurulu degil, ilk kurulum yapiliyor...
-  echo (Bu ADIM icin internet gerekir; sonraki acilislarda gerekmez.)
+if exist "%APP_DIR%\package.json" goto :kurulu
+
+rem Klasor var ama icerigi eksikse yarim/bozuk kurulum demektir.
+rem Uzerine klonlamak calismaz, onarim betigine yonlendirilir.
+if exist "%APP_DIR%" (
+  echo ============================================================
+  echo   KURULUM BOZUK GORUNUYOR
+  echo ============================================================
   echo.
-
-  where git >nul 2>nul
-  if errorlevel 1 (
-    echo HATA: Ilk kurulum icin Git gerekli.
-    echo https://git-scm.com/downloads adresinden kurup tekrar deneyin.
-    pause
-    exit /b 1
-  )
-
-  git clone --branch "%REPO_BRANCH%" "%REPO_URL%" "%APP_DIR%"
-  if errorlevel 1 (
-    echo.
-    echo HATA: Program indirilemedi.
-    echo - "No space left on device" yaziyorsa diskiniz dolu:
-    echo   Geri Donusum Kutusu'nu bosaltip disk temizligi yapin.
-    echo - Baska bir hata varsa internet baglantinizi kontrol edin.
-    pause
-    exit /b 1
-  )
+  echo %APP_DIR% klasoru var ama program dosyalari eksik.
+  echo.
+  echo Cozum: AI-Ofis-Onar.bat dosyasini calistirin.
+  echo Projeleriniz korunarak kurulum duzeltilecek.
+  echo.
+  pause
+  exit /b 1
 )
+
+echo Program henuz kurulu degil, ilk kurulum yapiliyor...
+echo (Bu ADIM icin internet gerekir; sonraki acilislarda gerekmez.)
+echo.
+
+where git >nul 2>nul
+if errorlevel 1 (
+  echo HATA: Ilk kurulum icin Git gerekli.
+  echo https://git-scm.com/downloads adresinden kurup tekrar deneyin.
+  pause
+  exit /b 1
+)
+
+git clone --branch "%REPO_BRANCH%" "%REPO_URL%" "%APP_DIR%"
+if errorlevel 1 (
+  echo.
+  echo HATA: Program indirilemedi.
+  echo - "No space left on device" yaziyorsa diskiniz dolu:
+  echo   Geri Donusum Kutusu'nu bosaltip disk temizligi yapin.
+  echo - Baska bir hata varsa internet baglantinizi kontrol edin.
+  pause
+  exit /b 1
+)
+
+:kurulu
 
 cd /d "%APP_DIR%"
 
