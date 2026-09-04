@@ -38,6 +38,7 @@ export class ComfyUIProvider implements Provider {
   }
 
   async complete(req: CompletionRequest, model: string): Promise<CompletionResult> {
+    const startedAt = Date.now();
     const promptText = [...req.messages].reverse().find((m) => m.role === 'user')?.content?.trim() || 'a design concept';
     const checkpoint = await this.resolveCheckpoint(model);
     const workflow = this.buildWorkflow(promptText, checkpoint);
@@ -49,8 +50,14 @@ export class ComfyUIProvider implements Provider {
       throw new Error('ComfyUI gorsel uretmedi (is kuyrugu bos dondu).');
     }
 
+    const seconds = (Date.now() - startedAt) / 1000;
+    const duration = seconds < 60 ? `${seconds.toFixed(1)} sn` : `${Math.floor(seconds / 60)} dk ${Math.round(seconds % 60)} sn`;
+    const size = `${Number(process.env.COMFYUI_WIDTH) || 512}x${Number(process.env.COMFYUI_HEIGHT) || 512}`;
+
     return {
-      content: `"${promptText}" brief'i icin ${images.length} gorsel tasarim uretildi (ComfyUI / ${checkpoint}).`,
+      content:
+        `"${promptText}" brief'i icin ${images.length} gorsel tasarim uretildi.\n` +
+        `Sure: ${duration} · Model: ${checkpoint} · Boyut: ${size} · Adim: ${Number(process.env.COMFYUI_STEPS) || 20}`,
       images,
       inputTokens: 0,
       outputTokens: 0,
