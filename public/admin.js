@@ -38,6 +38,20 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+// ComfyUI gibi gorsel ureten ajanlarin resimleri. Yalnizca kendi sunucumuzun
+// gorsel ucundan gelen adresler gosterilir.
+function renderMessageImages(msg) {
+  if (!Array.isArray(msg.images) || msg.images.length === 0) return '';
+  return msg.images
+    .filter((src) => typeof src === 'string' && src.startsWith('/api/comfy-image?'))
+    .map((src) => {
+      const url = TOKEN ? `${src}&token=${encodeURIComponent(TOKEN)}` : src;
+      const safe = escapeHtml(url);
+      return `<a href="${safe}" target="_blank" rel="noopener"><img class="msg-image" src="${safe}" alt="Üretilen tasarım" loading="lazy"></a>`;
+    })
+    .join('');
+}
+
 function upsertTask(task) {
   const idx = state.tasks.findIndex((t) => t.id === task.id);
   if (idx === -1) state.tasks.unshift(task);
@@ -57,6 +71,7 @@ function removeAgentFromState(id) {
 // ---- Ajanlar ----
 
 function apiKeyCellLabel(agent) {
+  if (agent.provider === 'comfyui') return `🎨 ${escapeHtml(agent.baseUrl || 'http://127.0.0.1:8188')}`;
   if (agent.provider === 'ollama') return `🖥️ ${escapeHtml(agent.baseUrl || 'http://localhost:11434')}`;
   if (agent.provider === 'mock') return '➖ Gerekmez';
   return agent.hasApiKey ? '✅ Ayarlı' : '⚠️ Yok (.env kullanılır)';
@@ -233,7 +248,8 @@ function renderTaskDetail() {
 
   const messagesHtml = task.messages
     .map(
-      (m) => `<div class="msg ${m.authorType}"><span class="author">${escapeHtml(m.authorName)}</span>${escapeHtml(m.content)}</div>`,
+      (m) =>
+        `<div class="msg ${m.authorType}"><span class="author">${escapeHtml(m.authorName)}</span>${escapeHtml(m.content)}${renderMessageImages(m)}</div>`,
     )
     .join('');
 

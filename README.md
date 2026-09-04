@@ -152,6 +152,44 @@ AI Ofis sunucusu ile Ollama'nin **ayni bilgisayarda** calismasi gerekir
 calistiriyorsaniz "Sunucu Adresi" alanina Ollama'nin agdaki gercek
 adresini (orn. `http://192.168.1.20:11434`) girmeniz gerekir.
 
+## Gorsel tasarim (ComfyUI)
+
+Tasarim isleri, bilgisayarinizda calisan **ComfyUI** uzerinden yerel olarak
+uretilir - ucret yok, internet yok. Varsayilan ekipte bunun icin
+**Selin (Gorsel Tasarimci)** ajani vardir; `tasarim`, `gorsel`, `logo` veya
+`illustrasyon` yetkinligi istenen her gorev ona gider.
+
+Kurulum:
+
+1. ComfyUI'yi kurun (https://github.com/comfyanonymous/ComfyUI) ve
+   `ComfyUI/models/checkpoints` klasorune en az bir model dosyasi koyun.
+2. ComfyUI'yi baslatin (varsayilan adres `http://127.0.0.1:8188`).
+3. AI Ofis'i acin - baska ayar gerekmez.
+
+Ajanin **model** alani kullanilacak checkpoint dosyasidir; `auto` birakirsaniz
+ComfyUI'da yuklu ilk model otomatik secilir. Adres farkliysa Yonetim
+ekranindaki "Sunucu Adresi" alanindan degistirebilirsiniz.
+
+Uretilen gorseller sohbet icinde gorunur; uzerine tiklayarak tam boyutta
+acabilirsiniz. Gorseller sunucu uzerinden aktarilir, dogrudan disari
+acilan bir adres yoktur.
+
+Ince ayar (istege bagli, `.env`):
+
+```
+COMFYUI_BASE_URL=http://127.0.0.1:8188
+COMFYUI_WIDTH=512        # buyuk degerler daha yavas uretir
+COMFYUI_HEIGHT=512
+COMFYUI_STEPS=20
+COMFYUI_TIMEOUT_MS=300000
+```
+
+**Kendi is akisinizi kullanmak:** ComfyUI'da hazirladiginiz bir is akisini
+"Save (API Format)" ile kaydedip `data/comfy-workflow.json` olarak
+koyarsaniz varsayilan is akisi yerine o kullanilir. Icindeki pozitif prompt
+metnini `%prompt%`, negatif prompt metnini `%negative%` yer tutucusuyla
+degistirmeniz yeterlidir.
+
 ## Token bazli otomatik devir
 
 `Orchestrator` her ajanin kumulatif `tokensUsed / tokenBudget` oranini

@@ -2,11 +2,17 @@ import { Provider } from './Provider';
 import { AnthropicProvider } from './AnthropicProvider';
 import { OpenAIProvider } from './OpenAIProvider';
 import { OllamaProvider } from './OllamaProvider';
+import { ComfyUIProvider } from './ComfyUIProvider';
 import { MockProvider } from './MockProvider';
 import { AgentState } from '../types';
 import { offlineViolation } from '../offline';
 
 const cache = new Map<string, Provider>();
+
+/** ComfyUI adresi: ajana ozel deger, yoksa .env, yoksa varsayilan yerel adres. */
+export function comfyUiBaseUrl(agentBaseUrl?: string): string {
+  return agentBaseUrl || process.env.COMFYUI_BASE_URL || 'http://127.0.0.1:8188';
+}
 
 /**
  * Her ajan icin bir saglayici ornegi olusturur/onbelleklenmis olani dondurur.
@@ -35,6 +41,8 @@ export function getProvider(agent: AgentState): Provider {
   } else if (agent.provider === 'ollama') {
     const baseUrl = agent.baseUrl || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
     provider = new OllamaProvider(baseUrl);
+  } else if (agent.provider === 'comfyui') {
+    provider = new ComfyUIProvider(comfyUiBaseUrl(agent.baseUrl));
   } else {
     provider = new MockProvider();
   }

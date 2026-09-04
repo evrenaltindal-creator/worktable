@@ -31,9 +31,21 @@
     "model": "mistral:7b",
     "avatarColor": "#e17055",
     "deskPosition": { "x": 1, "y": 2 },
-    "capabilities": ["arastirma", "analiz", "tasarim"],
+    "capabilities": ["arastirma", "analiz"],
     "tokenBudget": 1000000,
     "baseUrl": "http://localhost:11434"
+  },
+  {
+    "id": "selin",
+    "name": "Selin",
+    "role": "Gorsel Tasarimci (ComfyUI)",
+    "provider": "comfyui",
+    "model": "auto",
+    "avatarColor": "#a55eea",
+    "deskPosition": { "x": 3, "y": 1 },
+    "capabilities": ["tasarim", "gorsel", "logo", "illustrasyon"],
+    "tokenBudget": 1000000,
+    "baseUrl": "http://127.0.0.1:8188"
   },
   {
     "id": "mert",

@@ -6,6 +6,7 @@ import { WebSocket, WebSocketServer } from 'ws';
 import { Orchestrator } from './orchestrator/Orchestrator';
 import { AgentState } from './types';
 import { isOfflineOnly, offlineViolation } from './offline';
+import { comfyUiBaseUrl } from './providers';
 
 /** API anahtarini asla istemciye gondermez; yerine sadece tanimli olup olmadigini isaretler. */
 function redactAgent(agent: AgentState) {
@@ -74,6 +75,48 @@ wss.on('connection', (ws, req) => {
 
 app.get('/api/status', (_req, res) => {
   res.json({ offlineOnly: isOfflineOnly() });
+});
+
+/**
+ * ComfyUI'nin urettigi gorselleri tarayiciya aktarir. Hedef adres istekten
+ * degil, sunucudaki ComfyUI ajaninin ayarindan alinir - boylece bu ucun
+ * baska bir adrese yonlendirilmesi mumkun degildir.
+ */
+app.get('/api/comfy-image', async (req, res) => {
+  const filename = String(req.query.filename ?? '');
+  const subfolder = String(req.query.subfolder ?? '');
+  const type = String(req.query.type ?? 'output');
+
+  if (!filename || filename.includes('..') || /[\\/]/.test(filename)) {
+    res.status(400).json({ error: 'Gecersiz dosya adi' });
+    return;
+  }
+
+  const comfyAgent = orchestrator.listAgents().find((a) => a.provider === 'comfyui');
+  const base = comfyUiBaseUrl(comfyAgent?.baseUrl);
+
+  const violation = offlineViolation('comfyui', comfyAgent?.baseUrl);
+  if (violation) {
+    res.status(403).json({ error: violation });
+    return;
+  }
+
+  const target =
+    `${base.replace(/\/$/, '')}/view?filename=${encodeURIComponent(filename)}` +
+    `&subfolder=${encodeURIComponent(subfolder)}&type=${encodeURIComponent(type)}`;
+
+  try {
+    const upstream = await fetch(target);
+    if (!upstream.ok) {
+      res.status(upstream.status).json({ error: `ComfyUI gorseli dondurmedi (${upstream.status})` });
+      return;
+    }
+    res.set('Content-Type', upstream.headers.get('content-type') ?? 'image/png');
+    res.set('Cache-Control', 'public, max-age=31536000, immutable');
+    res.send(Buffer.from(await upstream.arrayBuffer()));
+  } catch (err) {
+    res.status(502).json({ error: err instanceof Error ? err.message : String(err) });
+  }
 });
 
 app.get('/api/agents', (_req, res) => {

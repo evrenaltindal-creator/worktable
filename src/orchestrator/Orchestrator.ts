@@ -165,7 +165,7 @@ export class Orchestrator {
     task.updatedAt = Date.now();
   }
 
-  private addAgentMessage(task: Task, agent: AgentState, content: string) {
+  private addAgentMessage(task: Task, agent: AgentState, content: string, images?: string[]) {
     const msg: Message = {
       id: randomUUID(),
       taskId: task.id,
@@ -174,6 +174,7 @@ export class Orchestrator {
       authorName: agent.name,
       content,
       createdAt: Date.now(),
+      ...(images && images.length > 0 ? { images } : {}),
     };
     task.messages.push(msg);
     task.updatedAt = Date.now();
@@ -226,24 +227,30 @@ export class Orchestrator {
 
     try {
       const provider = getProvider(agent);
-      const history = task.messages
-        .filter((m) => m.authorType !== 'system')
-        .map((m) => ({
-          role: (m.authorType === 'user' ? 'user' : 'assistant') as 'user' | 'assistant',
-          content: `${m.authorName}: ${m.content}`,
-        }));
 
       const systemPrompt = `Sen ${agent.name} adinda bir ${agent.role}sin. Yetkinliklerin: ${agent.capabilities.join(
         ', ',
       )}. Sanal bir ofiste diger yapay zeka calisma arkadaslarinla birlikte kullanicinin projeleri uzerinde calisiyorsun. Kisa, net ve uygulanabilir sekilde katki ver.`;
 
-      const result = await provider.complete(
-        { systemPrompt, messages: [...history, { role: 'user', content: prompt }] },
-        agent.model,
-      );
+      // Gorsel ureten saglayicilar (ComfyUI) sohbet gecmisiyle calismaz;
+      // onlara tartisma yonergesi yerine dogrudan gorsel brief'i verilir.
+      let messages;
+      if (provider.kind === 'image') {
+        messages = [{ role: 'user' as const, content: `${task.title}. ${task.description}` }];
+      } else {
+        const history = task.messages
+          .filter((m) => m.authorType !== 'system')
+          .map((m) => ({
+            role: (m.authorType === 'user' ? 'user' : 'assistant') as 'user' | 'assistant',
+            content: `${m.authorName}: ${m.content}`,
+          }));
+        messages = [...history, { role: 'user' as const, content: prompt }];
+      }
+
+      const result = await provider.complete({ systemPrompt, messages }, agent.model);
 
       agent.tokensUsed += result.inputTokens + result.outputTokens;
-      this.addAgentMessage(task, agent, result.content);
+      this.addAgentMessage(task, agent, result.content, result.images);
       this.emit('task_updated', task);
 
       agent.status = this.usageRatio(agent) >= HANDOFF_THRESHOLD ? 'quota_low' : 'idle';

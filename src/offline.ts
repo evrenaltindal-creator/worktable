@@ -50,8 +50,12 @@ export function offlineViolation(provider: string, baseUrl: string | undefined):
     return `Cevrimdisi mod acik: "${provider}" bulut saglayicisi verilerinizi internete gonderecegi icin engellendi. Yerel bir model (ollama) kullanin veya .env dosyasina OFFLINE_ONLY=false yazin.`;
   }
 
-  if (provider === 'ollama') {
-    const url = baseUrl || process.env.OLLAMA_BASE_URL || 'http://localhost:11434';
+  if (provider === 'ollama' || provider === 'comfyui') {
+    const fallback =
+      provider === 'ollama'
+        ? process.env.OLLAMA_BASE_URL || 'http://localhost:11434'
+        : process.env.COMFYUI_BASE_URL || 'http://127.0.0.1:8188';
+    const url = baseUrl || fallback;
     if (!isLocalAddress(url)) {
       return `Cevrimdisi mod acik: "${url}" adresi bu bilgisayarda veya yerel aginizda degil, bu yuzden engellendi.`;
     }

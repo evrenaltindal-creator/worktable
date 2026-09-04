@@ -85,7 +85,8 @@ function renderTaskDetail() {
 
   const messagesHtml = task.messages
     .map(
-      (m) => `<div class="msg ${m.authorType}"><span class="author">${m.authorName}</span>${escapeHtml(m.content)}</div>`,
+      (m) =>
+        `<div class="msg ${m.authorType}"><span class="author">${escapeHtml(m.authorName)}</span>${escapeHtml(m.content)}${renderMessageImages(m)}</div>`,
     )
     .join('');
 
@@ -131,6 +132,20 @@ function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+// ComfyUI gibi gorsel ureten ajanlarin resimleri. Yalnizca kendi sunucumuzun
+// gorsel ucundan gelen adresler gosterilir.
+function renderMessageImages(msg) {
+  if (!Array.isArray(msg.images) || msg.images.length === 0) return '';
+  return msg.images
+    .filter((src) => typeof src === 'string' && src.startsWith('/api/comfy-image?'))
+    .map((src) => {
+      const url = TOKEN ? `${src}&token=${encodeURIComponent(TOKEN)}` : src;
+      const safe = escapeHtml(url);
+      return `<a href="${safe}" target="_blank" rel="noopener"><img class="msg-image" src="${safe}" alt="Üretilen tasarım" loading="lazy"></a>`;
+    })
+    .join('');
 }
 
 function upsertTask(task) {

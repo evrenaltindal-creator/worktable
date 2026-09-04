@@ -1,6 +1,6 @@
 export type AgentStatus = 'idle' | 'working' | 'discussing' | 'quota_low' | 'error';
 
-export type ProviderName = 'anthropic' | 'openai' | 'ollama' | 'mock';
+export type ProviderName = 'anthropic' | 'openai' | 'ollama' | 'comfyui' | 'mock';
 
 export interface AgentConfig {
   id: string;
@@ -34,6 +34,8 @@ export interface Message {
   authorName: string;
   content: string;
   createdAt: number;
+  /** Gorsel ureten ajanlarin (orn. ComfyUI) urettigi resimlerin adresleri. */
+  images?: string[];
 }
 
 export type TaskStatus =
