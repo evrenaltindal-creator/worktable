@@ -98,6 +98,28 @@ istege bagli guncelleme (`AI-Ofis-Guncelle.bat`).
 Bulut modellerini bilerek kullanmak isterseniz `.env` dosyasina
 `OFFLINE_ONLY=false` yazip sunucuyu yeniden baslatin.
 
+## Piksel ofis (Ofis ekrani)
+
+Ofis ekrani bir canvas uzerine cizilen piksel bir ofistir
+(`public/office.js`):
+
+- Her ajanin kendi masasi, monitoru ve klavyesi vardir.
+- Ajan **calisirken** monitoru yanar, kollari klavyede hareket eder ve
+  basinin ustunde yanip sonen uc nokta cikar.
+- Bir gorev uzerinde **tartisirken** ilgili ajanlar masalarindan kalkip
+  toplanti masasina yururler; is bitince masalarina donerler.
+- **Ulasilamayan** ya da **kotasi biten** ajanin basinda uyari balonu belirir.
+- Bir karaktere tiklayinca altta o ajanin rolu, durumu, modeli ve token
+  kullanimi yazar.
+
+Karakterler kod ile cizilir - disaridan gorsel dosyasi, indirme veya
+lisans gerektirmez. Masa yerlesimi ajanin `deskPosition` degerinden gelir
+(Yonetim ekranindan degistirilebilir).
+
+Fikir icin ilham: [pixel-agents](https://github.com/pixel-agents-hq/pixel-agents)
+(MIT) - kodu veya gorselleri kullanilmadi, yalnizca "ajanlari masa basinda
+calisan karakterler olarak gosterme" fikri alindi.
+
 ## Yonetim (admin) ekrani
 
 `http://localhost:3000/admin.html` uzerinden ofisin tum yonetimi tek ekrandan

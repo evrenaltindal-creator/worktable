@@ -32,30 +32,27 @@ async function api(path, options = {}) {
   return res.json();
 }
 
-function initials(name) {
-  return name.slice(0, 2).toUpperCase();
+let pixelOffice = null;
+
+function setupOffice() {
+  const canvas = document.getElementById('officeCanvas');
+  if (!canvas || typeof PixelOffice === 'undefined') return;
+
+  pixelOffice = new PixelOffice(canvas);
+  pixelOffice.onAgentClick = (agent) => {
+    const ratio = agent.tokenBudget ? Math.round((agent.tokensUsed / agent.tokenBudget) * 100) : 0;
+    const hint = document.getElementById('officeHint');
+    if (hint) {
+      hint.textContent =
+        `${agent.name} — ${agent.role} · ${STATUS_LABEL[agent.status] || agent.status} · ` +
+        `${agent.model} · token: %${ratio}`;
+    }
+  };
+  pixelOffice.start();
 }
 
 function renderOffice() {
-  const office = document.getElementById('office');
-  office.innerHTML = '';
-  for (const agent of state.agents) {
-    const ratio = agent.tokenBudget ? agent.tokensUsed / agent.tokenBudget : 0;
-    const barClass = ratio > 0.9 ? 'danger' : ratio > 0.6 ? 'warn' : '';
-
-    const desk = document.createElement('div');
-    desk.className = 'desk';
-    desk.style.gridColumn = String(agent.deskPosition.x);
-    desk.style.gridRow = String(agent.deskPosition.y);
-    desk.innerHTML = `
-      <div class="avatar" style="background:${agent.avatarColor}">${initials(agent.name)}</div>
-      <div class="name">${agent.name}</div>
-      <div class="role">${agent.role}</div>
-      <span class="status-badge status-${agent.status}">${STATUS_LABEL[agent.status] || agent.status}</span>
-      <div class="token-bar"><div class="token-bar-fill ${barClass}" style="width:${Math.min(100, ratio * 100)}%"></div></div>
-    `;
-    office.appendChild(desk);
-  }
+  if (pixelOffice) pixelOffice.setState(state.agents, state.tasks);
 }
 
 function renderTaskList() {
@@ -237,6 +234,7 @@ function setupNewProjectDialog() {
 }
 
 async function init() {
+  setupOffice();
   try {
     const [agents, tasks] = await Promise.all([api('/api/agents'), api('/api/tasks')]);
     state.agents = agents;

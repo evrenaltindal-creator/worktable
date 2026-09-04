@@ -19,7 +19,10 @@
     </header>
 
     <main>
-      <section id="office" aria-label="Ofis"></section>
+      <section id="office" aria-label="Ofis">
+        <canvas id="officeCanvas" aria-label="Ajanların çalıştığı piksel ofis"></canvas>
+        <p id="officeHint" class="office-hint">Bir karaktere tıklayarak o ajanın bilgilerini görebilirsiniz.</p>
+      </section>
 
       <aside id="sidebar">
         <h2>Projeler</h2>
@@ -51,6 +54,7 @@
     </dialog>
   </div>
 
+  <script src="office.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
