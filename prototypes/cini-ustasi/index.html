@@ -1,0 +1,1469 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Çini Ustası</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Yeseva+One&display=swap">
+<style>
+/* Düzen: tek ekranlık oyun sütunu (skor, tahta + tepsi, güçlendiriciler, banner); geniş ekranda sağda "Reklam akışı" paneli */
+:root{
+  --bg:#EAF0F5;
+  --bg-dot:#D2DDE7;
+  --surface:#FFFFFF;
+  --surface-2:#F2F6FA;
+  --ink:#13213A;
+  --muted:#56667C;
+  --line:#D2DCE5;
+  --frame:#1C3F7A;
+  --frame-ink:#DCE7F7;
+  --field:#F8FBFD;
+  --well:#E1E9F0;
+  --primary:#1F4FA0;
+  --on-primary:#FFFFFF;
+  --ad:#E2A532;
+  --on-ad:#2B1C00;
+  --ad-ink:#8F6209;
+  --ok-ink:#2B7A4B;
+  --gold:#C99419;
+  --danger:#B93A29;
+  --scrim:rgba(8,14,26,.48);
+  --t0:#2457B3; --t1:#13909A; --t2:#C33E2C; --t3:#37844D; --t4:#D6961C;
+  --shadow:0 1px 2px rgba(19,33,58,.08), 0 10px 28px rgba(19,33,58,.10);
+  /* reklam simülasyonu bilerek tek temalı: reklamlar oyunun kendi dünyasının dışında durur */
+  --adsim-scrim:rgba(5,9,17,.94);
+  --adsim-ink:#F1F4F9;
+  --adsim-a:#1B2B49;
+  --adsim-b:#15233D;
+  --font-display:"Yeseva One", "Iowan Old Style", Georgia, serif;
+  --font-ui:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0B1321; --bg-dot:#152238; --surface:#121D31; --surface-2:#17243B; --ink:#E6EDF6; --muted:#93A4BA; --line:#24344F;
+    --frame:#2A538F; --frame-ink:#BFD3F2; --field:#0E192B; --well:#18263E;
+    --primary:#5C8BDD; --on-primary:#06101F; --ad:#E8B04A; --on-ad:#231700; --ad-ink:#E8B04A; --ok-ink:#6CC08A;
+    --gold:#E2B13E; --danger:#E06650; --scrim:rgba(2,5,10,.62);
+    --t0:#3A70D0; --t1:#1FA5AE; --t2:#D6533F; --t3:#47A061; --t4:#E0A32C;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.35);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0B1321; --bg-dot:#152238; --surface:#121D31; --surface-2:#17243B; --ink:#E6EDF6; --muted:#93A4BA; --line:#24344F;
+  --frame:#2A538F; --frame-ink:#BFD3F2; --field:#0E192B; --well:#18263E;
+  --primary:#5C8BDD; --on-primary:#06101F; --ad:#E8B04A; --on-ad:#231700; --ad-ink:#E8B04A; --ok-ink:#6CC08A;
+  --gold:#E2B13E; --danger:#E06650; --scrim:rgba(2,5,10,.62);
+  --t0:#3A70D0; --t1:#1FA5AE; --t2:#D6533F; --t3:#47A061; --t4:#E0A32C;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+
+[hidden]{display:none !important}
+html{height:100%;box-sizing:border-box}
+*,*::before,*::after{box-sizing:inherit}
+body{height:100%;margin:0;overflow:hidden;background-color:var(--bg);background-image:radial-gradient(var(--bg-dot) 1.2px, transparent 1.7px);background-size:24px 24px;color:var(--ink);font-family:var(--font-ui);-webkit-tap-highlight-color:transparent}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.app{height:100%;display:flex;justify-content:center;gap:24px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:8px 0}
+.game{flex:1 1 auto;max-width:460px;min-width:0;min-height:0;display:flex;flex-direction:column}
+
+/* Üst bar */
+.hud{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:1.3rem;line-height:1}
+.brand-mark{width:22px;height:22px;fill:var(--frame)}
+.hud-actions{display:flex;align-items:center;gap:6px}
+.coin-pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px 0 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:800;font-variant-numeric:tabular-nums}
+.coin-dot{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 32%, #FBE9AE 0 22%, var(--gold) 62%);box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.14)}
+.icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;padding:0}
+.icon-btn svg{width:20px;height:20px}
+.ico{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Skor */
+.scoreboard{display:grid;justify-items:center;gap:4px;padding-block:2px 6px}
+.best{font-size:.7rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
+.best b{color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.score{font-family:var(--font-display);font-size:clamp(2.3rem, 9vw, 3.1rem);line-height:1;font-variant-numeric:tabular-nums}
+.streak{height:24px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:999px;font-size:.78rem;font-weight:800;color:var(--on-primary);background:transparent}
+.streak.show{background:var(--primary)}
+.streak .dots{display:inline-flex;gap:3px}
+.streak .dots i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.3}
+.streak .dots i.on{opacity:1}
+
+/* Sahne */
+.stage{flex:1 1 auto;min-height:0;position:relative;display:grid;place-items:center}
+#board{display:block;touch-action:none;user-select:none;-webkit-user-select:none;border-radius:14px}
+#board:focus-visible{outline:2px solid var(--primary);outline-offset:4px}
+.toast{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:5;max-width:calc(100% - 16px);display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;background:var(--ink);color:var(--bg);font-size:.82rem;font-weight:600;box-shadow:var(--shadow);text-align:center}
+.toast:has(.toast-btn:not([hidden])){padding-right:6px}
+.toast-btn{border:0;border-radius:999px;background:var(--bg);color:var(--ink);font-weight:800;font-size:.78rem;padding:6px 12px;white-space:nowrap}
+
+/* Güçlendiriciler */
+.boosters{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding-block:8px}
+.booster{position:relative;height:52px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:700;font-size:.9rem;padding:0 8px}
+.booster svg{width:20px;height:20px;flex:none}
+.booster[aria-pressed="true"]{border-color:var(--primary);box-shadow:inset 0 0 0 2px var(--primary)}
+.count{position:absolute;top:-7px;right:-7px;min-width:24px;height:24px;padding:0 6px;border-radius:12px;display:grid;place-items:center;font-size:.75rem;font-weight:800;background:var(--primary);color:var(--on-primary);font-variant-numeric:tabular-nums}
+.count.ad{background:var(--ad);color:var(--on-ad)}
+.count svg{width:10px;height:10px;fill:currentColor}
+
+/* Banner */
+.banner{height:50px;flex:none;margin-bottom:8px;border-radius:10px;border:1px dashed var(--line);background:var(--surface-2);color:var(--muted);display:flex;align-items:center;justify-content:center;gap:8px;font-size:.76rem;padding:0 10px;text-align:center}
+.ad-chip{display:inline-block;padding:2px 7px;border-radius:5px;background:var(--ad);color:var(--on-ad);font-size:.64rem;font-weight:800;letter-spacing:.08em;white-space:nowrap}
+
+/* Panel */
+.panel{display:none;flex-direction:column;gap:14px;min-width:0;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);overflow:auto}
+.panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.panel h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:1.35rem;text-wrap:balance}
+.panel-sub{margin:4px 0 0;font-size:.78rem;color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metric{display:grid;gap:2px;padding:10px;border-radius:12px;background:var(--surface-2)}
+.m-label{font-size:.66rem;letter-spacing:.12em;color:var(--muted);font-weight:700}
+.metric b{font-size:1.35rem;font-weight:800;font-variant-numeric:tabular-nums}
+.m-sub{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.ad-status{display:flex;align-items:center;gap:8px;font-size:.8rem;padding:9px 10px;border-radius:10px;border:1px solid var(--line)}
+.ad-status .dot{width:8px;height:8px;border-radius:50%;flex:none;background:var(--ok-ink)}
+.ad-status.blocked .dot{background:var(--muted)}
+.ad-status span:last-child{margin-left:auto;color:var(--muted);white-space:nowrap}
+.rev{display:grid;grid-template-columns:1fr 1fr;gap:10px 12px;margin:0}
+.rev div{min-width:0}
+.rev dt{font-size:.72rem;color:var(--muted)}
+.rev dd{margin:2px 0 0;font-weight:800;font-variant-numeric:tabular-nums}
+.note{margin:0;font-size:.75rem;line-height:1.5;color:var(--muted)}
+details{border-top:1px solid var(--line);padding-top:10px}
+summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
+.form{display:grid;grid-template-columns:minmax(0,1fr) 84px;gap:8px 10px;align-items:center;margin-top:10px}
+.form label{font-size:.8rem;line-height:1.3}
+.form input{height:34px;width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:0 8px;font-variant-numeric:tabular-nums}
+.check{display:flex;align-items:center;gap:8px;font-size:.82rem;margin-top:10px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.tool{height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);font-size:.78rem;font-weight:700;padding:0 6px}
+.log-wrap{border-top:1px solid var(--line);padding-top:10px;display:grid;gap:8px}
+.log-wrap h3{margin:0;font-size:.88rem}
+.log{list-style:none;margin:0;padding:0;font-family:var(--font-mono);font-size:.7rem}
+.log li{display:grid;grid-template-columns:56px 1fr;gap:1px 8px;padding:6px 0;border-bottom:1px solid var(--line)}
+.log time{color:var(--muted);font-variant-numeric:tabular-nums}
+.log code{font-weight:700;overflow-wrap:anywhere}
+.log li.is-ad code{color:var(--ad-ink)}
+.log li.is-iap code{color:var(--ok-ink)}
+.log .params{grid-column:2;color:var(--muted);overflow-wrap:anywhere}
+.log li.log-empty{display:block;color:var(--muted);font-family:var(--font-ui);font-size:.78rem}
+
+@media (min-width:980px){
+  .panel{display:flex;flex:0 0 350px;margin-block:4px 16px}
+  .only-narrow{display:none !important}
+}
+@media (max-width:979.98px){
+  .panel.open{display:flex;position:fixed;left:0;right:0;bottom:0;max-height:84%;z-index:60;border-radius:20px 20px 0 0;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-bottom:calc(16px + env(safe-area-inset-bottom, 0px))}
+}
+.sheet-scrim{position:fixed;inset:0;z-index:55;background:var(--scrim)}
+
+/* Pencere */
+.backdrop{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:var(--scrim);padding:16px}
+.dialog{width:min(360px,100%);display:grid;gap:10px;text-align:center;background:var(--surface);color:var(--ink);border-radius:22px;padding:24px 20px 18px;box-shadow:var(--shadow)}
+.dialog h2{margin:0;font-family:var(--font-display);font-weight:400;font-size:1.65rem;line-height:1.15;text-wrap:balance}
+.dialog-body p{margin:0;line-height:1.5}
+.dialog-body .big{font-family:var(--font-display);font-size:2.8rem;line-height:1.1;font-variant-numeric:tabular-nums;margin-block:4px}
+.dialog-body .sub{color:var(--muted);font-size:.86rem}
+.actions{display:grid;gap:8px;margin-top:8px}
+.btn{height:48px;border-radius:14px;border:0;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 16px;font-weight:800;font-size:.98rem}
+.btn svg{width:14px;height:14px;fill:currentColor}
+.btn-primary{background:var(--primary);color:var(--on-primary)}
+.btn-ad{background:var(--ad);color:var(--on-ad)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+
+/* Reklam simülasyonu */
+.adsim{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:var(--adsim-scrim);padding:16px}
+.adsim-card{width:min(380px,100%);display:grid;gap:12px;color:var(--adsim-ink)}
+.adsim-top{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.78rem}
+.adsim-top code{font-family:var(--font-mono)}
+.adsim-creative{height:min(44vh,400px);border-radius:18px;background:repeating-linear-gradient(135deg, var(--adsim-a) 0 22px, var(--adsim-b) 22px 44px);display:grid;align-content:center;justify-items:center;gap:10px;text-align:center;padding:16px}
+.adsim-count{font-family:var(--font-display);font-size:4.6rem;line-height:1;font-variant-numeric:tabular-nums}
+.adsim-label{font-size:.85rem;opacity:.8}
+.adsim-bar{height:4px;border-radius:2px;overflow:hidden;background:rgba(255,255,255,.16)}
+.adsim-bar span{display:block;height:100%;background:var(--ad);transform-origin:left center;transform:scaleX(0)}
+.adsim-note{margin:0;font-size:.8rem;line-height:1.5;opacity:.85}
+.adsim-actions{display:grid;gap:8px}
+.adsim .btn-ghost{color:var(--adsim-ink);border-color:rgba(255,255,255,.25)}
+
+@media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
+</style>
+
+<div class="app" lang="tr">
+  <main class="game" aria-label="Çini Ustası">
+    <header class="hud">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg>
+        Çini Ustası
+      </div>
+      <div class="hud-actions">
+        <span class="coin-pill" title="Altın"><span class="coin-dot" aria-hidden="true"></span><span id="coins">0</span><span class="sr"> altın</span></span>
+        <button class="icon-btn" id="shopBtn" aria-label="Mağaza"><svg class="ico" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg></button>
+        <button class="icon-btn only-narrow" id="panelBtn" aria-label="Reklam akışı paneli"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20v-8M12 20V4M19 20v-5"/></svg></button>
+      </div>
+    </header>
+
+    <div class="scoreboard">
+      <div class="best">EN İYİ <b id="best">0</b></div>
+      <div class="score" id="score">0</div>
+      <div class="streak" id="streak"></div>
+    </div>
+
+    <div class="stage" id="stage">
+      <canvas id="board" tabindex="0" aria-label="Oyun tahtası. Klavye: 1, 2 ya da 3 ile parça seç, ok tuşlarıyla taşı, Enter ile yerleştir, Esc ile vazgeç."></canvas>
+      <div class="toast" id="toast" role="status" hidden><span id="toastText"></span><button class="toast-btn" id="toastBtn" hidden></button></div>
+    </div>
+
+    <div class="boosters" role="group" aria-label="Güçlendiriciler">
+      <button class="booster" id="b-rotate" data-kind="rotate" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>
+        <span>Döndür</span><span class="count" id="c-rotate"></span>
+      </button>
+      <button class="booster" id="b-refresh" data-kind="refresh" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M4 8h13M14 4l4 4-4 4"/><path d="M20 16H7M10 12l-4 4 4 4"/></svg>
+        <span>Yenile</span><span class="count" id="c-refresh"></span>
+      </button>
+      <button class="booster" id="b-hammer" data-kind="hammer" aria-pressed="false">
+        <svg class="ico" viewBox="0 0 24 24"><path d="M13.5 4.5l6 6-2.5 2.5-6-6z"/><path d="M12.2 9.8L4.5 17.5a1.8 1.8 0 0 0 2.5 2.5l7.7-7.7"/></svg>
+        <span>Çekiç</span><span class="count" id="c-hammer"></span>
+      </button>
+    </div>
+
+    <div class="banner" id="banner"><span class="ad-chip">REKLAM</span><span>Banner alanı · 320×50 · 30 sn'de bir yenilenir</span></div>
+  </main>
+
+  <aside class="panel" id="panel" aria-labelledby="panelTitle">
+    <div class="panel-head">
+      <div>
+        <h2 id="panelTitle">Reklam akışı</h2>
+        <p class="panel-sub">Simülasyon. Gerçek reklam gösterilmez, ödeme alınmaz.</p>
+      </div>
+      <button class="icon-btn only-narrow" id="panelClose" aria-label="Paneli kapat"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+
+    <div class="metrics">
+      <div class="metric"><span class="m-label">ÖDÜLLÜ</span><b id="mRew">0</b><span class="m-sub" id="mRewRev">$0,000</span></div>
+      <div class="metric"><span class="m-label">GEÇİŞ</span><b id="mInt">0</b><span class="m-sub" id="mIntRev">$0,000</span></div>
+      <div class="metric"><span class="m-label">BANNER</span><b id="mBan">0</b><span class="m-sub" id="mBanRev">$0,000</span></div>
+    </div>
+
+    <div class="ad-status" id="adStatus"><span class="dot"></span><span id="adStatusText">Geçiş reklamı hazır</span><span id="gamesDone"></span></div>
+
+    <dl class="rev">
+      <div><dt>Bu oturumun geliri</dt><dd id="mTotal">$0,000</dd></div>
+      <div><dt>Oturum süresi</dt><dd id="mTime">0:00</dd></div>
+      <div><dt>Dakika başına</dt><dd id="mPerMin">—</dd></div>
+      <div><dt>1.000 oyuncu × 15 dk/gün</dt><dd id="mDaily">—</dd></div>
+    </dl>
+    <p class="note">Gelir, aşağıdaki eCPM varsayımlarıyla hesaplanır (1.000 gösterim başına $). Gerçek değer ülkeye, reklam ağına ve mevsime göre değişir. Canlıda MAX ya da LevelPlay panelindeki değerleri kullanın.</p>
+
+    <details open>
+      <summary>Geçiş reklamı kuralları</summary>
+      <div class="form">
+        <label for="cfgMinGames">İlk geçiş reklamından önce bitmesi gereken oyun</label><input id="cfgMinGames" type="number" min="0" max="50" step="1">
+        <label for="cfgCooldown">İki geçiş reklamı arası en az (sn)</label><input id="cfgCooldown" type="number" min="0" max="900" step="5">
+        <label for="cfgGrace">Ödüllü reklamdan sonra geçiş yok (sn)</label><input id="cfgGrace" type="number" min="0" max="900" step="5">
+        <label for="cfgMid">Oyun içi mola reklamı (sn, 0 = kapalı)</label><input id="cfgMid" type="number" min="0" max="1800" step="15">
+      </div>
+    </details>
+
+    <details>
+      <summary>eCPM varsayımları ($)</summary>
+      <div class="form">
+        <label for="ecpmRew">Ödüllü video</label><input id="ecpmRew" type="number" min="0" step="0.5">
+        <label for="ecpmInt">Geçiş reklamı</label><input id="ecpmInt" type="number" min="0" step="0.5">
+        <label for="ecpmBan">Banner</label><input id="ecpmBan" type="number" min="0" step="0.05">
+      </div>
+    </details>
+
+    <details>
+      <summary>Test araçları</summary>
+      <label class="check"><input type="checkbox" id="cfgFast"> Hızlı reklam (1 sn)</label>
+      <div class="tools">
+        <button class="tool" id="tCoins">+100 altın</button>
+        <button class="tool" id="tFill">Tahtayı doldur</button>
+        <button class="tool" id="tEnd">Oyunu bitir</button>
+        <button class="tool" id="tNoAds">Reklamsızı sıfırla</button>
+        <button class="tool" id="tGames">Oyun sayacını sıfırla</button>
+        <button class="tool" id="tStats">İstatistikleri sıfırla</button>
+      </div>
+    </details>
+
+    <section class="log-wrap" aria-labelledby="logTitle">
+      <h3 id="logTitle">Olay günlüğü</h3>
+      <p class="note">Bu olaylar canlıda analitik araca (GameAnalytics, Firebase) gönderilir.</p>
+      <ol class="log" id="log"></ol>
+    </section>
+    <p class="note">Klavye: 1–3 parça seçer, oklar taşır, Enter bırakır, Esc vazgeçer.</p>
+  </aside>
+</div>
+
+<div class="sheet-scrim" id="sheetScrim" hidden></div>
+
+<div class="backdrop" id="modal" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 id="modalTitle"></h2>
+    <div class="dialog-body" id="modalBody"></div>
+    <div class="actions" id="modalActions"></div>
+  </div>
+</div>
+
+<div class="adsim" id="adsim" hidden>
+  <div class="adsim-card" role="dialog" aria-modal="true" aria-labelledby="adTag">
+    <div class="adsim-top"><span class="ad-chip" id="adTag">ÖDÜLLÜ REKLAM</span><span>yer: <code id="adPlace"></code></span></div>
+    <div class="adsim-creative">
+      <span class="adsim-count" id="adCount">5</span>
+      <span class="adsim-label">Reklam videosu burada oynar</span>
+    </div>
+    <div class="adsim-bar"><span id="adBar"></span></div>
+    <p class="adsim-note" id="adNote"></p>
+    <div class="adsim-actions">
+      <button class="btn btn-ad" id="adClaim" hidden>Ödülü al</button>
+      <button class="btn btn-ghost" id="adClose">Kapat</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* =====================================================================
+   Çini Ustası — 8×8 blok yerleştirme prototipi
+   Bölümler: depolama · parça kataloğu · tahta matematiği · parça üretici ·
+   oyun durumu · reklam yöneticisi (simülasyon) · çizim · giriş · arayüz
+   ===================================================================== */
+
+const N = 8;
+const TRAY_SCALE = 0.64; // tepsideki parçaların tahtaya göre ölçeği (5'lik parçalar sığmak için biraz küçülür)
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $ = id => document.getElementById(id);
+
+/* ---------- Depolama: erişilemezse sessizce yok sayılır ---------- */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('cini.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('cini.' + k, JSON.stringify(v)); } catch (e) { /* yok say */ } }
+};
+
+/* ---------- Yardımcılar ---------- */
+const fmt = n => Math.round(n).toLocaleString('tr-TR');
+const usd = v => '$' + v.toFixed(3).replace('.', ',');
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const bits = x => { let n = 0; while (x) { x &= x - 1; n++; } return n; };
+const rnd = n => (Math.random() * n) | 0;
+const easeOut = t => 1 - (1 - t) * (1 - t);
+function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function weightedIndex(w) {
+  let s = 0; for (const x of w) s += x;
+  let t = Math.random() * s;
+  for (let i = 0; i < w.length; i++) { t -= w[i]; if (t <= 0) return i; }
+  return w.length - 1;
+}
+
+/* ---------- Parça kataloğu ----------
+   Her aile için "erken" ve "geç" ağırlık var. Skor arttıkça ağırlık geç
+   değere kayar: büyük parçalar sıklaşır, oyun zorlaşır. */
+const SHAPE_DEFS = [
+  ['nokta', 3, 1, ['#']],
+  ['ikili', 6, 3, ['##']],
+  ['üçlü', 6, 4, ['###']],
+  ['dörtlü', 4, 4, ['####']],
+  ['beşli', 2, 4, ['#####']],
+  ['kare2', 6, 4, ['##', '##']],
+  ['kare3', 1, 3, ['###', '###', '###']],
+  ['2x3', 2, 4, ['###', '###']],
+  ['köşe3', 6, 4, ['#.', '##']],
+  ['köşe5', 2, 4, ['#..', '#..', '###']],
+  ['T', 4, 4, ['###', '.#.']],
+  ['S', 3, 4, ['.##', '##.']],
+  ['Z', 3, 4, ['##.', '.##']],
+  ['L', 4, 4, ['#.', '#.', '##']],
+  ['J', 4, 4, ['.#', '.#', '##']]
+];
+function normalize(cells) {
+  let mr = Infinity, mc = Infinity;
+  for (const p of cells) { if (p[0] < mr) mr = p[0]; if (p[1] < mc) mc = p[1]; }
+  return cells
+    .map(p => p.length > 2 ? [p[0] - mr, p[1] - mc, p[2]] : [p[0] - mr, p[1] - mc])
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+}
+// 90° saat yönünde: (satır, sütun) -> (sütun, -satır)
+const rotateCells = cells => normalize(cells.map(p => p.length > 2 ? [p[1], -p[0], p[2]] : [p[1], -p[0]]));
+function withMasks(cells) {
+  let h = 0, w = 0;
+  for (const [r, c] of cells) { h = Math.max(h, r + 1); w = Math.max(w, c + 1); }
+  const rowMasks = new Array(h).fill(0);
+  for (const [r, c] of cells) rowMasks[r] |= 1 << c;
+  return { cells, w, h, rowMasks };
+}
+const CATALOG = [];
+for (const [family, early, late, rows] of SHAPE_DEFS) {
+  let cells = [];
+  rows.forEach((row, r) => [...row].forEach((ch, c) => { if (ch === '#') cells.push([r, c]); }));
+  cells = normalize(cells);
+  const seen = new Set(), variants = [];
+  for (let i = 0; i < 4; i++) {
+    const k = cells.map(p => p[0] + ',' + p[1]).join(';');
+    if (!seen.has(k)) { seen.add(k); variants.push(cells); }
+    cells = rotateCells(cells);
+  }
+  for (const v of variants) CATALOG.push({ family, early: early / variants.length, late: late / variants.length, ...withMasks(v) });
+}
+const byFamily = f => CATALOG.find(s => s.family === f);
+
+/* ---------- Tahta matematiği (satır başına 8 bitlik maske) ---------- */
+function masksOf(cells) {
+  const m = new Array(N).fill(0);
+  for (let i = 0; i < 64; i++) if (cells[i]) m[i >> 3] |= 1 << (i & 7);
+  return m;
+}
+function fits(m, s, r, c) {
+  if (r < 0 || c < 0 || r + s.h > N || c + s.w > N) return false;
+  for (let i = 0; i < s.h; i++) if (m[r + i] & (s.rowMasks[i] << c)) return false;
+  return true;
+}
+function fitsAnywhere(m, s) {
+  for (let r = 0; r <= N - s.h; r++) for (let c = 0; c <= N - s.w; c++) if (fits(m, s, r, c)) return true;
+  return false;
+}
+function placeMask(m, s, r, c) {
+  const o = m.slice();
+  for (let i = 0; i < s.h; i++) o[r + i] |= s.rowMasks[i] << c;
+  let colFull = 0xFF; const full = [];
+  for (let i = 0; i < N; i++) { colFull &= o[i]; if (o[i] === 0xFF) full.push(i); }
+  for (const i of full) o[i] = 0;
+  if (colFull) for (let i = 0; i < N; i++) o[i] &= ~colFull & 0xFF;
+  return { m: o, lines: full.length + bits(colFull) };
+}
+function makesLine(m, s) {
+  for (let r = 0; r <= N - s.h; r++) for (let c = 0; c <= N - s.w; c++)
+    if (fits(m, s, r, c) && placeMask(m, s, r, c).lines) return true;
+  return false;
+}
+// Üç parçanın herhangi bir sırayla tahtaya sığıp sığmadığını arar.
+// Arama bütçesi biterse iyimser davranır (kabul eder).
+function solvable(m, shapes, budget) {
+  if (!shapes.length) return true;
+  for (let s = 0; s < shapes.length; s++) {
+    const sh = shapes[s];
+    const rest = shapes.filter((_, i) => i !== s);
+    for (let r = 0; r <= N - sh.h; r++) for (let c = 0; c <= N - sh.w; c++) {
+      if (--budget.n < 0) return true;
+      if (fits(m, sh, r, c) && solvable(placeMask(m, sh, r, c).m, rest, budget)) return true;
+    }
+  }
+  return false;
+}
+
+/* ---------- Parça üretici ----------
+   1) Zorluk: skor 0 → 6.000 arasında ağırlıklar "erken"den "geç"e kayar.
+   2) Merhamet: tahta %50'den doluysa 1–3 hücrelik parçalar sıklaşır.
+   3) Yardım: tahta doldukça, satır tamamlayabilen bir parçanın gelme ihtimali artar.
+   4) Adalet: düşük skorda üçlünün tamamı mutlaka yerleşebilir. Skor arttıkça
+      bu garanti %70'e kadar gevşer; oyunu bitiren de bu boşluktur.          */
+const guaranteeChance = score => score < 1500 ? 1 : Math.max(0.7, 1 - (score - 1500) / 15000);
+function makePiece(shape) {
+  const cells = shape.cells.map(([r, c]) => [r, c, 0]);
+  if (Math.random() < 0.09) cells[rnd(cells.length)][2] = 1; // altın çini
+  return { ...withMasks(cells), color: rnd(5) };
+}
+function rotatePiece(p) { return { ...withMasks(rotateCells(p.cells)), color: p.color }; }
+function genTray(forceSolvable) {
+  const m = masksOf(G.cells);
+  const filled = m.reduce((a, x) => a + bits(x), 0) / 64;
+  const t = Math.min(1, G.score / 6000);
+  const mercy = filled > 0.5 ? 1 + (filled - 0.5) * 8 : 1;
+  const base = CATALOG.map(s => (s.early * (1 - t) + s.late * t) * (s.cells.length <= 3 ? mercy : 1));
+  const pHelp = Math.min(0.6, 0.12 + Math.max(0, filled - 0.35) * 1.2);
+  const mustSolve = forceSolvable || Math.random() < guaranteeChance(G.score);
+  let fallback = null;
+  for (let a = 0; a < 30; a++) {
+    const w = a < 12 ? base : base.map((x, i) => CATALOG[i].cells.length <= 3 ? x * 4 : x * 0.5);
+    const shapes = [];
+    if (Math.random() < pHelp) {
+      const idx = [];
+      CATALOG.forEach((s, i) => { if (makesLine(m, s)) idx.push(i); });
+      if (idx.length) shapes.push(CATALOG[idx[weightedIndex(idx.map(i => w[i]))]]);
+    }
+    while (shapes.length < 3) shapes.push(CATALOG[weightedIndex(w)]);
+    shuffle(shapes);
+    if (!shapes.some(s => fitsAnywhere(m, s))) continue;
+    if (!fallback) fallback = shapes;
+    if (!mustSolve || solvable(m, shapes, { n: 30000 })) return shapes.map(makePiece);
+  }
+  if (fallback) return fallback.map(makePiece);
+  const dot = byFamily('nokta');
+  return [dot, dot, dot].map(makePiece);
+}
+
+/* ---------- Kalıcı durum ---------- */
+const DEFAULT_CFG = { minGames: 2, cooldownSec: 90, graceSec: 45, midGameSec: 0, fastAds: false, ecpm: { rewarded: 16, interstitial: 9, banner: 0.4 } };
+const CFG = Object.assign({}, DEFAULT_CFG, store.get('cfg', {}));
+CFG.ecpm = Object.assign({}, DEFAULT_CFG.ecpm, CFG.ecpm || {});
+const M = Object.assign({ best: 0, coins: 60, removeAds: false, gamesCompleted: 0, seenTutorial: false }, store.get('meta', {}));
+M.boosters = Object.assign({ rotate: 2, refresh: 1, hammer: 1 }, M.boosters || {});
+const saveMeta = () => store.set('meta', M);
+const saveCfg = () => store.set('cfg', CFG);
+let G = null;
+const saveGame = () => { if (G) store.set('game', G); };
+
+/* ---------- Olay günlüğü (canlıda analitik SDK'sına gider) ---------- */
+let LOG = [];
+function track(name, params = {}) {
+  LOG.unshift({ t: Date.now(), name, params });
+  if (LOG.length > 60) LOG.pop();
+  // GERÇEK: GameAnalytics.NewDesignEvent(name) / FirebaseAnalytics.LogEvent(name, params)
+  renderLog();
+}
+
+/* ---------- Reklam yöneticisi (simülasyon) ----------
+   Gerçek SDK çağrılarının gideceği yerler yorumlarda işaretli. */
+const Ads = {
+  impr: { rewarded: 0, interstitial: 0, banner: 0 },
+  sessionStart: Date.now(),
+  lastInterstitialAt: Date.now(), // oturum açılışında da bekleme süresi işler
+  lastRewardedAt: 0,
+  showing: false,
+  blockReason() {
+    if (M.removeAds) return 'reklamsız sürüm';
+    if (M.gamesCompleted < CFG.minGames) return `ilk ${CFG.minGames} oyun bitmedi`;
+    const now = Date.now();
+    const cd = CFG.cooldownSec * 1000 - (now - this.lastInterstitialAt);
+    if (cd > 0) return `bekleme süresi, ${Math.ceil(cd / 1000)} sn`;
+    const gr = CFG.graceSec * 1000 - (now - this.lastRewardedAt);
+    if (this.lastRewardedAt && gr > 0) return `ödüllüden sonra, ${Math.ceil(gr / 1000)} sn`;
+    return null;
+  },
+  maybeInterstitial(placement) {
+    const reason = this.blockReason();
+    if (reason) { track('ad_interstitial_skipped', { yer: placement, neden: reason }); return Promise.resolve(false); }
+    // GERÇEK (AppLovin MAX): if (MaxSdk.IsInterstitialReady(id)) MaxSdk.ShowInterstitial(id, placement);
+    track('ad_interstitial_show', { yer: placement });
+    this.impr.interstitial++; renderPanel();
+    return simAd('interstitial', placement).then(() => {
+      this.lastInterstitialAt = Date.now();
+      track('ad_interstitial_closed', { yer: placement });
+      return true;
+    });
+  },
+  showRewarded(placement) {
+    // GERÇEK (AppLovin MAX): MaxSdk.ShowRewardedAd(id, placement); ödül OnAdReceivedRewardEvent ile gelir.
+    // Reklam hazır değilse (no fill) oyuncuya "Şu an reklam yok" denir; burada hep hazır sayılıyor.
+    track('ad_rewarded_show', { yer: placement });
+    this.impr.rewarded++; renderPanel();
+    return simAd('rewarded', placement).then(ok => {
+      this.lastRewardedAt = Date.now();
+      track(ok ? 'ad_rewarded_completed' : 'ad_rewarded_skipped', { yer: placement });
+      return ok;
+    });
+  }
+};
+
+function simAd(type, placement) {
+  return new Promise(resolve => {
+    Ads.showing = true;
+    drag = null; kb = null; dirty = true;
+    const el = $('adsim'), close = $('adClose'), claim = $('adClaim');
+    const rewarded = type === 'rewarded';
+    const dur = (CFG.fastAds ? 1 : rewarded ? 5 : 3) * 1000;
+    $('adTag').textContent = rewarded ? 'ÖDÜLLÜ REKLAM' : 'GEÇİŞ REKLAMI';
+    $('adPlace').textContent = placement;
+    $('adNote').textContent = rewarded
+      ? 'Canlıda 15–30 sn video. Oyuncu sonuna kadar izlerse ödülü alır, erken kapatırsa almaz.'
+      : 'Canlıda 5–15 sn. Kapatma düğmesi birkaç saniye sonra çıkar.';
+    claim.hidden = true;
+    close.hidden = !rewarded;
+    close.textContent = 'Kapat (ödül yok)';
+    el.hidden = false;
+    (rewarded ? close : el).focus?.();
+    const t0 = performance.now();
+    const tick = () => {
+      const left = Math.max(0, dur - (performance.now() - t0));
+      $('adCount').textContent = Math.ceil(left / 1000);
+      $('adBar').style.transform = `scaleX(${1 - left / dur})`;
+      if (left <= 0) {
+        clearInterval(timer);
+        if (rewarded) { close.hidden = true; claim.hidden = false; claim.focus(); }
+        else { close.hidden = false; close.textContent = 'Kapat ✕'; close.focus(); }
+      }
+    };
+    const timer = setInterval(tick, 100); tick();
+    const finish = ok => {
+      clearInterval(timer);
+      el.hidden = true; Ads.showing = false;
+      close.onclick = claim.onclick = null;
+      resolve(ok);
+    };
+    close.onclick = () => finish(!rewarded);
+    claim.onclick = () => finish(true);
+  });
+}
+
+/* ---------- Oyun durumu ---------- */
+function newGame() {
+  G = {
+    cells: new Array(64).fill(null), tray: [], score: 0, streak: 0, sinceClear: 0,
+    coinsGame: 0, reviveUsed: false, over: false, stuck: false, lines: 0,
+    startedAt: Date.now(), lastBreakAt: Date.now()
+  };
+  G.tray = genTray(true);
+  mode = null; kb = null; drag = null;
+  anims.length = 0; parts.length = 0; pops.length = 0; popIn.clear();
+  setModeUI();
+  hideToast();
+  track('game_start', { oyun_no: M.gamesCompleted + 1 });
+  updateHud(); saveGame(); dirty = true;
+  if (!M.seenTutorial) {
+    M.seenTutorial = true; saveMeta();
+    flashToast('Parçayı sürükleyip tahtaya bırak. Dolan satır ve sütun kırılır.', 5000);
+  }
+}
+
+function place(i, r, c) {
+  const p = G.tray[i];
+  if (!p || G.over || !fits(masksOf(G.cells), p, r, c)) return;
+  const now = performance.now();
+  for (const [dr, dc, g] of p.cells) {
+    const idx = (r + dr) * N + (c + dc);
+    G.cells[idx] = { c: p.color, g };
+    popIn.set(idx, now);
+  }
+  G.tray[i] = null;
+  let gain = p.cells.length;
+  const pr = r + p.h / 2, pc = c + p.w / 2;
+
+  const lines = [];
+  for (let k = 0; k < N; k++) {
+    let fr = true, fc = true;
+    for (let j = 0; j < N; j++) { if (!G.cells[k * N + j]) fr = false; if (!G.cells[j * N + k]) fc = false; }
+    if (fr) lines.push(Array.from({ length: N }, (_, j) => k * N + j));
+    if (fc) lines.push(Array.from({ length: N }, (_, j) => j * N + k));
+  }
+  const L = lines.length;
+  if (L) {
+    G.streak++; G.sinceClear = 0; G.lines += L;
+    const set = new Set(); lines.forEach(line => line.forEach(ix => set.add(ix)));
+    let mono = 0;
+    for (const line of lines) { const c0 = G.cells[line[0]].c; if (line.every(ix => G.cells[ix].c === c0)) mono++; }
+    let gold = 0; set.forEach(ix => { if (G.cells[ix].g) gold++; });
+    const pts = (set.size * 10 * L + mono * 100) * G.streak;
+    const coins = gold * 5 + mono * 3;
+    gain += pts; G.coinsGame += coins;
+    startClear([...set].map(ix => ({ idx: ix, color: G.cells[ix].c, g: G.cells[ix].g })), pr, pc);
+    set.forEach(ix => { G.cells[ix] = null; popIn.delete(ix); });
+    let o = 0;
+    popup('+' + fmt(pts), pc, pr, 'score', o++);
+    if (L >= 2) popup(L + ' çizgi', pc, pr, 'info', o++);
+    if (G.streak >= 2) popup('Seri ×' + G.streak, pc, pr, 'streak', o++);
+    if (mono) popup('Desen tamam!', pc, pr, 'info', o++);
+    if (coins) popup('+' + coins + ' altın', pc, pr, 'gold', o++);
+    if (G.cells.every(x => !x)) { gain += 500; popup('Duvar tertemiz! +500', 4, 4, 'streak', o++); }
+    track('line_clear', { cizgi: L, seri: G.streak, puan: pts, desen: mono, altin: coins });
+  } else {
+    G.sinceClear++;
+    if (G.sinceClear >= 3) G.streak = 0;
+  }
+  G.score += gain;
+
+  let wait = null;
+  if (G.tray.every(x => !x)) { G.tray = genTray(false); wait = maybeBreak(); }
+  updateHud(); saveGame(); dirty = true;
+  Promise.resolve(wait).then(checkStuck);
+}
+
+// Uzun oturumda üçlü yenilendiğinde "oyun içi mola" geçiş reklamı (varsayılan kapalı).
+function maybeBreak() {
+  if (!CFG.midGameSec) return null;
+  const since = Date.now() - Math.max(G.lastBreakAt, Ads.lastInterstitialAt);
+  if (since < CFG.midGameSec * 1000) return null;
+  G.lastBreakAt = Date.now();
+  return Ads.maybeInterstitial('oyun_ici_mola');
+}
+
+function checkStuck() {
+  if (!G || G.over) return;
+  const m = masksOf(G.cells);
+  const can = G.tray.some(p => p && fitsAnywhere(m, p));
+  if (can) { if (G.stuck) { G.stuck = false; hideToast(); saveGame(); } return; }
+  if (G.stuck) { showStuckBar(); return; }
+  G.stuck = true; saveGame();
+  track('no_moves', { puan: G.score });
+  setTimeout(offerContinue, REDUCED ? 80 : 650);
+}
+
+function offerContinue() {
+  if (!G || G.over || !G.stuck) return;
+  const hasBooster = M.boosters.rotate > 0 || M.boosters.refresh > 0 || M.boosters.hammer > 0;
+  const actions = [];
+  if (!G.reviveUsed) actions.push({
+    label: 'Reklam izle, devam et', kind: 'ad',
+    onClick: async () => { closeModal(); const ok = await Ads.showRewarded('devam_et'); if (ok) revive(); else offerContinue(); }
+  });
+  if (hasBooster) actions.push({ label: 'Güçlendirici kullan', kind: G.reviveUsed ? 'primary' : 'ghost', onClick: () => { closeModal(); showStuckBar(); } });
+  actions.push({ label: 'Oyunu bitir', kind: 'ghost', onClick: () => { closeModal(); endGame(); } });
+  openModal({
+    title: 'Hamle kalmadı',
+    body: `<p class="big">${fmt(G.score)}</p><p class="sub">Alttaki parçaların hiçbiri tahtaya sığmıyor.${G.reviveUsed ? '' : ' Reklam izlersen en dolu 4×4 alan temizlenir ve sığan üç yeni parça gelir.'}</p>`,
+    actions, dismissible: false
+  });
+}
+
+function revive() {
+  G.reviveUsed = true; G.stuck = false;
+  let best = -1, br = 0, bc = 0;
+  for (let r = 0; r <= N - 4; r++) for (let c = 0; c <= N - 4; c++) {
+    let n = 0;
+    for (let dr = 0; dr < 4; dr++) for (let dc = 0; dc < 4; dc++) if (G.cells[(r + dr) * N + c + dc]) n++;
+    if (n > best) { best = n; br = r; bc = c; }
+  }
+  const list = [];
+  for (let dr = 0; dr < 4; dr++) for (let dc = 0; dc < 4; dc++) {
+    const ix = (br + dr) * N + bc + dc;
+    if (G.cells[ix]) { list.push({ idx: ix, color: G.cells[ix].c, g: G.cells[ix].g }); G.cells[ix] = null; }
+  }
+  startClear(list, br + 2, bc + 2);
+  G.tray = genTray(true);
+  popup('Devam!', bc + 2, br + 2, 'streak', 0);
+  track('revive', { temizlenen: list.length });
+  hideToast(); updateHud(); saveGame(); dirty = true;
+  checkStuck();
+}
+
+function endGame() {
+  if (!G || G.over) return;
+  closeModal();
+  G.over = true; G.stuck = false; mode = null; kb = null; drag = null; setModeUI(); hideToast();
+  const endCoins = Math.floor(G.score / 250);
+  const total = G.coinsGame + endCoins;
+  M.coins += total; M.gamesCompleted++;
+  const isBest = G.score > M.best;
+  if (isBest) M.best = G.score;
+  track('game_end', { puan: G.score, sure_sn: Math.round((Date.now() - G.startedAt) / 1000), cizgi: G.lines, altin: total, devam: G.reviveUsed ? 1 : 0 });
+  saveMeta(); saveGame(); updateHud(); dirty = true;
+  showResult(total, isBest, false);
+}
+
+function showResult(total, isBest, doubled) {
+  const actions = [];
+  if (total > 0) actions.push(doubled
+    ? { label: 'Altın 2 katına çıktı ✓', kind: 'ghost', disabled: true }
+    : { label: `Altını 2 katına çıkar (+${total})`, kind: 'ad', onClick: async () => {
+        closeModal();
+        const ok = await Ads.showRewarded('altin_2x');
+        if (ok) { M.coins += total; saveMeta(); updateHud(); track('reward_granted', { tur: 'altin_2x', miktar: total }); }
+        showResult(total, isBest, ok);
+      } });
+  actions.push({ label: 'Yeni oyun', kind: 'primary', onClick: async () => {
+    closeModal();
+    await Ads.maybeInterstitial('oyun_arasi');
+    newGame();
+  } });
+  openModal({
+    title: isBest ? 'Yeni rekor!' : 'Duvar doldu',
+    body: `<p class="big">${fmt(G.score)}</p><p class="sub">En iyi ${fmt(M.best)} · ${G.lines} çizgi · +${total} altın</p>`,
+    actions, dismissible: false
+  });
+}
+
+/* ---------- Güçlendiriciler ---------- */
+const BOOSTERS = {
+  rotate: { name: 'Döndür', price: 20, desc: 'Alttaki bir parçayı 90° çevirir.' },
+  refresh: { name: 'Yenile', price: 30, desc: 'Alttaki parçaların yerine sığan üç yeni parça getirir.' },
+  hammer: { name: 'Çekiç', price: 40, desc: 'Tahtada dokunduğun yerdeki 3×3 alanı kırar.' }
+};
+let mode = null; // 'rotate' | 'hammer' | null
+
+function useBooster(kind) {
+  if (!G || G.over || Ads.showing) return;
+  if (mode === kind) { mode = null; setModeUI(); return; }
+  if (M.boosters[kind] <= 0) { offerBooster(kind); return; }
+  if (kind === 'refresh') {
+    M.boosters.refresh--;
+    G.tray = genTray(true);
+    track('booster_use', { tur: 'yenile' });
+    mode = null; setModeUI();
+    saveMeta(); saveGame(); updateHud(); dirty = true;
+    checkStuck();
+    return;
+  }
+  mode = kind; kb = null; setModeUI();
+}
+
+function setModeUI() {
+  for (const k of Object.keys(BOOSTERS)) $('b-' + k).setAttribute('aria-pressed', String(mode === k));
+  if (mode === 'rotate') showToast('Döndürmek için alttaki bir parçaya dokun');
+  else if (mode === 'hammer') showToast('Kırmak için tahtada bir yere dokun (3×3)');
+  else if (G && G.stuck) showStuckBar();
+  else if (!toastTimer) hideToast();
+  dirty = true;
+}
+
+function offerBooster(kind) {
+  const b = BOOSTERS[kind];
+  openModal({
+    title: `${b.name} hakkın bitti`,
+    body: `<p>${b.desc}</p><p class="sub">Altının: ${fmt(M.coins)}</p>`,
+    actions: [
+      { label: 'Reklam izle, +1 hak', kind: 'ad', onClick: async () => {
+          closeModal();
+          const ok = await Ads.showRewarded('guclendirici_' + kind);
+          if (ok) { M.boosters[kind]++; saveMeta(); updateHud(); track('reward_granted', { tur: kind, miktar: 1 }); flashToast(`${b.name} +1`); }
+        } },
+      { label: `${b.price} altınla al`, kind: 'primary', disabled: M.coins < b.price, onClick: () => {
+          M.coins -= b.price; M.boosters[kind]++; saveMeta(); updateHud();
+          track('booster_buy_coins', { tur: kind, fiyat: b.price });
+          closeModal(); flashToast(`${b.name} +1`);
+        } },
+      { label: 'Vazgeç', kind: 'ghost', onClick: closeModal }
+    ]
+  });
+}
+
+function doRotate(i) {
+  const p = G.tray[i]; if (!p) return;
+  G.tray[i] = rotatePiece(p);
+  M.boosters.rotate--;
+  track('booster_use', { tur: 'dondur' });
+  mode = null; setModeUI();
+  saveMeta(); saveGame(); updateHud(); dirty = true;
+  checkStuck();
+}
+
+function doHammer(r, c) {
+  const list = [];
+  for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+    const rr = r + dr, cc = c + dc;
+    if (rr < 0 || cc < 0 || rr >= N || cc >= N) continue;
+    const ix = rr * N + cc;
+    if (G.cells[ix]) list.push({ idx: ix, color: G.cells[ix].c, g: G.cells[ix].g });
+  }
+  if (!list.length) { flashToast('Burada kırılacak çini yok'); return; }
+  const gold = list.filter(x => x.g).length * 5;
+  list.forEach(x => { G.cells[x.idx] = null; popIn.delete(x.idx); });
+  startClear(list, r + 0.5, c + 0.5);
+  if (gold) { G.coinsGame += gold; popup('+' + gold + ' altın', c + 0.5, r + 0.5, 'gold', 0); }
+  M.boosters.hammer--;
+  track('booster_use', { tur: 'cekic', kirilan: list.length });
+  mode = null; hoverCell = null; setModeUI();
+  saveMeta(); saveGame(); updateHud(); dirty = true;
+  checkStuck();
+}
+
+/* ---------- Animasyon kuyrukları ---------- */
+const anims = [];        // kırılan çiniler
+const parts = [];        // çini kırıntıları
+const pops = [];         // yükselen yazılar
+const popIn = new Map(); // yeni yerleşen hücre -> başlangıç zamanı
+
+function startClear(list, cr, cc) {
+  const t0 = performance.now();
+  const items = list.map(o => {
+    const r = o.idx >> 3, c = o.idx & 7;
+    return { ...o, r, c, delay: REDUCED ? 0 : (Math.abs(r + 0.5 - cr) + Math.abs(c + 0.5 - cc)) * 24 };
+  });
+  anims.push({ items, t0, dur: REDUCED ? 140 : 360 });
+  if (REDUCED) return;
+  for (const it of items) for (let k = 0; k < 3; k++) parts.push({
+    x: it.c + 0.5, y: it.r + 0.5, vx: (Math.random() - 0.5) * 5, vy: -1.5 - Math.random() * 3.5,
+    s: 0.1 + Math.random() * 0.1, rot: Math.random() * 3, vr: (Math.random() - 0.5) * 12,
+    color: it.color, t0: t0 + it.delay + 60, life: 0.55 + Math.random() * 0.25
+  });
+}
+function popup(text, x, y, kind, order) {
+  pops.push({ text, x, y: y - order * 0.75, kind, t0: performance.now() + order * 110, dur: REDUCED ? 700 : 1000 });
+}
+
+/* ---------- Çizim ---------- */
+const canvas = $('board');
+const ctx = canvas.getContext('2d');
+let W = 0, H = 0, cs = 40, frame = 10, bx = 10, by = 10, B = 320, trayY = 0, trayH = 0, gap = 2, dpr = 1;
+let colors = null, sprites = [], dirty = true;
+let drag = null, kb = null, hoverCell = null;
+
+function readColors() {
+  const st = getComputedStyle(document.documentElement);
+  const v = n => st.getPropertyValue(n).trim();
+  colors = {
+    frame: v('--frame'), frameInk: v('--frame-ink'), field: v('--field'), well: v('--well'),
+    ink: v('--ink'), primary: v('--primary'), gold: v('--gold'), danger: v('--danger'),
+    tiles: [v('--t0'), v('--t1'), v('--t2'), v('--t3'), v('--t4')]
+  };
+  buildSprites(); dirty = true;
+}
+
+function layout() {
+  const st = $('stage');
+  const aw = st.clientWidth, ah = st.clientHeight;
+  if (!aw || !ah) return;
+  cs = Math.max(16, Math.min(aw / 8.5, ah / 12.05, 58));
+  frame = cs * 0.25; bx = by = frame; B = cs * 8; W = cs * 8.5;
+  trayY = B + 2 * frame + cs * 0.35; trayH = cs * 3.2; H = trayY + trayH;
+  gap = Math.max(1, cs * 0.055);
+  dpr = Math.min(window.devicePixelRatio || 1, 3);
+  canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  buildSprites(); dirty = true;
+}
+
+function rrect(x, X, Y, w, h, r) {
+  r = Math.min(r, w / 2, h / 2);
+  x.beginPath();
+  x.moveTo(X + r, Y);
+  x.arcTo(X + w, Y, X + w, Y + h, r);
+  x.arcTo(X + w, Y + h, X, Y + h, r);
+  x.arcTo(X, Y + h, X, Y, r);
+  x.arcTo(X, Y, X + w, Y, r);
+  x.closePath();
+}
+
+// Her renk kendi İznik motifini taşır: rozet, baklava, lale, saz yaprağı, sekiz köşeli yıldız.
+function paintTile(x, s, col, ci, gold) {
+  const r = s * 0.2;
+  rrect(x, 0, 0, s, s, r); x.fillStyle = col; x.fill();
+  const gr = x.createLinearGradient(0, 0, s, s);
+  gr.addColorStop(0, 'rgba(255,255,255,0.34)');
+  gr.addColorStop(0.5, 'rgba(255,255,255,0.04)');
+  gr.addColorStop(1, 'rgba(0,0,0,0.20)');
+  rrect(x, 0, 0, s, s, r); x.fillStyle = gr; x.fill();
+  x.lineWidth = Math.max(1, s * 0.035); x.strokeStyle = 'rgba(255,255,255,0.38)';
+  rrect(x, s * 0.11, s * 0.11, s * 0.78, s * 0.78, r * 0.6); x.stroke();
+  x.save();
+  x.translate(s / 2, s / 2);
+  x.fillStyle = 'rgba(255,255,255,0.9)'; x.strokeStyle = 'rgba(255,255,255,0.9)';
+  x.lineWidth = Math.max(1, s * 0.05); x.lineCap = 'round';
+  const k = s * 0.22;
+  const dot = (rad, fill) => { x.fillStyle = fill; x.beginPath(); x.arc(0, 0, rad, 0, Math.PI * 2); x.fill(); };
+  switch (ci) {
+    case 0: // rozet
+      for (let i = 0; i < 4; i++) { x.save(); x.rotate(i * Math.PI / 2); x.beginPath(); x.ellipse(0, -k * 0.55, k * 0.3, k * 0.5, 0, 0, Math.PI * 2); x.fill(); x.restore(); }
+      dot(k * 0.2, col); break;
+    case 1: // baklava
+      x.beginPath(); x.moveTo(0, -k); x.lineTo(k * 0.72, 0); x.lineTo(0, k); x.lineTo(-k * 0.72, 0); x.closePath(); x.stroke();
+      dot(k * 0.2, 'rgba(255,255,255,0.9)'); break;
+    case 2: // lale
+      x.beginPath(); x.ellipse(0, -k * 0.2, k * 0.26, k * 0.6, 0, 0, Math.PI * 2); x.fill();
+      x.beginPath(); x.ellipse(-k * 0.34, -k * 0.05, k * 0.2, k * 0.5, -0.45, 0, Math.PI * 2); x.fill();
+      x.beginPath(); x.ellipse(k * 0.34, -k * 0.05, k * 0.2, k * 0.5, 0.45, 0, Math.PI * 2); x.fill();
+      x.beginPath(); x.moveTo(0, k * 0.3); x.lineTo(0, k * 1.0); x.stroke(); break;
+    case 3: // saz yaprağı
+      x.rotate(-Math.PI / 4);
+      x.beginPath(); x.ellipse(0, 0, k * 0.4, k * 0.95, 0, 0, Math.PI * 2); x.fill();
+      x.strokeStyle = col; x.lineWidth = Math.max(1, s * 0.03);
+      x.beginPath(); x.moveTo(0, -k * 0.7); x.lineTo(0, k * 0.7); x.stroke(); break;
+    default: // sekiz köşeli yıldız
+      for (let i = 0; i < 2; i++) { x.save(); x.rotate(i * Math.PI / 4); x.fillRect(-k * 0.56, -k * 0.56, k * 1.12, k * 1.12); x.restore(); }
+      dot(k * 0.22, col);
+  }
+  x.restore();
+  if (gold) {
+    x.lineWidth = Math.max(1.5, s * 0.08); x.strokeStyle = colors.gold;
+    rrect(x, s * 0.05, s * 0.05, s * 0.9, s * 0.9, r * 0.85); x.stroke();
+    x.save(); x.translate(s * 0.78, s * 0.22); x.fillStyle = '#FFF3C4';
+    const a = s * 0.13;
+    x.beginPath(); x.moveTo(0, -a); x.lineTo(a * 0.28, -a * 0.28); x.lineTo(a, 0); x.lineTo(a * 0.28, a * 0.28);
+    x.lineTo(0, a); x.lineTo(-a * 0.28, a * 0.28); x.lineTo(-a, 0); x.lineTo(-a * 0.28, -a * 0.28); x.closePath(); x.fill();
+    x.restore();
+  }
+}
+
+function buildSprites() {
+  if (!colors) return;
+  const s = Math.max(4, cs - 2 * gap);
+  sprites = [];
+  for (let ci = 0; ci < 5; ci++) for (let g = 0; g < 2; g++) {
+    const c = document.createElement('canvas');
+    c.width = c.height = Math.ceil(s * dpr);
+    const x = c.getContext('2d'); x.scale(dpr, dpr);
+    paintTile(x, s, colors.tiles[ci], ci, g);
+    sprites[ci * 2 + g] = c;
+  }
+}
+
+function tileAtXY(x, y, size, color, gold, alpha, scale) {
+  const spr = sprites[color * 2 + (gold ? 1 : 0)];
+  if (!spr) return;
+  const s = size * scale, o = (size - s) / 2;
+  ctx.globalAlpha = alpha;
+  ctx.drawImage(spr, x + o, y + o, s, s);
+  ctx.globalAlpha = 1;
+}
+const cellX = c => bx + c * cs + gap;
+const cellY = r => by + r * cs + gap;
+const tileAt = (r, c, color, gold, alpha = 1, scale = 1) => tileAtXY(cellX(c), cellY(r), cs - 2 * gap, color, gold, alpha, scale);
+
+function drawPiece(p, ox, oy, size, alpha) {
+  const g = gap * size / cs;
+  for (const [r, c, gd] of p.cells) tileAtXY(ox + c * size + g, oy + r * size + g, size - 2 * g, p.color, gd, alpha, 1);
+}
+
+function previewFor(p, r, c) {
+  const cells = G.cells.slice();
+  for (const [dr, dc] of p.cells) { const ix = (r + dr) * N + c + dc; cells[ix] = cells[ix] || { c: p.color, g: 0 }; }
+  const set = new Set();
+  for (let k = 0; k < N; k++) {
+    let fr = true, fc = true;
+    for (let j = 0; j < N; j++) { if (!cells[k * N + j]) fr = false; if (!cells[j * N + k]) fc = false; }
+    if (fr) for (let j = 0; j < N; j++) set.add(k * N + j);
+    if (fc) for (let j = 0; j < N; j++) set.add(j * N + k);
+  }
+  return set;
+}
+
+function currentTarget() {
+  if (drag && G.tray[drag.i] && drag.r != null) return { p: G.tray[drag.i], r: drag.r, c: drag.c, ok: true, preview: drag.preview };
+  if (kb && kb.i != null && G.tray[kb.i]) {
+    const p = G.tray[kb.i];
+    const ok = fits(masksOf(G.cells), p, kb.r, kb.c);
+    return { p, r: kb.r, c: kb.c, ok, preview: ok ? previewFor(p, kb.r, kb.c) : new Set() };
+  }
+  return null;
+}
+
+function drawFrame() {
+  // kenar suyu (bordür)
+  rrect(ctx, 0, 0, W, B + 2 * frame, cs * 0.32); ctx.fillStyle = colors.frame; ctx.fill();
+  ctx.fillStyle = colors.frameInk; ctx.globalAlpha = 0.55;
+  const d = frame * 0.24;
+  const diamond = (x, y) => { ctx.beginPath(); ctx.moveTo(x, y - d); ctx.lineTo(x + d, y); ctx.lineTo(x, y + d); ctx.lineTo(x - d, y); ctx.closePath(); ctx.fill(); };
+  for (let k = 0; k <= N; k++) {
+    diamond(bx + k * cs, frame / 2); diamond(bx + k * cs, by + B + frame / 2);
+    diamond(frame / 2, by + k * cs); diamond(bx + B + frame / 2, by + k * cs);
+  }
+  ctx.globalAlpha = 1;
+  rrect(ctx, bx, by, B, B, cs * 0.16); ctx.fillStyle = colors.field; ctx.fill();
+  ctx.fillStyle = colors.well;
+  const s = cs - 2 * gap;
+  for (let r = 0; r < N; r++) for (let c = 0; c < N; c++) { rrect(ctx, cellX(c), cellY(r), s, s, s * 0.2); ctx.fill(); }
+}
+
+function draw(now) {
+  ctx.clearRect(0, 0, W, H);
+  drawFrame();
+  const tgt = currentTarget();
+  const s = cs - 2 * gap;
+
+  for (let i = 0; i < 64; i++) {
+    const cell = G.cells[i]; if (!cell) continue;
+    const r = i >> 3, c = i & 7;
+    const lit = tgt && tgt.ok && tgt.preview.has(i);
+    let sc = 1;
+    const t0 = popIn.get(i);
+    if (t0 !== undefined) { const t = (now - t0) / 170; if (t >= 1) popIn.delete(i); else sc = 1.14 - 0.14 * easeOut(Math.max(0, t)); }
+    tileAt(r, c, lit ? tgt.p.color : cell.c, cell.g, 1, sc);
+  }
+
+  if (tgt) {
+    for (const [dr, dc, g] of tgt.p.cells) {
+      const r = tgt.r + dr, c = tgt.c + dc;
+      if (r < 0 || c < 0 || r >= N || c >= N) continue;
+      if (tgt.ok) tileAt(r, c, tgt.p.color, g, tgt.preview.has(r * N + c) ? 0.95 : 0.42, 1);
+      else { ctx.strokeStyle = colors.danger; ctx.lineWidth = 2; rrect(ctx, cellX(c), cellY(r), s, s, s * 0.2); ctx.stroke(); }
+    }
+    if (tgt.ok && tgt.preview.size) {
+      ctx.fillStyle = 'rgba(255,255,255,0.22)';
+      tgt.preview.forEach(ix => { rrect(ctx, cellX(ix & 7), cellY(ix >> 3), s, s, s * 0.2); ctx.fill(); });
+    }
+  }
+
+  const hc = mode === 'hammer' ? (kb && kb.i == null ? kb : hoverCell) : null;
+  if (hc) {
+    ctx.strokeStyle = colors.danger; ctx.lineWidth = 2.5;
+    const r0 = Math.max(0, hc.r - 1), c0 = Math.max(0, hc.c - 1), r1 = Math.min(N - 1, hc.r + 1), c1 = Math.min(N - 1, hc.c + 1);
+    rrect(ctx, bx + c0 * cs + 1, by + r0 * cs + 1, (c1 - c0 + 1) * cs - 2, (r1 - r0 + 1) * cs - 2, cs * 0.2); ctx.stroke();
+  }
+
+  for (let a = anims.length - 1; a >= 0; a--) {
+    const A = anims[a]; let alive = false;
+    for (const it of A.items) {
+      const t = (now - A.t0 - it.delay) / A.dur;
+      if (t >= 1) continue;
+      alive = true;
+      if (t < 0) { tileAt(it.r, it.c, it.color, it.g, 1, 1); continue; }
+      tileAt(it.r, it.c, it.color, it.g, 1 - t * t, 1 + 0.08 * Math.sin(t * Math.PI) - 0.5 * t * t);
+      if (t < 0.35) {
+        ctx.fillStyle = `rgba(255,255,255,${(0.35 - t) / 0.35 * 0.75})`;
+        rrect(ctx, cellX(it.c), cellY(it.r), s, s, s * 0.2); ctx.fill();
+      }
+    }
+    if (!alive) anims.splice(a, 1);
+  }
+
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i];
+    const t = (now - p.t0) / 1000;
+    if (t < 0) continue;
+    if (t > p.life) { parts.splice(i, 1); continue; }
+    const x = bx + (p.x + p.vx * t) * cs, y = by + (p.y + p.vy * t + 7 * t * t) * cs;
+    ctx.globalAlpha = 1 - t / p.life;
+    ctx.fillStyle = colors.tiles[p.color];
+    ctx.save(); ctx.translate(x, y); ctx.rotate(p.rot + p.vr * t);
+    ctx.fillRect(-p.s * cs / 2, -p.s * cs / 2, p.s * cs, p.s * cs);
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+
+  // tepsi
+  const m = masksOf(G.cells);
+  const slotW = W / 3;
+  for (let i = 0; i < 3; i++) {
+    const cx = (i + 0.5) * slotW, cy = trayY + trayH / 2;
+    if (mode === 'rotate' && G.tray[i]) {
+      ctx.setLineDash([5, 4]); ctx.strokeStyle = colors.primary; ctx.lineWidth = 2;
+      rrect(ctx, i * slotW + 5, trayY + 4, slotW - 10, trayH - 8, 12); ctx.stroke(); ctx.setLineDash([]);
+    }
+    if (kb && kb.i === i) {
+      ctx.fillStyle = colors.primary; rrect(ctx, cx - cs * 0.6, trayY + trayH - 6, cs * 1.2, 4, 2); ctx.fill();
+    }
+    const p = G.tray[i];
+    if (!p || (drag && drag.i === i)) continue;
+    const ts = Math.min(cs * TRAY_SCALE, slotW * 0.94 / p.w, trayH * 0.92 / p.h);
+    drawPiece(p, cx - p.w * ts / 2, cy - p.h * ts / 2, ts, fitsAnywhere(m, p) ? 1 : 0.3);
+  }
+
+  if (drag && G.tray[drag.i]) {
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.25)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 6;
+    drawPiece(G.tray[drag.i], drag.left, drag.top, cs, 1);
+    ctx.restore();
+  }
+
+  for (let i = pops.length - 1; i >= 0; i--) {
+    const p = pops[i];
+    const t = (now - p.t0) / p.dur;
+    if (t < 0) continue;
+    if (t > 1) { pops.splice(i, 1); continue; }
+    const big = p.kind === 'score';
+    ctx.font = big ? `${Math.round(cs * 0.62)}px "Yeseva One", Georgia, serif` : `800 ${Math.round(cs * 0.36)}px Manrope, system-ui, sans-serif`;
+    const tw = ctx.measureText(p.text).width;
+    const x = clamp(bx + p.x * cs, tw / 2 + 6, W - tw / 2 - 6);
+    const y = clamp(by + p.y * cs - cs * 0.9 * easeOut(t), cs * 0.5, H - cs * 0.3);
+    ctx.globalAlpha = t < 0.65 ? 1 : 1 - (t - 0.65) / 0.35;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.lineJoin = 'round';
+    ctx.lineWidth = cs * 0.14; ctx.strokeStyle = colors.field; ctx.strokeText(p.text, x, y);
+    ctx.fillStyle = p.kind === 'gold' ? colors.gold : p.kind === 'streak' ? colors.primary : colors.ink;
+    ctx.fillText(p.text, x, y);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (!G || !colors) return;
+  const busy = anims.length || parts.length || pops.length || popIn.size;
+  if (dirty || busy) { dirty = false; draw(now); }
+}
+
+/* ---------- Giriş: dokunma, fare, klavye ---------- */
+function pt(e) {
+  const rect = canvas.getBoundingClientRect();
+  return { x: (e.clientX - rect.left) * (W / rect.width), y: (e.clientY - rect.top) * (H / rect.height) };
+}
+function traySlotAt(x, y) { return y < trayY - cs * 0.3 || y > H ? -1 : clamp(Math.floor(x / (W / 3)), 0, 2); }
+function cellAt(x, y) {
+  const c = Math.floor((x - bx) / cs), r = Math.floor((y - by) / cs);
+  return r >= 0 && c >= 0 && r < N && c < N ? { r, c } : null;
+}
+const inputBlocked = () => !G || G.over || Ads.showing || !$('modal').hidden;
+
+function updateDrag() {
+  const p = G.tray[drag.i]; if (!p) return;
+  drag.left = drag.x - p.w * cs / 2;
+  drag.top = drag.touch ? drag.y - cs * 0.85 - p.h * cs : drag.y - p.h * cs / 2;
+  const c = Math.round((drag.left - bx) / cs), r = Math.round((drag.top - by) / cs);
+  if (r === drag.rr && c === drag.rc) return;
+  drag.rr = r; drag.rc = c;
+  if (fits(masksOf(G.cells), p, r, c)) { drag.r = r; drag.c = c; drag.preview = previewFor(p, r, c); }
+  else { drag.r = drag.c = null; drag.preview = null; }
+}
+
+canvas.addEventListener('pointerdown', e => {
+  if (inputBlocked()) return;
+  const { x, y } = pt(e);
+  if (mode === 'hammer') { const cell = cellAt(x, y); if (cell) doHammer(cell.r, cell.c); return; }
+  const slot = traySlotAt(x, y);
+  if (slot === -1 || !G.tray[slot]) return;
+  if (mode === 'rotate') { doRotate(slot); return; }
+  e.preventDefault();
+  canvas.setPointerCapture(e.pointerId);
+  drag = { i: slot, x, y, touch: e.pointerType !== 'mouse', r: null, c: null, rr: null, rc: null, preview: null };
+  kb = null; updateDrag(); dirty = true;
+});
+canvas.addEventListener('pointermove', e => {
+  const { x, y } = pt(e);
+  if (drag) { drag.x = x; drag.y = y; updateDrag(); dirty = true; return; }
+  if (mode === 'hammer') { const hc = cellAt(x, y); if ((hc && hc.r) !== (hoverCell && hoverCell.r) || (hc && hc.c) !== (hoverCell && hoverCell.c)) { hoverCell = hc; dirty = true; } }
+  if (G && e.pointerType === 'mouse') {
+    const slot = traySlotAt(x, y);
+    canvas.style.cursor = mode === 'hammer' && cellAt(x, y) ? 'crosshair' : slot !== -1 && G.tray[slot] ? (mode === 'rotate' ? 'pointer' : 'grab') : 'default';
+  }
+});
+canvas.addEventListener('pointerup', () => {
+  if (!drag) return;
+  const { i, r, c } = drag;
+  drag = null; dirty = true;
+  if (r != null) place(i, r, c);
+});
+canvas.addEventListener('pointercancel', () => { drag = null; dirty = true; });
+canvas.addEventListener('pointerleave', () => { if (hoverCell) { hoverCell = null; dirty = true; } });
+
+canvas.addEventListener('keydown', e => {
+  if (inputBlocked()) return;
+  const k = e.key;
+  if (k === '1' || k === '2' || k === '3') {
+    const i = +k - 1, p = G.tray[i];
+    if (!p) return;
+    e.preventDefault();
+    if (mode === 'rotate') { doRotate(i); return; }
+    if (mode === 'hammer') { mode = null; setModeUI(); }
+    kb = { i, r: Math.floor((N - p.h) / 2), c: Math.floor((N - p.w) / 2) };
+    dirty = true; return;
+  }
+  if (k === 'Escape') { kb = null; if (mode) { mode = null; setModeUI(); } dirty = true; return; }
+  if (mode === 'hammer' && (!kb || kb.i != null)) kb = { i: null, r: 3, c: 3 };
+  if (!kb) {
+    if (k.startsWith('Arrow')) { const i = G.tray.findIndex(Boolean); if (i >= 0) { const p = G.tray[i]; kb = { i, r: Math.floor((N - p.h) / 2), c: Math.floor((N - p.w) / 2) }; dirty = true; e.preventDefault(); } }
+    return;
+  }
+  const p = kb.i != null ? G.tray[kb.i] : { w: 1, h: 1 };
+  if (!p) { kb = null; return; }
+  if (k === 'ArrowLeft') kb.c = Math.max(0, kb.c - 1);
+  else if (k === 'ArrowRight') kb.c = Math.min(N - p.w, kb.c + 1);
+  else if (k === 'ArrowUp') kb.r = Math.max(0, kb.r - 1);
+  else if (k === 'ArrowDown') kb.r = Math.min(N - p.h, kb.r + 1);
+  else if (k === 'Enter' || k === ' ') {
+    const { i, r, c } = kb;
+    if (mode === 'hammer') { kb = null; doHammer(r, c); }
+    else if (fits(masksOf(G.cells), p, r, c)) { kb = null; place(i, r, c); }
+    else flashToast('Bu parça buraya sığmıyor');
+  } else return;
+  e.preventDefault(); dirty = true;
+});
+
+/* ---------- Arayüz ---------- */
+let toastTimer = 0;
+function showToast(text, action) {
+  clearTimeout(toastTimer); toastTimer = 0;
+  $('toastText').textContent = text;
+  const btn = $('toastBtn');
+  if (action) { btn.hidden = false; btn.textContent = action.label; btn.onclick = action.onClick; }
+  else { btn.hidden = true; btn.onclick = null; }
+  $('toast').hidden = false;
+}
+function hideToast() { clearTimeout(toastTimer); toastTimer = 0; $('toast').hidden = true; }
+function flashToast(text, ms = 2200) {
+  showToast(text);
+  toastTimer = setTimeout(() => {
+    toastTimer = 0;
+    if (mode) setModeUI();
+    else if (G && G.stuck && !G.over) showStuckBar();
+    else hideToast();
+  }, ms);
+}
+function showStuckBar() {
+  showToast('Hamle yok. Güçlendirici kullan ya da bitir.', { label: 'Bitir', onClick: () => { hideToast(); endGame(); } });
+}
+
+let modalDismissible = true;
+const PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg>';
+function openModal({ title, body, actions, dismissible = true }) {
+  $('modalTitle').textContent = title;
+  $('modalBody').innerHTML = body;
+  const btns = actions.map(a => {
+    const b = document.createElement('button');
+    b.className = 'btn btn-' + (a.kind || 'primary');
+    if (a.kind === 'ad') b.innerHTML = PLAY;
+    b.append(document.createTextNode(a.label));
+    if (a.kind === 'ad') { const chip = document.createElement('span'); chip.className = 'sr'; chip.textContent = ' (reklam)'; b.append(chip); }
+    b.disabled = !!a.disabled;
+    if (a.onClick) b.addEventListener('click', a.onClick);
+    return b;
+  });
+  $('modalActions').replaceChildren(...btns);
+  modalDismissible = dismissible;
+  $('modal').hidden = false;
+  (btns.find(b => !b.disabled) || btns[0])?.focus();
+  drag = null; kb = null; dirty = true;
+}
+function closeModal() { $('modal').hidden = true; if (G && !G.over) canvas.focus({ preventScroll: true }); }
+
+function updateHud() {
+  if (!G) return;
+  $('score').textContent = fmt(G.score);
+  $('best').textContent = fmt(Math.max(M.best, G.score));
+  $('coins').textContent = fmt(M.coins);
+  const sEl = $('streak');
+  if (G.streak >= 2 && !G.over) {
+    const left = 3 - G.sinceClear;
+    sEl.innerHTML = `Seri ×${G.streak} <span class="dots" aria-label="${left} hamle kaldı">${[0, 1, 2].map(k => `<i class="${k < left ? 'on' : ''}"></i>`).join('')}</span>`;
+    sEl.classList.add('show');
+  } else { sEl.textContent = ''; sEl.classList.remove('show'); }
+  for (const k of Object.keys(BOOSTERS)) {
+    const n = M.boosters[k], el = $('c-' + k);
+    if (n > 0) { el.textContent = n; el.classList.remove('ad'); $('b-' + k).setAttribute('aria-label', `${BOOSTERS[k].name}, ${n} hak`); }
+    else { el.innerHTML = PLAY; el.classList.add('ad'); $('b-' + k).setAttribute('aria-label', `${BOOSTERS[k].name}, hak yok, reklam izleyerek kazan`); }
+  }
+  $('banner').hidden = M.removeAds;
+}
+
+function openShop() {
+  const actions = [];
+  if (M.removeAds) actions.push({ label: 'Reklamsız sürüm etkin ✓', kind: 'ghost', disabled: true });
+  else actions.push({ label: 'Reklamları kaldır · $2,99', kind: 'primary', onClick: () => {
+    // GERÇEK: StoreKit / Unity IAP ile "remove_ads" (tüketilmeyen ürün) satın alımı
+    M.removeAds = true; saveMeta(); updateHud();
+    track('iap_purchase', { urun: 'remove_ads', fiyat: 2.99 });
+    closeModal(); flashToast('Reklamsız sürüm etkin. Ödüllü reklamlar isteğe bağlı kaldı.', 3200);
+  } });
+  actions.push({ label: '250 altın · $0,99', kind: 'ghost', onClick: () => {
+    M.coins += 250; saveMeta(); updateHud();
+    track('iap_purchase', { urun: 'coins_250', fiyat: 0.99 });
+    closeModal(); flashToast('+250 altın');
+  } });
+  actions.push({ label: 'Satın alımları geri yükle', kind: 'ghost', onClick: () => {
+    track('iap_restore');
+    closeModal(); flashToast(M.removeAds ? 'Satın alımlar geri yüklendi.' : 'Geri yüklenecek satın alım yok.');
+  } });
+  actions.push({ label: 'Kapat', kind: 'ghost', onClick: closeModal });
+  openModal({
+    title: 'Mağaza',
+    body: '<p class="sub">Test modu, gerçek ödeme alınmaz. Reklamsız sürüm banner ve geçiş reklamlarını kaldırır. Ödüllü reklamlar oyuncunun isteğine bağlı olduğu için kalır.</p>',
+    actions
+  });
+}
+
+/* ---------- Panel ---------- */
+function renderLog() {
+  const el = $('log');
+  if (!LOG.length) { const p = document.createElement('li'); p.className = 'log-empty'; p.textContent = 'Henüz olay yok.'; el.replaceChildren(p); return; }
+  el.replaceChildren(...LOG.slice(0, 40).map(ev => {
+    const li = document.createElement('li');
+    li.className = ev.name.startsWith('ad_') ? 'is-ad' : ev.name.startsWith('iap_') ? 'is-iap' : '';
+    const t = document.createElement('time'); t.textContent = new Date(ev.t).toLocaleTimeString('tr-TR', { hour12: false });
+    const c = document.createElement('code'); c.textContent = ev.name;
+    li.append(t, c);
+    const ps = Object.entries(ev.params);
+    if (ps.length) { const s = document.createElement('span'); s.className = 'params'; s.textContent = ps.map(([k, v]) => `${k}=${v}`).join(' · '); li.append(s); }
+    return li;
+  }));
+}
+
+function renderPanel() {
+  const I = Ads.impr, e = CFG.ecpm;
+  const rr = I.rewarded * e.rewarded / 1000, ri = I.interstitial * e.interstitial / 1000, rb = I.banner * e.banner / 1000, tot = rr + ri + rb;
+  $('mRew').textContent = I.rewarded; $('mRewRev').textContent = usd(rr);
+  $('mInt').textContent = I.interstitial; $('mIntRev').textContent = usd(ri);
+  $('mBan').textContent = I.banner; $('mBanRev').textContent = usd(rb);
+  $('mTotal').textContent = usd(tot);
+  const secs = Math.floor((Date.now() - Ads.sessionStart) / 1000);
+  $('mTime').textContent = Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0');
+  if (secs >= 60) {
+    const pm = tot / (secs / 60);
+    $('mPerMin').textContent = usd(pm);
+    $('mDaily').textContent = '$' + fmt(pm * 15 * 1000) + ' / gün';
+  } else { $('mPerMin').textContent = '—'; $('mDaily').textContent = '—'; }
+  const reason = Ads.blockReason();
+  $('adStatus').classList.toggle('blocked', !!reason);
+  $('adStatusText').textContent = reason ? 'Geçiş reklamı engelli: ' + reason : 'Geçiş reklamı gösterilebilir';
+  $('gamesDone').textContent = 'biten oyun: ' + M.gamesCompleted;
+}
+
+function bindNum(id, get, set) {
+  const el = $(id);
+  el.value = get();
+  el.addEventListener('change', () => {
+    const v = parseFloat(el.value);
+    if (!isNaN(v) && v >= 0) { set(v); saveCfg(); renderPanel(); } else el.value = get();
+  });
+}
+bindNum('cfgMinGames', () => CFG.minGames, v => CFG.minGames = Math.round(v));
+bindNum('cfgCooldown', () => CFG.cooldownSec, v => CFG.cooldownSec = v);
+bindNum('cfgGrace', () => CFG.graceSec, v => CFG.graceSec = v);
+bindNum('cfgMid', () => CFG.midGameSec, v => CFG.midGameSec = v);
+bindNum('ecpmRew', () => CFG.ecpm.rewarded, v => CFG.ecpm.rewarded = v);
+bindNum('ecpmInt', () => CFG.ecpm.interstitial, v => CFG.ecpm.interstitial = v);
+bindNum('ecpmBan', () => CFG.ecpm.banner, v => CFG.ecpm.banner = v);
+$('cfgFast').checked = CFG.fastAds;
+$('cfgFast').addEventListener('change', e => { CFG.fastAds = e.target.checked; saveCfg(); });
+
+$('tCoins').addEventListener('click', () => { M.coins += 100; saveMeta(); updateHud(); track('debug_coins', { miktar: 100 }); });
+$('tFill').addEventListener('click', () => {
+  if (!G || G.over) return;
+  for (let i = 0; i < 64; i++) G.cells[i] = Math.random() < 0.8 ? { c: rnd(5), g: 0 } : null;
+  for (let k = 0; k < N; k++) {
+    if (Array.from({ length: N }, (_, j) => G.cells[k * N + j]).every(Boolean)) G.cells[k * N + rnd(N)] = null;
+    if (Array.from({ length: N }, (_, j) => G.cells[j * N + k]).every(Boolean)) G.cells[rnd(N) * N + k] = null;
+  }
+  G.tray = ['kare3', 'beşli', 'köşe5'].map(f => makePiece(byFamily(f)));
+  G.stuck = false; popIn.clear(); saveGame(); dirty = true;
+  track('debug_fill');
+  if (window.innerWidth < 980) openPanel(false);
+  checkStuck();
+});
+$('tEnd').addEventListener('click', () => { if (window.innerWidth < 980) openPanel(false); endGame(); });
+$('tNoAds').addEventListener('click', () => { M.removeAds = false; saveMeta(); updateHud(); renderPanel(); track('debug_reset_iap'); });
+$('tGames').addEventListener('click', () => { M.gamesCompleted = 0; saveMeta(); renderPanel(); track('debug_reset_games'); });
+$('tStats').addEventListener('click', () => {
+  Ads.impr = { rewarded: 0, interstitial: 0, banner: M.removeAds ? 0 : 1 };
+  Ads.sessionStart = Date.now(); LOG = []; renderLog(); renderPanel();
+});
+
+function openPanel(open) { $('panel').classList.toggle('open', open); $('sheetScrim').hidden = !open; }
+$('panelBtn').addEventListener('click', () => openPanel(true));
+$('panelClose').addEventListener('click', () => openPanel(false));
+$('sheetScrim').addEventListener('click', () => openPanel(false));
+$('shopBtn').addEventListener('click', () => { if (!Ads.showing) openShop(); });
+for (const k of Object.keys(BOOSTERS)) $('b-' + k).addEventListener('click', () => useBooster(k));
+$('modal').addEventListener('click', e => { if (e.target === $('modal') && modalDismissible) closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!$('modal').hidden && modalDismissible) closeModal();
+  else if ($('panel').classList.contains('open')) openPanel(false);
+});
+document.addEventListener('visibilitychange', () => { if (document.hidden) saveGame(); });
+
+// Banner: görünürken 30 sn'de bir yenilenir; her yenileme bir gösterimdir.
+let bannerSec = 0;
+setInterval(() => {
+  if (!M.removeAds && !Ads.showing && !document.hidden) {
+    if (++bannerSec >= 30) { bannerSec = 0; Ads.impr.banner++; track('ad_banner_refresh'); }
+  }
+  renderPanel();
+}, 1000);
+
+new ResizeObserver(layout).observe($('stage'));
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
+new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+/* ---------- Açılış ---------- */
+window.claude?.hot?.snapshot?.(() => ({ G, LOG, impr: Ads.impr, sessionStart: Ads.sessionStart }));
+
+function boot(data) {
+  data = data || {};
+  readColors(); layout();
+  if (Array.isArray(data.LOG)) LOG = data.LOG;
+  if (data.impr) Ads.impr = data.impr;
+  if (data.sessionStart) Ads.sessionStart = data.sessionStart;
+  const saved = data.G || store.get('game', null);
+  if (saved && !saved.over && Array.isArray(saved.cells) && saved.cells.length === 64 && Array.isArray(saved.tray)) {
+    G = saved; G.lastBreakAt = Date.now();
+    const wasStuck = G.stuck; G.stuck = false;
+    track('game_resume', { puan: G.score });
+    if (wasStuck) checkStuck();
+  } else newGame();
+  if (!data.impr && !M.removeAds) { Ads.impr.banner++; track('ad_banner_show', { yer: 'alt' }); }
+  track('session_start', { reklamsiz: M.removeAds ? 1 : 0 });
+  updateHud(); renderPanel(); renderLog(); setModeUI();
+  checkStuck();
+  dirty = true;
+  requestAnimationFrame(loop);
+  document.fonts?.ready?.then(() => { dirty = true; });
+}
+window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+})();
+</script>
