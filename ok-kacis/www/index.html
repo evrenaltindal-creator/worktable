@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ok Kaçış</title>
+<meta name="description" content="Okları doğru sırayla tahtadan kaçırdığın bir bulmaca oyunu.">
+<meta name="theme-color" content="#eaeff5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a1f3a" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Telefon çentiği / alt çubuk için güvenli alan */
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html { box-sizing: border-box; }
+</style>
+</head>
+<body>
+<!-- GAME:BEGIN -->
+<div class="app">
+  <header class="hud">
+    <div class="titleblock">
+      <span class="tb-label" id="lvLabel">SEVİYE</span>
+      <span class="tb-num" id="lvNum">1</span>
+      <span class="tb-meta"><span id="lvSize"></span><span id="lvLeft"></span></span>
+    </div>
+    <div class="hearts" id="hearts" role="img"></div>
+    <div class="tools">
+      <button type="button" class="tool" id="btnHint" aria-label="İpucu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V17h5.2v-1.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>
+        <span class="badge" id="hintBadge">3</span>
+      </button>
+      <button type="button" class="tool" id="btnRestart" aria-label="Baştan başla">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.8-6.3"/><path d="M3.5 4v5h5"/></svg>
+      </button>
+      <button type="button" class="tool" id="btnSound" aria-label="Ses" aria-pressed="true">
+        <svg class="ic-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.8L13 19V5L7.8 9.5H4z"/><path d="M16.5 8.8a4.6 4.6 0 0 1 0 6.4M19 6.3a8.2 8.2 0 0 1 0 11.4"/></svg>
+        <svg class="ic-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.8L13 19V5L7.8 9.5H4z"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></svg>
+      </button>
+    </div>
+  </header>
+  <main class="stage" id="stage">
+    <canvas id="board" aria-label="Oyun tahtası"></canvas>
+    <p class="tip" id="tip"></p>
+  </main>
+  <aside class="banner-slot" id="bannerSlot" aria-label="Reklam" hidden></aside>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="overlay" id="overlay" hidden>
+  <div class="card" id="card" role="dialog" aria-modal="true" aria-labelledby="cardTitle"></div>
+</div>
+<!-- GAME:END -->
+<script src="config.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/ads.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

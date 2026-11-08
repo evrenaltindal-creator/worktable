@@ -1,0 +1,51 @@
+/*
+ * Ok Kaçış — ayarlar.
+ * Reklamlarla para kazanmak için gerekli kimlikleri BURAYA yazarsın.
+ * Hangi yolu seçeceğini ve kimlikleri nereden alacağını ../README.md anlatıyor.
+ */
+window.OK_KACIS_CONFIG = {
+  // Hangi reklam ağı kullanılsın?
+  //   'auto'       : Android/iOS uygulamasında AdMob, CrazyGames sitesinde CrazyGames SDK,
+  //                  aşağıya AdSense kimliği girildiyse AdSense, hiçbiri yoksa TEST reklamları
+  //   'mock'       : her zaman sahte test reklamları (geliştirirken)
+  //   'admob'      : Capacitor ile yapılmış Android/iOS uygulaması (Google AdMob)
+  //   'adsense'    : kendi web siten (Google AdSense, H5 oyun reklamları)
+  //   'crazygames' : CrazyGames oyun portalı
+  //   'none'       : reklamsız (ödüller reklamsız verilir)
+  // Denemek için adres çubuğuna ?ads=mock yazarak da seçebilirsin.
+  adProvider: 'auto',
+
+  admob: {
+    // Bunlar Google'ın herkese açık TEST kimlikleri (Android). Para kazandırmazlar.
+    // Uygulamayı yayınlamadan önce AdMob panelindeki kendi kimliklerinle değiştir
+    // ve testing'i false yap.
+    bannerId: 'ca-app-pub-3940256099942544/6300978111',
+    interstitialId: 'ca-app-pub-3940256099942544/1033173712',
+    rewardedId: 'ca-app-pub-3940256099942544/5224354917',
+    testing: true,
+  },
+
+  adsense: {
+    client: '', // ör. 'ca-pub-1234567890123456'
+    bannerSlot: '', // isteğe bağlı: alttaki banner için AdSense reklam birimi kimliği
+    testMode: true, // yayına alırken false yap
+  },
+
+  crazygames: {},
+
+  mock: {
+    interstitialSeconds: 3,
+    rewardedSeconds: 5,
+  },
+
+  // Reklam sıklığı. Çok sık reklam oyuncuyu kaçırır; bu değerler iyi bir başlangıçtır.
+  banner: true, // oyun sırasında altta banner
+  firstInterstitialLevel: 3, // ilk geçiş reklamı en erken bu seviye bitince
+  interstitialEveryNLevels: 2, // sonra her 2 seviyede bir
+  interstitialMinSeconds: 45, // iki reklam arasında en az bu kadar saniye
+
+  // Oyun ekonomisi
+  hearts: 3, // seviye başına can
+  startHints: 3, // ilk açılışta verilen ipucu
+  hintsPerAd: 3, // bir ödüllü reklam karşılığı ipucu
+};
