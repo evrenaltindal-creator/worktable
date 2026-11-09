@@ -274,3 +274,11 @@ tiklayip tarayicida acmaniz yeterli (telefonda da calisir).
   cikanlar listesi, ses acma/kapama ve silinen seyi geri alma vardir.
 - Secenekler yalnizca o tarayicida (`localStorage`) saklanir, hicbir yere
   gonderilmez. Internet yoksa yazi tipleri yerine sistem yazi tipi kullanilir.
+- **7 dil:** Turkce, Ingilizce, Portekizce, Almanca, Fransizca, Japonca,
+  Korece. Ustteki dil menusunden secilir; ilk aciliste tarayicinin diline
+  gore kendisi secer. Ornek secenekler ve hazir listeler de o dile ve
+  kulture gore degisir (kullanicinin kendi yazdigi liste korunur).
+  Adresin sonuna `#en`, `#pt`, `#de`, `#fr`, `#ja`, `#ko` veya `#tr`
+  eklenerek belirli bir dilde acilan baglanti paylasilabilir.
+- Ceviriler `index.html` icindeki `I18N` sozlugundedir; yeni dil eklemek
+  icin oraya bir blok ve `LANGS` ile dil menusune birer satir eklemek yeterli.
