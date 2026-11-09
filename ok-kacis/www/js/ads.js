@@ -15,34 +15,25 @@
 (function (root) {
   'use strict';
 
-  const lang = (navigator.language || 'tr').toLowerCase().startsWith('tr') ? 'tr' : 'en';
-  const TXT = {
-    tr: {
-      test: 'TEST REKLAMI',
-      inter: 'Geçiş reklamı',
-      reward: 'Ödüllü reklam',
-      body: 'Yayındaki oyunda burada gerçek bir reklam oynar. Bu kutu sadece reklamın nerede ve ne zaman çıkacağını gösterir.',
-      close: 'Kapat',
-      closeIn: 'Kapat ({n})',
-      claim: 'Ödülü al',
-      skip: 'Ödülsüz kapat',
-      ad: 'REKLAM',
-      banner: 'Banner alanı · 320×50 · test',
-    },
-    en: {
-      test: 'TEST AD',
-      inter: 'Interstitial',
-      reward: 'Rewarded ad',
-      body: 'In the live game a real ad plays here. This box only shows where and when the ad appears.',
-      close: 'Close',
-      closeIn: 'Close ({n})',
-      claim: 'Claim reward',
-      skip: 'Close without reward',
-      ad: 'AD',
-      banner: 'Banner slot · 320×50 · test',
-    },
+  // Metinler js/i18n.js içinde (ad_* anahtarları); o dosya yoksa İngilizce kullanılır.
+  const FALLBACK = {
+    test: 'TEST AD',
+    inter: 'Interstitial',
+    reward: 'Rewarded ad',
+    body: 'In the live game a real ad plays here. This box only shows where and when the ad appears.',
+    close: 'Close',
+    closeIn: 'Close ({n})',
+    claim: 'Claim reward',
+    skip: 'Close without reward',
+    ad: 'AD',
+    banner: 'Banner slot · 320×50 · test',
   };
-  const tx = (k, n) => (TXT[lang][k] || k).replace('{n}', n);
+  const tx = (k, n) => {
+    const key = k === 'ad' ? 'ad_label' : 'ad_' + k;
+    const I = root.OkI18n;
+    const s = I ? I.t(key, n == null ? undefined : { n }) : key;
+    return (s !== key ? s : FALLBACK[k]).split('{n}').join(n);
+  };
 
   function loadScript(src, attrs) {
     return new Promise((resolve, reject) => {

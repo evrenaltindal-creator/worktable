@@ -26,7 +26,10 @@ reklam altyapısı hazır, oynanabilir bir prototip var.
   tahtayı verir. Her seviyenin çözülebildiği testle kontrol edilir.
 - Telefon tarayıcısında, bilgisayarda ve (Capacitor ile) Android/iOS uygulaması
   olarak çalışır. Açık temada milimetrik kağıt, koyu temada mavi çizim kağıdı
-  görünümü vardır. Türkçe ve İngilizce (cihaz diline göre).
+  görünümü vardır.
+- **7 dil:** Türkçe, İngilizce, Portekizce (Brezilya), Almanca, Fransızca,
+  Japonca, Korece. Oyun cihazın diliyle açılır (desteklenmeyen dillerde
+  İngilizce), menüdeki 🌐 düğmesinden değiştirilir ve seçim kaydedilir.
 
 ## Hemen oyna
 
@@ -59,10 +62,33 @@ ok-kacis/
     js/background.js   hareketli arka plan
     js/ads.js          reklam katmanı (AdMob, AdSense, CrazyGames, test)
     js/sound.js        ses efektleri
+    js/i18n.js         bütün diller ve metinler
     manifest.webmanifest, icon.svg
   test/levels.test.js  300 seviye + 300 zamana karşı tahtası üretip çözer:
                        node ok-kacis/test/levels.test.js
+  test/i18n.test.js    her dilde eksik metin ve yer tutucu kontrolü:
+                       node ok-kacis/test/i18n.test.js
 ```
+
+## Diller
+
+Bütün metinler `www/js/i18n.js` dosyasında, dil başına bir tablo hâlinde
+durur. Sayılar ve tarihler her ülkenin biçiminde yazılır (1.234 / 1,234 /
+1 234), "1 arrow / 2 arrows" gibi tekil-çoğul ayrımı dilin kendi kuralıyla
+yapılır. Japonca ve Korece seçilince uygun yazı tipi (Noto Sans JP/KR)
+yalnızca o zaman indirilir; internet yoksa telefonun kendi yazı tipi kullanılır.
+
+- **Oyunun adı** her dilde "Ok Kaçış" olarak kaldı. Ülkeye göre farklı bir ad
+  istersen `gameTitle` satırını değiştirmen yeterli. Mağazada başka bir oyunla
+  karışmayacak bir ad seçmeye dikkat et.
+- **Yeni dil eklemek:** `LANGS` listesine bir satır, `STRINGS` içine aynı
+  anahtarlarla bir tablo ekle, sonra `node ok-kacis/test/i18n.test.js` ile
+  eksik kalan bir şey var mı bak.
+- Çeviriler yapay zekâyla yapıldı ve oyunda tek tek denendi (taşma, eksik
+  metin, yazı tipi). Yayından önce özellikle Japonca ve Korece için o dili
+  ana dili olarak konuşan birine kısaca baktırmak iyi olur.
+- Play Store'daki uygulama açıklamasını ve ekran görüntülerini de her dil
+  için ayrıca girmen gerekir; bu dosya yalnızca oyunun içini çevirir.
 
 ## Reklamlar oyunun neresinde?
 
@@ -217,6 +243,9 @@ Test edildi:
 - Zamana karşı: sayaç, çarpma cezası, tahta bonusu, ana menüde sayacın
   durması ve devam, son 10 saniye uyarısı, rekor, +15 sn ödüllü reklam (tur
   başına bir kez), turlar arası geçiş reklamı ve 45 sn kuralı.
+- 7 dilin hepsinde, 360 piksel genişliğindeki telefonda: menü, oyun, skor
+  paneli, süre bitti ekranı, test reklamı ve skor tablosu; taşan veya
+  çevrilmemiş metin yok. Dil düğmesi ve sayfa yenilenince dilin korunması.
 - Puan, kombo (x5'e kadar, çarpınca sıfırlanma), patlamalar, skor tablosu ve
   sıralama, açık/koyu tema ve "hareketi azalt" ayarı. Efektler yoğunken
   bile tarayıcıda saniyede 60 kare.

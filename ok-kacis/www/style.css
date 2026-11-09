@@ -33,8 +33,11 @@
   --ad-soft: #8f98a8;
   --ad-accent: #3d8bff;
 
-  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  /* Japonca/Korece harfler Bricolage'da yok; tarayıcı listedeki CJK yazı tiplerine geçer */
+  --font-display: "Bricolage Grotesque", "Noto Sans JP", "Noto Sans KR", "Hiragino Sans", "Yu Gothic",
+    "Apple SD Gothic Neo", "Malgun Gothic", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, "Noto Sans JP", "Noto Sans KR",
+    "Hiragino Sans", "Apple SD Gothic Neo", "Malgun Gothic", monospace;
 
   --radius: 12px;
   --press: 4px;
@@ -152,7 +155,7 @@ body {
 .titleblock {
   display: grid;
   grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
+  grid-template-areas: "label label" "num meta";
   column-gap: 10px;
   align-items: end;
   border: 2px solid var(--ink);
@@ -162,8 +165,8 @@ body {
   min-width: 0;
 }
 .tb-label {
-  grid-column: 1;
-  grid-row: 1;
+  grid-area: label;
+  white-space: nowrap;
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
@@ -171,8 +174,7 @@ body {
   color: var(--ink-soft);
 }
 .tb-num {
-  grid-column: 1;
-  grid-row: 2;
+  grid-area: num;
   font-size: 30px;
   font-weight: 800;
   line-height: 0.95;
@@ -180,8 +182,7 @@ body {
   letter-spacing: -0.02em;
 }
 .tb-meta {
-  grid-column: 2;
-  grid-row: 1 / span 2;
+  grid-area: meta;
   align-self: center;
   display: flex;
   flex-direction: column;
@@ -645,10 +646,8 @@ body {
   min-width: 0;
   font-family: var(--font-mono);
   font-size: 11px;
+  line-height: 1.35;
   color: var(--ink-soft);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 .lb-main {
   font-size: 17px;
@@ -793,6 +792,7 @@ body {
   }
 }
 .card {
+  position: relative;
   width: 100%;
   max-width: 350px;
   max-height: 100%;
@@ -812,6 +812,68 @@ body {
     opacity: 0;
     transform: translateY(18px) scale(0.96);
   }
+}
+.card-corner {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1.5px solid var(--grid-strong);
+  border-radius: 999px;
+  background: var(--board);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.card-corner svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+}
+.card-corner:focus-visible,
+.lang-btn:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.lang-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.lang-btn {
+  min-height: 48px;
+  padding: 6px 12px;
+  border: 2px solid var(--grid-strong);
+  border-radius: 10px;
+  background: var(--board);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.lang-btn:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+.lang-btn.is-active {
+  border-color: var(--ink);
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 0 3px 0 var(--ink);
+}
+/* Japonca ve Korecede harf aralığı açılmasın */
+:is(:lang(ja), :lang(ko)) :is(.tb-label, .sb-label, .card-eyebrow, .tb-row dt, .cp-label, .card-corner) {
+  letter-spacing: 0.02em;
 }
 .card-eyebrow {
   margin: 0;
@@ -945,6 +1007,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  text-align: left;
   line-height: 1.15;
 }
 .btn-label small {

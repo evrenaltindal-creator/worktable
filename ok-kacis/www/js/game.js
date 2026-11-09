@@ -26,179 +26,9 @@
   const DEBUG = /[?&]debug\b/.test(location.search);
   const reducedMotion = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 
-  // ------------------------------------------------------------------ Dil
-  const lang = (navigator.language || 'tr').toLowerCase().startsWith('tr') ? 'tr' : 'en';
-  const STRINGS = {
-    tr: {
-      level: 'SEVİYE',
-      size: '{w}×{h}',
-      left: '{n} ok',
-      menuEyebrow: 'BULMACA',
-      howto: 'Bir oka dokun. Önü boşsa kayıp çıkar. Önünde başka bir ok varsa çarpar ve bir can gider.',
-      play: 'Oyna',
-      playLevel: 'Seviye {n}',
-      tip1: 'Önü açık bir oka dokun.',
-      tip2: 'Önü kapalı oklara dokunma, can gider.',
-      bumped: 'Çarptı! Önce yolundaki oku çıkar.',
-      winEyebrow: 'TAMAMLANDI',
-      winTitle: 'Seviye {n} bitti',
-      next: 'Sonraki seviye',
-      rowBoard: 'TAHTA',
-      rowMistakes: 'HATA',
-      failEyebrow: 'CAN: 0',
-      failTitle: 'Canın bitti',
-      failBody: 'Tahta olduğu gibi kalır. Kısa bir reklam izle, 1 canla devam et.',
-      revive: 'Reklam izle, +1 can',
-      restart: 'Baştan başla',
-      hintsEyebrow: 'İPUCU: 0',
-      hintsTitle: 'İpucun kalmadı',
-      hintsBody: 'Kısa bir reklam izle, {n} ipucu kazan.',
-      getHints: 'Reklam izle, +{n} ipucu',
-      cancel: 'Vazgeç',
-      noAd: 'Şu an reklam yok. Biraz sonra tekrar dene.',
-      noReward: 'Ödül için reklamı sonuna kadar izle.',
-      hintsAdded: '+{n} ipucu eklendi',
-      revived: '+1 can. Devam!',
-      aHint: 'İpucu göster ({n} kaldı)',
-      aRestart: 'Seviyeyi baştan başlat',
-      aSoundOn: 'Sesi kapat',
-      aSoundOff: 'Sesi aç',
-      aHearts: '{n} can kaldı',
-      aHome: 'Ana menü',
-      aTimer: '{t} kaldı',
-      score: 'SKOR',
-      stage: 'TAHTA {n}',
-      resume: 'Devam et',
-      modeTime: 'Zamana karşı',
-      timeSubNew: '{s} saniyede en çok oku kaçır',
-      timeSubBest: 'Rekor: {n} puan',
-      timeSubResume: 'Kalan süre {t}',
-      timeRules: 'Her tahta +{b} sn, her çarpma −{p} sn.',
-      stageClear: 'Tahta temiz! +{b} sn',
-      timeUpEyebrow: 'SÜRE DOLDU',
-      newRecordEyebrow: 'YENİ REKOR',
-      timeUpTitle: '{n} ok kaçırdın',
-      rowStage: 'TAHTA',
-      rowBest: 'REKOR',
-      moreTime: 'Reklam izle, +{s} sn',
-      moreTimeToast: '+{s} sn. Devam!',
-      playAgain: 'Tekrar oyna',
-      mainMenu: 'Ana menü',
-      boardLabel: 'TAHTA',
-      bestLabel: 'REKOR {n}',
-      totalLabel: 'TOPLAM {n}',
-      liveRecord: 'YENİ REKOR!',
-      comboLabel: 'KOMBO',
-      comboBanner: 'KOMBO x{n}!',
-      perfect: 'KUSURSUZ!',
-      boardClear: 'TAHTA TEMİZ!',
-      pointsUnit: 'PUAN',
-      rowChain: 'EN UZUN SERİ',
-      rankBadge: 'Skor tablosunda {n}. sıradasın!',
-      newRecordTitle: 'Yeni rekor!',
-      leaderboard: 'Skor tablosu',
-      lbEyebrow: 'EN İYİ 5',
-      lbTime: 'Zamana karşı',
-      lbLevels: 'Seviye modu',
-      lbEmptyTime: 'Henüz skor yok. İlk turunu oyna!',
-      lbEmptyLevels: 'Henüz skor yok. Bir seviye bitir!',
-      lbEntryTime: '{a} ok · {b} tahta · {d}',
-      lbEntryLevel: 'Seviye {l} · {s} · {d}',
-      statTotal: 'TOPLAM PUAN',
-      statLevel: 'EN YÜKSEK SEVİYE',
-      statChain: 'EN UZUN SERİ',
-      back: 'Geri',
-      plusSec: '+{n} sn',
-      minusSec: '−{n} sn',
-    },
-    en: {
-      level: 'LEVEL',
-      size: '{w}×{h}',
-      left: '{n} arrows',
-      menuEyebrow: 'PUZZLE',
-      howto: 'Tap an arrow. If its path is clear it slides out. If another arrow is in the way it crashes and you lose a heart.',
-      play: 'Play',
-      playLevel: 'Level {n}',
-      tip1: 'Tap an arrow with a clear path.',
-      tip2: 'Blocked arrows cost a heart.',
-      bumped: 'Crash! Clear the arrow in its way first.',
-      winEyebrow: 'CLEARED',
-      winTitle: 'Level {n} done',
-      next: 'Next level',
-      rowBoard: 'BOARD',
-      rowMistakes: 'MISTAKES',
-      failEyebrow: 'HEARTS: 0',
-      failTitle: 'Out of hearts',
-      failBody: 'The board stays as it is. Watch a short ad to continue with 1 heart.',
-      revive: 'Watch ad, +1 heart',
-      restart: 'Restart',
-      hintsEyebrow: 'HINTS: 0',
-      hintsTitle: 'No hints left',
-      hintsBody: 'Watch a short ad to get {n} hints.',
-      getHints: 'Watch ad, +{n} hints',
-      cancel: 'Not now',
-      noAd: 'No ad available right now. Try again in a moment.',
-      noReward: 'Watch the ad to the end to get the reward.',
-      hintsAdded: '+{n} hints added',
-      revived: '+1 heart. Keep going!',
-      aHint: 'Show a hint ({n} left)',
-      aRestart: 'Restart level',
-      aSoundOn: 'Mute',
-      aSoundOff: 'Unmute',
-      aHearts: '{n} hearts left',
-      aHome: 'Main menu',
-      aTimer: '{t} left',
-      score: 'SCORE',
-      stage: 'BOARD {n}',
-      resume: 'Resume',
-      modeTime: 'Time attack',
-      timeSubNew: 'Clear as many arrows as you can in {s}s',
-      timeSubBest: 'Best: {n} points',
-      timeSubResume: '{t} left',
-      timeRules: 'Each board +{b}s, each crash −{p}s.',
-      stageClear: 'Board clear! +{b}s',
-      timeUpEyebrow: "TIME'S UP",
-      newRecordEyebrow: 'NEW BEST',
-      timeUpTitle: '{n} arrows cleared',
-      rowStage: 'BOARD',
-      rowBest: 'BEST',
-      moreTime: 'Watch ad, +{s}s',
-      moreTimeToast: '+{s}s. Keep going!',
-      playAgain: 'Play again',
-      mainMenu: 'Main menu',
-      boardLabel: 'BOARD',
-      bestLabel: 'BEST {n}',
-      totalLabel: 'TOTAL {n}',
-      liveRecord: 'NEW BEST!',
-      comboLabel: 'COMBO',
-      comboBanner: 'COMBO x{n}!',
-      perfect: 'PERFECT!',
-      boardClear: 'BOARD CLEAR!',
-      pointsUnit: 'POINTS',
-      rowChain: 'BEST CHAIN',
-      rankBadge: 'You placed #{n} on the leaderboard!',
-      newRecordTitle: 'New best!',
-      leaderboard: 'Leaderboard',
-      lbEyebrow: 'TOP 5',
-      lbTime: 'Time attack',
-      lbLevels: 'Levels',
-      lbEmptyTime: 'No scores yet. Play your first run!',
-      lbEmptyLevels: 'No scores yet. Finish a level!',
-      lbEntryTime: '{a} arrows · {b} boards · {d}',
-      lbEntryLevel: 'Level {l} · {s} · {d}',
-      statTotal: 'TOTAL POINTS',
-      statLevel: 'HIGHEST LEVEL',
-      statChain: 'BEST CHAIN',
-      back: 'Back',
-      plusSec: '+{n}s',
-      minusSec: '−{n}s',
-    },
-  };
-  function t(key, vars) {
-    let s = STRINGS[lang][key] != null ? STRINGS[lang][key] : STRINGS.tr[key] || key;
-    if (vars) for (const k in vars) s = s.split('{' + k + '}').join(vars[k]);
-    return s;
-  }
+  // ------------------------------------------------------------------ Dil (metinler js/i18n.js içinde)
+  const I18n = window.OkI18n;
+  const t = I18n.t;
 
   // ------------------------------------------------------------------ Kayıt
   const SAVE_KEY = 'okKacis.v1';
@@ -227,6 +57,7 @@
   );
   if (!Array.isArray(save.timeTop)) save.timeTop = [];
   if (!Array.isArray(save.levelTop)) save.levelTop = [];
+  save.lang = I18n.set(I18n.detect(save.lang));
   function writeSave() {
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(save));
@@ -278,6 +109,7 @@
       gold: v('--gold'),
       boardShadow: v('--board-shadow'),
     };
+    Fx.setFont(v('--font-display'));
     Bg.setTheme({ grid: theme.grid, arrows: theme.arrows });
   }
   if (window.matchMedia) {
@@ -550,9 +382,14 @@
   // comboWindow saniye içinde yeni bir ok kaçırıldıkça sürer; çarpmak bozar.
   const multFor = (c) => (c >= 15 ? 5 : c >= 10 ? 4 : c >= 6 ? 3 : c >= 3 ? 2 : 1);
   const COMBO_COLOR = [2, 2, 2, 3, 1, 4];
-  const numFmt = new Intl.NumberFormat(lang === 'tr' ? 'tr-TR' : 'en-US');
+  let numFmt;
+  let dateFmt;
+  function makeFormatters() {
+    numFmt = new Intl.NumberFormat(I18n.locale);
+    dateFmt = new Intl.DateTimeFormat(I18n.locale, { day: 'numeric', month: 'short' });
+  }
+  makeFormatters();
   const fmtNum = (n) => numFmt.format(Math.round(n));
-  const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', { day: 'numeric', month: 'short' });
   const fmtDate = (ms) => {
     try {
       return dateFmt.format(new Date(ms));
@@ -689,7 +526,7 @@
   function timeItems(hi) {
     return save.timeTop.map((e, i) => ({
       main: fmtNum(e.p),
-      sub: t('lbEntryTime', { a: e.a, b: e.b, d: fmtDate(e.d) }),
+      sub: t('arrowsCount', { n: e.a }) + ' · ' + t('boardsCount', { n: e.b }) + ' · ' + fmtDate(e.d),
       me: i === hi,
     }));
   }
@@ -1329,6 +1166,7 @@
     ad: '<rect x="3" y="5" width="18" height="13" rx="2.5"/><path d="M10 9.3v5.4l4.6-2.7z" fill="currentColor" stroke="none"/><path d="M8 21h8"/>',
     restart: '<path d="M3.5 12a8.5 8.5 0 1 0 2.8-6.3"/><path d="M3.5 4v5h5"/>',
     clock: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 3h5"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/>',
     trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20.5h7M10 17h4"/>',
     heart:
       '<path d="M12 20.3s-7.4-4.5-9.2-9C1.5 8 3.4 4.6 6.9 4.6c2 0 3.6 1.1 5.1 3 1.5-1.9 3.1-3 5.1-3 3.5 0 5.4 3.4 4.1 6.7-1.8 4.5-9.2 9-9.2 9z"/>',
@@ -1410,6 +1248,19 @@
   function showDialog(o) {
     card.innerHTML = '';
     card.className = 'card' + (o.variant ? ' card--' + o.variant : '');
+    if (o.corner) {
+      const c = el('button', 'card-corner');
+      c.type = 'button';
+      c.setAttribute('aria-label', o.corner.aria + ': ' + o.corner.label);
+      c.appendChild(svgIcon(o.corner.icon));
+      c.appendChild(el('span', null, o.corner.label));
+      c.addEventListener('click', () => {
+        Sound.unlock();
+        Sound.tick();
+        o.corner.onClick();
+      });
+      card.appendChild(c);
+    }
     if (o.eyebrow) card.appendChild(el('p', 'card-eyebrow', o.eyebrow));
     const h = el('h2', 'card-title', o.title);
     h.id = 'cardTitle';
@@ -1461,6 +1312,22 @@
     }
     if (o.badge) card.appendChild(el('p', 'card-badge', o.badge));
     if (o.body) card.appendChild(el('p', 'card-body', o.body));
+    if (o.choices) {
+      const grid = el('div', 'lang-grid');
+      for (const c of o.choices) {
+        const b = el('button', 'lang-btn' + (c.active ? ' is-active' : ''), c.label);
+        b.type = 'button';
+        b.lang = c.lang;
+        b.setAttribute('aria-pressed', String(!!c.active));
+        b.addEventListener('click', () => {
+          Sound.unlock();
+          Sound.tick();
+          c.onClick();
+        });
+        grid.appendChild(b);
+      }
+      card.appendChild(grid);
+    }
     if (o.list) {
       if (!o.list.items.length) card.appendChild(el('p', 'lb-empty', o.list.empty));
       else {
@@ -1523,7 +1390,8 @@
     showDialog({
       variant: 'menu',
       eyebrow: t('menuEyebrow'),
-      title: 'Ok Kaçış',
+      title: t('gameTitle'),
+      corner: { label: I18n.lang.toUpperCase(), icon: 'globe', aria: t('language'), onClick: showLanguages },
       body: t('howto'),
       actions: [
         {
@@ -1543,6 +1411,39 @@
         { kind: 'ghost', icon: 'trophy', label: t('leaderboard'), onClick: () => showLeaderboard('time') },
       ],
     });
+  }
+
+  function showLanguages() {
+    showDialog({
+      variant: 'lang',
+      title: t('language'),
+      choices: I18n.LANGS.map((l) => ({
+        label: l.name,
+        lang: l.code,
+        active: l.code === I18n.lang,
+        onClick: () => setLang(l.code),
+      })),
+      actions: [{ kind: 'secondary', label: t('back'), onClick: showMenu }],
+    });
+  }
+
+  function setLang(code) {
+    save.lang = I18n.set(code);
+    writeSave();
+    makeFormatters();
+    readTheme();
+    applyStatic();
+    updateHud();
+    setTip(S.mode === 'classic' ? levelTip() : '');
+    if (bannerShown && Ads.name === 'mock') Ads.showBanner(bannerSlot);
+    showMenu();
+  }
+
+  /** HTML'de sabit duran erişilebilirlik etiketleri. */
+  function applyStatic() {
+    canvas.setAttribute('aria-label', t('aBoard'));
+    scorebar.setAttribute('aria-label', t('aScore'));
+    bannerSlot.setAttribute('aria-label', t('aAd'));
   }
 
   let bannerShown = false;
@@ -1620,6 +1521,7 @@
     Fx.setReduced(reducedMotion);
     readTheme();
     Bg.init($('bg'), { reduced: reducedMotion });
+    applyStatic();
     resize();
     if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
     else window.addEventListener('resize', resize);
@@ -1648,6 +1550,7 @@
         },
         load: (n) => loadLevel(n, 'play'),
         leaderboard: (tab) => showLeaderboard(tab),
+        setLang: (code) => setLang(code),
         startRun: () => {
           hideDialog();
           startRun();
