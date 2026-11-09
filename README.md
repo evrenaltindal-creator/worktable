@@ -255,3 +255,22 @@ eklemeniz onerilir.
 - Ajanlar arasi gercek zamanli/coklu-tur muzakere (su an sirali tek turlu)
 - Masa animasyonlari, avatarlar icin gorsel iyilestirme
 - Cok kullanicili kimlik dogrulama ve yetkilendirme
+
+## Hediye Carki (ayri uygulama)
+
+`hediye-carki/index.html` AI Ofis'ten bagimsiz, tek dosyalik bir karar
+carkidir. Kurulum, sunucu veya `npm install` gerektirmez: dosyaya cift
+tiklayip tarayicida acmaniz yeterli (telefonda da calisir).
+
+- Secenekleri kullanicilar kendisi yazar (en fazla 30). Birden cok satir
+  yapistirilirsa her satir ayri secenek olur.
+- Her secenegin bir **payi** vardir (+/- dugmeleri). Payi buyuk olanin
+  carktaki dilimi de, cikma ihtimali de buyuk olur; yuzdesi listede yazar.
+- Iki gorunum: **Cark** (ok neredeyse o cikar) ve **Slot makinesi**
+  (kol cekilir, makara ortadaki cizgide durur).
+- Secim tarayicinin kriptografik rastgele sayi ureticisiyle yapilir;
+  animasyon yalnizca secilen sonuca gore durur.
+- Hazir listeler (Gezi plani, Ne yesek?, Aksam plani, Hafta sonu), son
+  cikanlar listesi, ses acma/kapama ve silinen seyi geri alma vardir.
+- Secenekler yalnizca o tarayicida (`localStorage`) saklanir, hicbir yere
+  gonderilmez. Internet yoksa yazi tipleri yerine sistem yazi tipi kullanilir.
