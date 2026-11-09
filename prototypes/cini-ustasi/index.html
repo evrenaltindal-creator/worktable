@@ -28,6 +28,12 @@
   --gold:#C99419;
   --danger:#B93A29;
   --scrim:rgba(8,14,26,.48);
+  --plate:rgba(255,255,255,.84);
+  --frame-soft:rgba(28,63,122,.28);
+  --pattern:rgba(28,63,122,.12);
+  --pattern-fill:rgba(28,63,122,.035);
+  --vignette:rgba(28,63,122,.10);
+  --medal:#1C3F7A;
   --t0:#2457B3; --t1:#13909A; --t2:#C33E2C; --t3:#37844D; --t4:#D6961C;
   --shadow:0 1px 2px rgba(19,33,58,.08), 0 10px 28px rgba(19,33,58,.10);
   /* reklam simülasyonu bilerek tek temalı: reklamlar oyunun kendi dünyasının dışında durur */
@@ -45,6 +51,7 @@
     --frame:#2A538F; --frame-ink:#BFD3F2; --field:#0E192B; --well:#18263E;
     --primary:#5C8BDD; --on-primary:#06101F; --ad:#E8B04A; --on-ad:#231700; --ad-ink:#E8B04A; --ok-ink:#6CC08A;
     --gold:#E2B13E; --danger:#E06650; --scrim:rgba(2,5,10,.62);
+    --plate:rgba(17,28,48,.84); --frame-soft:rgba(140,175,235,.28); --pattern:rgba(140,175,235,.10); --pattern-fill:rgba(140,175,235,.03); --vignette:rgba(0,0,0,.38); --medal:#7FA3E6;
     --t0:#3A70D0; --t1:#1FA5AE; --t2:#D6533F; --t3:#47A061; --t4:#E0A32C;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.35);
     color-scheme:dark;
@@ -55,6 +62,7 @@
   --frame:#2A538F; --frame-ink:#BFD3F2; --field:#0E192B; --well:#18263E;
   --primary:#5C8BDD; --on-primary:#06101F; --ad:#E8B04A; --on-ad:#231700; --ad-ink:#E8B04A; --ok-ink:#6CC08A;
   --gold:#E2B13E; --danger:#E06650; --scrim:rgba(2,5,10,.62);
+    --plate:rgba(17,28,48,.84); --frame-soft:rgba(140,175,235,.28); --pattern:rgba(140,175,235,.10); --pattern-fill:rgba(140,175,235,.03); --vignette:rgba(0,0,0,.38); --medal:#7FA3E6;
   --t0:#3A70D0; --t1:#1FA5AE; --t2:#D6533F; --t3:#47A061; --t4:#E0A32C;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.35);
   color-scheme:dark;
@@ -63,19 +71,21 @@
 [hidden]{display:none !important}
 html{height:100%;box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
-body{height:100%;margin:0;overflow:hidden;background-color:var(--bg);background-image:radial-gradient(var(--bg-dot) 1.2px, transparent 1.7px);background-size:24px 24px;color:var(--ink);font-family:var(--font-ui);-webkit-tap-highlight-color:transparent}
+body{height:100%;margin:0;overflow:hidden;background-color:var(--bg);color:var(--ink);font-family:var(--font-ui);-webkit-tap-highlight-color:transparent}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
 button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 
+/* Arka plan sahnesi (#bg) içeriğin altında, efekt katmanı (#fx) her şeyin üstünde; ikisi de tıklamayı geçirir */
+#bg,#fx{position:fixed;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+#bg{z-index:-1}
+#fx{z-index:75}
 .app{height:100%;display:flex;justify-content:center;gap:24px;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:8px 0}
 .game{flex:1 1 auto;max-width:460px;min-width:0;min-height:0;display:flex;flex-direction:column}
 
 /* Üst bar */
 .hud{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px}
-.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-size:1.3rem;line-height:1}
-.brand-mark{width:22px;height:22px;fill:var(--frame)}
 .hud-actions{display:flex;align-items:center;gap:6px}
 .coin-pill{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 12px 0 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:800;font-variant-numeric:tabular-nums}
 .coin-dot{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 32%, #FBE9AE 0 22%, var(--gold) 62%);box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.14)}
@@ -83,13 +93,22 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 .icon-btn svg{width:20px;height:20px}
 .ico{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 
-/* Skor */
-.scoreboard{display:grid;justify-items:center;gap:4px;padding-block:2px 6px}
-.best{font-size:.7rem;letter-spacing:.14em;color:var(--muted);font-weight:700}
-.best b{color:var(--ink);font-variant-numeric:tabular-nums;letter-spacing:.02em}
-.score{font-family:var(--font-display);font-size:clamp(2.3rem, 9vw, 3.1rem);line-height:1;font-variant-numeric:tabular-nums}
-.streak{height:24px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:999px;font-size:.78rem;font-weight:800;color:var(--on-primary);background:transparent}
-.streak.show{background:var(--primary)}
+/* Skor tablosu: çini pano gibi çerçeveli plaka; arkasında hareketli şemse döner */
+.scoreboard{display:grid;justify-items:center;padding-block:10px 20px}
+.plate{position:relative;width:min(290px,88%);display:grid;justify-items:center;gap:3px;padding:9px 18px 14px;border-radius:18px;background:var(--plate);border:2px solid var(--frame);box-shadow:inset 0 0 0 3px var(--plate),inset 0 0 0 4px var(--frame-soft),var(--shadow);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.gem{position:absolute;width:11px;height:11px;border-radius:2px;background:var(--t4);border:2px solid var(--frame);transform:rotate(45deg)}
+.gem.tl{top:-7px;left:-7px}.gem.tr{top:-7px;right:-7px}.gem.bl{bottom:-7px;left:-7px}.gem.br{bottom:-7px;right:-7px}
+.plate-title{display:flex;align-items:center;gap:7px;font-size:.6rem;font-weight:800;letter-spacing:.26em;color:var(--muted)}
+.plate-title svg{width:10px;height:10px;fill:var(--t4)}
+.score{font-family:var(--font-display);font-size:clamp(2.1rem, 8.5vw, 2.8rem);line-height:1.05;font-variant-numeric:tabular-nums}
+.rec{width:100%;display:flex;align-items:center;gap:8px;font-size:.68rem;font-weight:800;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rec-track{flex:1;height:6px;border-radius:3px;background:var(--well);overflow:hidden}
+#recFill{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--t1),var(--t0));transition:width .2s linear}
+.rec.record #recFill{background:linear-gradient(90deg,var(--gold),var(--t4))}
+.rec.record #recLabel{color:var(--ad-ink)}
+.streak{position:absolute;left:50%;bottom:-13px;transform:translateX(-50%);height:24px;display:flex;align-items:center;gap:8px;padding:0 10px;border-radius:999px;font-size:.76rem;font-weight:800;white-space:nowrap;color:var(--on-primary);background:var(--primary);visibility:hidden}
+.streak.show{visibility:visible}
+.streak.hot{background:var(--t2);color:#FFFFFF;animation:hot .7s ease-in-out infinite}
 .streak .dots{display:inline-flex;gap:3px}
 .streak .dots i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.3}
 .streak .dots i.on{opacity:1}
@@ -191,27 +210,40 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 .adsim-actions{display:grid;gap:8px}
 .adsim .btn-ghost{color:var(--adsim-ink);border-color:rgba(255,255,255,.25)}
 
+@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.14)}100%{transform:scale(1)}}
+.bump{animation:bump .34s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes hot{0%,100%{filter:brightness(1)}50%{filter:brightness(1.3)}}
+.rec-title{margin:8px 0 0;font-size:.68rem;font-weight:800;letter-spacing:.16em;color:var(--muted)}
+.records{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:4px;text-align:left;counter-reset:rk}
+.records li{display:grid;grid-template-columns:20px 1fr auto;gap:8px;align-items:center;padding:6px 10px;border-radius:10px;background:var(--surface-2);font-size:.86rem;font-variant-numeric:tabular-nums}
+.records li::before{counter-increment:rk;content:counter(rk);font-weight:800;color:var(--muted)}
+.records .d{color:var(--muted);font-size:.76rem}
+.records li.me{background:var(--primary);color:var(--on-primary)}
+.records li.me::before,.records li.me .d{color:inherit}
+
 @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
 </style>
 
+<canvas id="bg" aria-hidden="true"></canvas>
 <div class="app" lang="tr">
   <main class="game" aria-label="Çini Ustası">
     <header class="hud">
-      <div class="brand">
-        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg>
-        Çini Ustası
-      </div>
+      <span class="coin-pill" id="coinPill" title="Altın"><span class="coin-dot" aria-hidden="true"></span><span id="coins">0</span><span class="sr"> altın</span></span>
       <div class="hud-actions">
-        <span class="coin-pill" title="Altın"><span class="coin-dot" aria-hidden="true"></span><span id="coins">0</span><span class="sr"> altın</span></span>
+        <button class="icon-btn" id="soundBtn" aria-pressed="true" aria-label="Sesi kapat"></button>
         <button class="icon-btn" id="shopBtn" aria-label="Mağaza"><svg class="ico" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg></button>
         <button class="icon-btn only-narrow" id="panelBtn" aria-label="Reklam akışı paneli"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20v-8M12 20V4M19 20v-5"/></svg></button>
       </div>
     </header>
 
     <div class="scoreboard">
-      <div class="best">EN İYİ <b id="best">0</b></div>
-      <div class="score" id="score">0</div>
-      <div class="streak" id="streak"></div>
+      <div class="plate" id="plate">
+        <i class="gem tl"></i><i class="gem tr"></i><i class="gem bl"></i><i class="gem br"></i>
+        <div class="plate-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg>ÇİNİ USTASI<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg></div>
+        <div class="score" id="score" aria-label="Skor">0</div>
+        <div class="rec" id="rec"><span class="rec-track"><span id="recFill"></span></span><span id="recLabel">İlk rekorunu kur</span></div>
+        <div class="streak" id="streak"></div>
+      </div>
     </div>
 
     <div class="stage" id="stage">
@@ -304,6 +336,7 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 </div>
 
 <div class="sheet-scrim" id="sheetScrim" hidden></div>
+<canvas id="fx" aria-hidden="true"></canvas>
 
 <div class="backdrop" id="modal" hidden>
   <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -357,6 +390,12 @@ const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const bits = x => { let n = 0; while (x) { x &= x - 1; n++; } return n; };
 const rnd = n => (Math.random() * n) | 0;
 const easeOut = t => 1 - (1 - t) * (1 - t);
+function hexA(hex, a) {
+  let h = hex.replace('#', '');
+  if (h.length === 3) h = h.split('').map(ch => ch + ch).join('');
+  const n = parseInt(h, 16);
+  return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`;
+}
 function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = rnd(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 function weightedIndex(w) {
   let s = 0; for (const x of w) s += x;
@@ -505,7 +544,7 @@ function genTray(forceSolvable) {
 const DEFAULT_CFG = { minGames: 2, cooldownSec: 90, graceSec: 45, midGameSec: 0, fastAds: false, ecpm: { rewarded: 16, interstitial: 9, banner: 0.4 } };
 const CFG = Object.assign({}, DEFAULT_CFG, store.get('cfg', {}));
 CFG.ecpm = Object.assign({}, DEFAULT_CFG.ecpm, CFG.ecpm || {});
-const M = Object.assign({ best: 0, coins: 60, removeAds: false, gamesCompleted: 0, seenTutorial: false }, store.get('meta', {}));
+const M = Object.assign({ best: 0, coins: 60, removeAds: false, gamesCompleted: 0, seenTutorial: false, sound: true, records: [] }, store.get('meta', {}));
 M.boosters = Object.assign({ rotate: 2, refresh: 1, hammer: 1 }, M.boosters || {});
 const saveMeta = () => store.set('meta', M);
 const saveCfg = () => store.set('cfg', CFG);
@@ -609,8 +648,9 @@ function newGame() {
   G = {
     cells: new Array(64).fill(null), tray: [], score: 0, streak: 0, sinceClear: 0,
     coinsGame: 0, reviveUsed: false, over: false, stuck: false, lines: 0,
-    startedAt: Date.now(), lastBreakAt: Date.now()
+    startedAt: Date.now(), lastBreakAt: Date.now(), bestAtStart: M.best, recordHit: false
   };
+  scoreShown = 0;
   G.tray = genTray(true);
   mode = null; kb = null; drag = null;
   anims.length = 0; parts.length = 0; pops.length = 0; popIn.clear();
@@ -636,6 +676,7 @@ function place(i, r, c) {
   G.tray[i] = null;
   let gain = p.cells.length;
   const pr = r + p.h / 2, pc = c + p.w / 2;
+  Scene.onPlace(pr, pc, p.color);
 
   const lines = [];
   for (let k = 0; k < N; k++) {
@@ -648,27 +689,35 @@ function place(i, r, c) {
   if (L) {
     G.streak++; G.sinceClear = 0; G.lines += L;
     const set = new Set(); lines.forEach(line => line.forEach(ix => set.add(ix)));
-    let mono = 0;
-    for (const line of lines) { const c0 = G.cells[line[0]].c; if (line.every(ix => G.cells[ix].c === c0)) mono++; }
-    let gold = 0; set.forEach(ix => { if (G.cells[ix].g) gold++; });
+    const monoLines = lines.filter(line => line.every(ix => G.cells[ix].c === G.cells[line[0]].c));
+    const goldCells = [...set].filter(ix => G.cells[ix].g);
+    const mono = monoLines.length;
     const pts = (set.size * 10 * L + mono * 100) * G.streak;
-    const coins = gold * 5 + mono * 3;
-    gain += pts; G.coinsGame += coins;
-    startClear([...set].map(ix => ({ idx: ix, color: G.cells[ix].c, g: G.cells[ix].g })), pr, pc);
+    const coins = goldCells.length * 5 + mono * 3;
+    gain += pts;
+    // altın anında hesaba geçer; ekrandaki sayaç uçan altınlar varınca artar
+    if (coins) { M.coins += coins; G.coinsGame += coins; saveMeta(); }
+    const items = [...set].map(ix => ({ idx: ix, color: G.cells[ix].c, g: G.cells[ix].g }));
+    startClear(items, pr, pc);
     set.forEach(ix => { G.cells[ix] = null; popIn.delete(ix); });
+    const boardClear = G.cells.every(x => !x);
+    if (boardClear) gain += 500;
     let o = 0;
     popup('+' + fmt(pts), pc, pr, 'score', o++);
-    if (L >= 2) popup(L + ' çizgi', pc, pr, 'info', o++);
-    if (G.streak >= 2) popup('Seri ×' + G.streak, pc, pr, 'streak', o++);
     if (mono) popup('Desen tamam!', pc, pr, 'info', o++);
-    if (coins) popup('+' + coins + ' altın', pc, pr, 'gold', o++);
-    if (G.cells.every(x => !x)) { gain += 500; popup('Duvar tertemiz! +500', 4, 4, 'streak', o++); }
+    if (boardClear) popup('+500', 4, 4, 'streak', o++);
+    Scene.onClear({ items, lines: L, streak: G.streak, goldCells, monoLines, boardClear, pr, pc });
     track('line_clear', { cizgi: L, seri: G.streak, puan: pts, desen: mono, altin: coins });
   } else {
     G.sinceClear++;
     if (G.sinceClear >= 3) G.streak = 0;
   }
   G.score += gain;
+  if (!G.recordHit && G.bestAtStart > 0 && G.score > G.bestAtStart) {
+    G.recordHit = true;
+    Scene.onRecord(true);
+    track('new_record_live', { puan: G.score, onceki: G.bestAtStart });
+  }
 
   let wait = null;
   if (G.tray.every(x => !x)) { G.tray = genTray(false); wait = maybeBreak(); }
@@ -728,7 +777,7 @@ function revive() {
   }
   startClear(list, br + 2, bc + 2);
   G.tray = genTray(true);
-  popup('Devam!', bc + 2, br + 2, 'streak', 0);
+  Scene.onRevive();
   track('revive', { temizlenen: list.length });
   hideToast(); updateHud(); saveGame(); dirty = true;
   checkStuck();
@@ -740,12 +789,20 @@ function endGame() {
   G.over = true; G.stuck = false; mode = null; kb = null; drag = null; setModeUI(); hideToast();
   const endCoins = Math.floor(G.score / 250);
   const total = G.coinsGame + endCoins;
-  M.coins += total; M.gamesCompleted++;
+  M.coins += endCoins; M.gamesCompleted++;
   const isBest = G.score > M.best;
   if (isBest) M.best = G.score;
+  G.endT = Date.now();
+  if (G.score > 0) M.records = (M.records || []).concat({ s: G.score, t: G.endT }).sort((a, b) => b.s - a.s).slice(0, 5);
+  if (isBest && !G.recordHit) Scene.onRecord(false);
   track('game_end', { puan: G.score, sure_sn: Math.round((Date.now() - G.startedAt) / 1000), cizgi: G.lines, altin: total, devam: G.reviveUsed ? 1 : 0 });
   saveMeta(); saveGame(); updateHud(); dirty = true;
   showResult(total, isBest, false);
+}
+
+function recordsHtml() {
+  const list = (M.records || []).map(r => `<li class="${r.t === G.endT ? 'me' : ''}"><span class="d">${new Date(r.t).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}</span><b>${fmt(r.s)}</b></li>`).join('');
+  return list ? `<p class="rec-title">REKOR TABLOSU</p><ol class="records">${list}</ol>` : '';
 }
 
 function showResult(total, isBest, doubled) {
@@ -765,7 +822,7 @@ function showResult(total, isBest, doubled) {
   } });
   openModal({
     title: isBest ? 'Yeni rekor!' : 'Duvar doldu',
-    body: `<p class="big">${fmt(G.score)}</p><p class="sub">En iyi ${fmt(M.best)} · ${G.lines} çizgi · +${total} altın</p>`,
+    body: `<p class="big">${fmt(G.score)}</p><p class="sub">${G.lines} çizgi · +${total} altın</p>${recordsHtml()}`,
     actions, dismissible: false
   });
 }
@@ -846,7 +903,8 @@ function doHammer(r, c) {
   const gold = list.filter(x => x.g).length * 5;
   list.forEach(x => { G.cells[x.idx] = null; popIn.delete(x.idx); });
   startClear(list, r + 0.5, c + 0.5);
-  if (gold) { G.coinsGame += gold; popup('+' + gold + ' altın', c + 0.5, r + 0.5, 'gold', 0); }
+  if (gold) { G.coinsGame += gold; M.coins += gold; }
+  Scene.onHammer(list, r, c);
   M.boosters.hammer--;
   track('booster_use', { tur: 'cekic', kirilan: list.length });
   mode = null; hoverCell = null; setModeUI();
@@ -867,15 +925,10 @@ function startClear(list, cr, cc) {
     return { ...o, r, c, delay: REDUCED ? 0 : (Math.abs(r + 0.5 - cr) + Math.abs(c + 0.5 - cc)) * 24 };
   });
   anims.push({ items, t0, dur: REDUCED ? 140 : 360 });
-  if (REDUCED) return;
-  for (const it of items) for (let k = 0; k < 3; k++) parts.push({
-    x: it.c + 0.5, y: it.r + 0.5, vx: (Math.random() - 0.5) * 5, vy: -1.5 - Math.random() * 3.5,
-    s: 0.1 + Math.random() * 0.1, rot: Math.random() * 3, vr: (Math.random() - 0.5) * 12,
-    color: it.color, t0: t0 + it.delay + 60, life: 0.55 + Math.random() * 0.25
-  });
 }
 function popup(text, x, y, kind, order) {
-  pops.push({ text, x, y: y - order * 0.75, kind, t0: performance.now() + order * 110, dur: REDUCED ? 700 : 1000 });
+  const up = y - order * 0.75;
+  pops.push({ text, x, y: up < 0.45 ? y + order * 0.75 : up, kind, t0: performance.now() + order * 110, dur: REDUCED ? 700 : 1000 });
 }
 
 /* ---------- Çizim ---------- */
@@ -891,9 +944,12 @@ function readColors() {
   colors = {
     frame: v('--frame'), frameInk: v('--frame-ink'), field: v('--field'), well: v('--well'),
     ink: v('--ink'), primary: v('--primary'), gold: v('--gold'), danger: v('--danger'),
-    tiles: [v('--t0'), v('--t1'), v('--t2'), v('--t3'), v('--t4')]
+    tiles: [v('--t0'), v('--t1'), v('--t2'), v('--t3'), v('--t4')],
+    bg: v('--bg'), pattern: v('--pattern'), patternFill: v('--pattern-fill'), vignette: v('--vignette'), medal: v('--medal')
   };
-  buildSprites(); dirty = true;
+  buildSprites();
+  if (Scene.w) { buildSceneArt(); Scene.lastBg = -1e9; }
+  dirty = true;
 }
 
 function layout() {
@@ -909,6 +965,7 @@ function layout() {
   canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   buildSprites(); dirty = true;
+  if (Scene.w) locatePlate();
 }
 
 function rrect(x, X, Y, w, h, r) {
@@ -1025,11 +1082,14 @@ function currentTarget() {
   return null;
 }
 
-function drawFrame() {
+function drawFrame(now) {
   // kenar suyu (bordür)
   rrect(ctx, 0, 0, W, B + 2 * frame, cs * 0.32); ctx.fillStyle = colors.frame; ctx.fill();
-  ctx.fillStyle = colors.frameInk; ctx.globalAlpha = 0.55;
-  const d = frame * 0.24;
+  // seri sürerken kenar suyundaki baklavalar yanıp söner
+  const hot = G && !G.over && G.streak >= 2 && !REDUCED;
+  ctx.fillStyle = hot ? colors.tiles[G.streak >= 4 ? 2 : 4] : colors.frameInk;
+  ctx.globalAlpha = hot ? 0.7 + 0.3 * Math.sin(now / 110) : 0.55;
+  const d = frame * (hot ? 0.3 : 0.24);
   const diamond = (x, y) => { ctx.beginPath(); ctx.moveTo(x, y - d); ctx.lineTo(x + d, y); ctx.lineTo(x, y + d); ctx.lineTo(x - d, y); ctx.closePath(); ctx.fill(); };
   for (let k = 0; k <= N; k++) {
     diamond(bx + k * cs, frame / 2); diamond(bx + k * cs, by + B + frame / 2);
@@ -1044,7 +1104,7 @@ function drawFrame() {
 
 function draw(now) {
   ctx.clearRect(0, 0, W, H);
-  drawFrame();
+  drawFrame(now);
   const tgt = currentTarget();
   const s = cs - 2 * gap;
 
@@ -1152,11 +1212,493 @@ function draw(now) {
   ctx.globalAlpha = 1;
 }
 
+let lastFrame = 0, scoreShown = 0;
 function loop(now) {
   requestAnimationFrame(loop);
-  if (!G || !colors) return;
-  const busy = anims.length || parts.length || pops.length || popIn.size;
+  if (!colors || !Scene.w) return;
+  const dt = Math.min(0.05, (now - (lastFrame || now)) / 1000);
+  lastFrame = now;
+  // Arka plan sakin anlarda ~30 kare/sn, olay varken her kare çizilir
+  if (REDUCED) { if (Scene.lastBg < 0) { drawBg(now, 0); Scene.lastBg = now; } }
+  else {
+    const eventful = Scene.waves.length || Scene.flashes.length || Scene.pulse > 0 || (G && G.streak >= 2);
+    if (eventful || now - Scene.lastBg >= 33) { drawBg(now, Math.min(0.1, (now - Scene.lastBg) / 1000)); Scene.lastBg = now; }
+  }
+  drawFx(now, dt);
+  applyShake(now);
+  if (G && scoreShown !== G.score) {
+    const d = G.score - scoreShown;
+    scoreShown += Math.sign(d) * Math.max(1, Math.ceil(Math.abs(d) * 0.12));
+    renderScore();
+  }
+  if (!G) return;
+  const busy = anims.length || parts.length || pops.length || popIn.size || (G.streak >= 2 && !G.over && !REDUCED);
   if (dirty || busy) { dirty = false; draw(now); }
+}
+
+/* ---------- Ses: WebAudio ile anında üretilen kısa efektler (ses dosyası yok) ----------
+   Seri büyüdükçe kırılma sesi bir pentatonik basamak yükselir. */
+const Sfx = {
+  ac: null, out: null, noiseBuf: null,
+  init() {
+    if (this.ac) { if (this.ac.state === 'suspended') this.ac.resume(); return; }
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      this.ac = new AC();
+      this.out = this.ac.createGain(); this.out.gain.value = 0.55; this.out.connect(this.ac.destination);
+      const len = Math.floor(this.ac.sampleRate * 0.5);
+      this.noiseBuf = this.ac.createBuffer(1, len, this.ac.sampleRate);
+      const d = this.noiseBuf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    } catch (e) { this.ac = null; }
+  },
+  ok() { return M.sound && this.ac && this.ac.state === 'running'; },
+  tone(f, { dur = 0.12, type = 'sine', vol = 0.15, at = 0, to = 0 } = {}) {
+    if (!this.ok()) return;
+    const t = this.ac.currentTime + at, o = this.ac.createOscillator(), g = this.ac.createGain();
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    if (to) o.frequency.exponentialRampToValueAtTime(to, t + dur);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(this.out); o.start(t); o.stop(t + dur + 0.05);
+  },
+  noise({ dur = 0.2, vol = 0.12, at = 0, freq = 900, q = 0.8 } = {}) {
+    if (!this.ok()) return;
+    const t = this.ac.currentTime + at;
+    const src = this.ac.createBufferSource(), f = this.ac.createBiquadFilter(), g = this.ac.createGain();
+    src.buffer = this.noiseBuf; f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = q;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f); f.connect(g); g.connect(this.out); src.start(t); src.stop(t + dur + 0.05);
+  },
+  place() { this.tone(240, { dur: 0.09, type: 'triangle', vol: 0.22, to: 150 }); this.noise({ dur: 0.05, vol: 0.06, freq: 2600 }); },
+  clear(lines, streak) {
+    const steps = [0, 2, 4, 7, 9, 12, 14, 16, 19, 21];
+    const base = 440 * Math.pow(2, Math.min(Math.max(streak, 1) - 1, 6) * 2 / 12);
+    for (let i = 0; i < 2 + Math.min(lines, 6); i++) {
+      const f = base * Math.pow(2, steps[i] / 12);
+      this.tone(f, { dur: 0.42, vol: 0.14, at: i * 0.055 });
+      this.tone(f * 2, { dur: 0.2, type: 'triangle', vol: 0.04, at: i * 0.055 });
+    }
+    this.noise({ dur: 0.18, vol: 0.08, freq: 3200, q: 0.6 });
+    if (lines >= 2) { this.tone(110, { dur: 0.35, vol: 0.3, to: 45 }); this.noise({ dur: 0.35, vol: 0.14, freq: 300, q: 0.5 }); }
+  },
+  coin() { this.tone(1568, { dur: 0.08, type: 'square', vol: 0.035 }); this.tone(2093, { dur: 0.16, vol: 0.09, at: 0.05 }); },
+  record() { [523, 659, 784, 1047, 1319].forEach((f, i) => this.tone(f, { dur: 0.32, type: 'triangle', vol: 0.13, at: i * 0.09 })); },
+  smash() { this.tone(160, { dur: 0.25, type: 'square', vol: 0.06, to: 60 }); this.noise({ dur: 0.3, vol: 0.18, freq: 700, q: 0.7 }); },
+  pick() { this.tone(700, { dur: 0.05, vol: 0.06 }); }
+};
+// Titreşim Android'de çalışır; iOS Safari desteklemez (Unity'de iOS haptics kullanılır)
+const buzz = pat => { try { navigator.vibrate && navigator.vibrate(pat); } catch (e) { /* yok say */ } };
+
+/* ---------- Sahne: hareketli arka plan (#bg) ve ekran efektleri (#fx) ----------
+   Arka plan: kayan yıldız-haç çini deseni, skor plakasının arkasında dönen şemse,
+   yükselen lale / karanfil / saz yaprağı / yıldız / rozet motifleri.
+   Efektler: kıvılcım, şok dalgası, renk parlaması, sallanma, övgü yazısı,
+   uçan altın, havai fişek, konfeti. */
+const bgCv = $('bg'), bgx = bgCv.getContext('2d');
+const fxCv = $('fx'), fxx = fxCv.getContext('2d');
+const MOTIFS = 5;
+const Scene = {
+  w: 0, h: 0, dpr: 1, P: 112, pattern: null, vignette: null,
+  medalOuter: null, medalInner: null, medalSize: 0, medalR: 150, motifs: [],
+  plate: { x: 0, y: 0, w: 0 },
+  floaters: [], waves: [], flashes: [], sparks: [], praises: [], coins: [],
+  pendingCoins: 0, pulse: 0, shake: null, lastBg: -1e9, fxWas: false,
+
+  onPlace(pr, pc, color) {
+    Sfx.place(); buzz(8);
+    if (REDUCED) return;
+    const s = cellScreen(pr - 0.5, pc - 0.5);
+    for (let i = 0; i < 7; i++) spark(s.x, s.y, colors.tiles[color], { speed: 150, lift: 60, g: 500, s: 1.3 + Math.random() * 1.4, life: 0.35 + Math.random() * 0.15 });
+  },
+
+  onClear(o) {
+    Sfx.clear(o.lines, o.streak);
+    buzz(o.lines >= 2 ? [20, 40, 30] : 15);
+    bump($('score'));
+    this.pulse = Math.min(1.3, this.pulse + 0.4 + 0.2 * o.lines);
+    let k = 0;
+    for (const ix of o.goldCells) this.flyCoin(cellScreen(ix >> 3, ix & 7), 5, k++);
+    for (const line of o.monoLines) { const mid = line[3]; this.flyCoin(cellScreen(mid >> 3, mid & 7), 3, k++); }
+    const words = [null, null, 'Harika!', 'Muhteşem!', 'Efsane!'];
+    const wcol = [null, null, colors.tiles[1], colors.tiles[2], colors.gold];
+    if (o.lines >= 2) {
+      const L = Math.min(o.lines, 4);
+      this.praise(words[L], wcol[L], 1 + 0.12 * (L - 2));
+      if (o.streak >= 2) this.praise('Seri ×' + o.streak, colors.primary, 0.6, 170, 0.24);
+    } else if (o.streak >= 2) {
+      this.praise('Seri ×' + o.streak, o.streak >= 4 ? colors.tiles[2] : colors.primary, 0.75 + Math.min(0.3, o.streak * 0.04));
+    }
+    if (o.boardClear) { this.praise('Duvar tertemiz!', colors.gold, 0.85, 450, -0.5); Sfx.record(); }
+    if (REDUCED) return;
+
+    const now = performance.now(), b = boardScreen();
+    const counts = [0, 0, 0, 0, 0];
+    const n = o.items.length > 20 ? 2 : 3;
+    for (const it of o.items) {
+      const r = it.idx >> 3, c = it.idx & 7, s = cellScreen(r, c);
+      counts[it.color]++;
+      const delay = (Math.abs(r + 0.5 - o.pr) + Math.abs(c + 0.5 - o.pc)) * 24;
+      for (let q = 0; q < n; q++) spark(s.x, s.y, colors.tiles[it.color], { delay, speed: 260 + 60 * o.lines });
+      if (Math.random() < 0.35) spark(s.x, s.y, colors.gold, { delay, kind: 'star', s: 4 + Math.random() * 3, speed: 200, life: 0.7 });
+    }
+    const dom = counts.indexOf(Math.max(...counts));
+    const far = Math.hypot(this.w, this.h) * 0.62;
+    this.waves.push({ x: b.x, y: b.y, r0: b.r * 0.95, r1: far, t0: now, dur: 750, color: colors.tiles[dom] });
+    if (o.lines >= 2) {
+      this.waves.push({ x: b.x, y: b.y, r0: b.r * 0.95, r1: far, t0: now + 130, dur: 800, color: colors.gold });
+      this.flashes.push({ color: colors.tiles[dom], t0: now, dur: 320 });
+      shakeBoard(2 + 3 * o.lines + (o.streak >= 4 ? 2 : 0));
+    } else if (o.streak >= 4) shakeBoard(3);
+    this.burst(b.x, b.y, 3 + 3 * o.lines + Math.min(6, o.streak));
+    if (o.boardClear) {
+      for (let i = 0; i < 6; i++) this.firework(this.w * (0.15 + Math.random() * 0.7), this.h * (0.12 + Math.random() * 0.5), 150 + i * 160);
+      this.burst(b.x, b.y, 18);
+    }
+  },
+
+  onRecord(withPraise) {
+    Sfx.record(); buzz([30, 50, 30, 50, 60]);
+    bump($('plate'));
+    this.pulse = 1.3;
+    if (withPraise) this.praise('Yeni rekor!', colors.gold, 1.05, 380, -0.45);
+    if (REDUCED) return;
+    const p = this.plate;
+    for (let i = 0; i < 70; i++) spark(p.x + (Math.random() - 0.5) * p.w * 0.6, p.y, colors.tiles[i % 5], {
+      kind: 'confetti', angle: -Math.PI / 2 + (Math.random() - 0.5) * 2.2, speed: 520, lift: 0, g: 620, drag: 0.972,
+      s: 3 + Math.random() * 3, life: 1.5 + Math.random() * 0.6
+    });
+    for (let i = 0; i < 4; i++) this.firework(this.w * (0.15 + Math.random() * 0.7), this.h * (0.1 + Math.random() * 0.4), 200 + i * 220);
+  },
+
+  onRevive() {
+    Sfx.clear(3, 1); buzz([20, 30, 20]);
+    this.praise('Devam!', colors.tiles[1], 0.9);
+    if (REDUCED) return;
+    const b = boardScreen();
+    this.waves.push({ x: b.x, y: b.y, r0: b.r * 0.4, r1: Math.hypot(this.w, this.h) * 0.6, t0: performance.now(), dur: 900, color: colors.tiles[1] });
+    this.burst(b.x, b.y, 14);
+  },
+
+  onHammer(list, r, c) {
+    Sfx.smash(); buzz([30, 20, 30]);
+    let k = 0;
+    for (const it of list) if (it.g) this.flyCoin(cellScreen(it.idx >> 3, it.idx & 7), 5, k++);
+    if (REDUCED) return;
+    shakeBoard(9);
+    for (const it of list) {
+      const s = cellScreen(it.idx >> 3, it.idx & 7);
+      for (let q = 0; q < 4; q++) spark(s.x, s.y, colors.tiles[it.color], { speed: 380, lift: 160 });
+    }
+    const s = cellScreen(r, c);
+    this.waves.push({ x: s.x, y: s.y, r0: 10, r1: Math.hypot(this.w, this.h) * 0.4, t0: performance.now(), dur: 600, color: colors.danger });
+  },
+
+  praise(text, color, scale = 1, delay = 0, dy = -0.12) {
+    const b = boardScreen(), size = Math.max(28, b.r * 0.3) * scale, now = performance.now();
+    // Ekranda kalan yazılarla çakışmayan ilk yuvaya yerleştir
+    const live = this.praises.filter(q => q.t0 + q.dur > now + delay);
+    const slots = [dy, -0.5, 0.55, -0.85, 0.85];
+    const y = b.y + b.r * (slots.find(sl => live.every(q => Math.abs(b.y + sl * b.r - q.y) > (size + q.size) * 0.5)) ?? dy);
+    this.praises.push({ text, color, x: b.x, y, size, t0: now + delay, dur: 1150, tilt: REDUCED ? 0 : (Math.random() - 0.5) * 0.12 });
+    if (this.praises.length > 5) this.praises.shift();
+  },
+
+  flyCoin(pos, value, k) {
+    if (REDUCED) return;
+    this.pendingCoins += value;
+    this.coins.push({ x0: pos.x, y0: pos.y, t0: performance.now() + 220 + k * 90, dur: 620 + Math.random() * 160, value, bend: (Math.random() - 0.5) * 140 });
+  },
+
+  burst(x, y, n) {
+    if (REDUCED) return;
+    const now = performance.now();
+    for (let i = 0; i < n; i++) {
+      const f = newFloater(false), a = Math.random() * Math.PI * 2, sp = 160 + Math.random() * 380;
+      Object.assign(f, { x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, life: 2.4 + Math.random(), born: now, a: 0.35 + Math.random() * 0.3 });
+      this.floaters.push(f);
+    }
+    const extra = this.floaters.filter(f => f.life);
+    if (extra.length > 90) { const drop = new Set(extra.slice(0, extra.length - 90)); this.floaters = this.floaters.filter(f => !drop.has(f)); }
+  },
+
+  firework(x, y, delay) {
+    const main = colors.tiles[rnd(5)];
+    for (let i = 0; i < 46; i++) spark(x, y, Math.random() < 0.7 ? main : colors.gold, {
+      angle: i / 46 * Math.PI * 2 + Math.random() * 0.1, speed: 300, lift: 0, g: 180, drag: 0.965,
+      s: 1.8 + Math.random() * 1.6, life: 0.9 + Math.random() * 0.5, delay, kind: Math.random() < 0.3 ? 'star' : 'dot'
+    });
+  }
+};
+
+function cellScreen(r, c) {
+  const rect = canvas.getBoundingClientRect(), k = rect.width / W;
+  return { x: rect.left + (bx + (c + 0.5) * cs) * k, y: rect.top + (by + (r + 0.5) * cs) * k };
+}
+function boardScreen() {
+  const rect = canvas.getBoundingClientRect(), k = rect.width / W;
+  return { x: rect.left + (bx + B / 2) * k, y: rect.top + (by + B / 2) * k, r: B / 2 * k };
+}
+function spark(x, y, color, o = {}) {
+  if (Scene.sparks.length > 450) return;
+  const a = o.angle ?? Math.random() * Math.PI * 2, sp = (o.speed ?? 260) * (0.4 + Math.random() * 0.8);
+  Scene.sparks.push({
+    x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - (o.lift ?? 120), g: o.g ?? 700, drag: o.drag ?? 0.985,
+    s: o.s ?? (2 + Math.random() * 3), life: o.life ?? (0.5 + Math.random() * 0.35), color, kind: o.kind || 'dot',
+    rot: Math.random() * 6, vr: (Math.random() - 0.5) * 14, t0: performance.now() + (o.delay || 0)
+  });
+}
+function shakeBoard(amp) {
+  if (REDUCED) return;
+  Scene.shake = { amp: Math.min(16, Math.max(amp, Scene.shake ? Scene.shake.amp : 0)), t0: performance.now() };
+}
+function applyShake(now) {
+  const s = Scene.shake;
+  if (!s) return;
+  const p = (now - s.t0) / 380;
+  if (p >= 1) { canvas.style.transform = ''; Scene.shake = null; return; }
+  const a = s.amp * (1 - p) * (1 - p), j = () => (Math.random() * 2 - 1) * a;
+  canvas.style.transform = `translate(${j().toFixed(1)}px, ${j().toFixed(1)}px) rotate(${(j() * 0.08).toFixed(2)}deg)`;
+}
+
+function newFloater(anywhere) {
+  const depth = Math.random();
+  return {
+    x: Math.random() * Scene.w, y: anywhere ? Math.random() * Scene.h : Scene.h + 40,
+    s: 14 + depth * 22, a: 0.16 + depth * 0.26, sp: 10 + depth * 22, vx: 0, vy: 0,
+    sway: 8 + Math.random() * 18, ph: Math.random() * 6.28, fr: 0.4 + Math.random() * 0.6,
+    rot: Math.random() * 6.28, vr: (Math.random() - 0.5) * 0.6, m: rnd(MOTIFS), c: rnd(5), life: 0, born: 0
+  };
+}
+
+function resizeScene() {
+  Scene.w = window.innerWidth; Scene.h = window.innerHeight;
+  Scene.dpr = Math.min(window.devicePixelRatio || 1, 1.75);
+  for (const [cv, x] of [[bgCv, bgx], [fxCv, fxx]]) {
+    cv.width = Math.round(Scene.w * Scene.dpr); cv.height = Math.round(Scene.h * Scene.dpr);
+    x.setTransform(Scene.dpr, 0, 0, Scene.dpr, 0, 0);
+  }
+  locatePlate();
+  buildSceneArt();
+  const want = clamp(Math.round(Scene.w * Scene.h / 26000), 12, 40);
+  const ambient = Scene.floaters.filter(f => !f.life);
+  while (ambient.length < want) { const f = newFloater(true); Scene.floaters.push(f); ambient.push(f); }
+  if (ambient.length > want) { const drop = new Set(ambient.slice(want)); Scene.floaters = Scene.floaters.filter(f => !drop.has(f)); }
+  Scene.lastBg = -1e9; Scene.fxWas = true;
+}
+function locatePlate() {
+  const r = $('plate').getBoundingClientRect();
+  Scene.plate = { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width };
+  const R = clamp(r.width * 0.62, 110, 210);
+  if (Math.abs(R - Scene.medalR) > 3 || !Scene.medalOuter) { Scene.medalR = R; if (colors) buildMedal(); }
+  Scene.lastBg = -1e9;
+}
+
+function buildSceneArt() {
+  if (!colors || !Scene.w) return;
+  buildPattern(); buildMedal(); buildMotifs();
+  const g = bgx.createRadialGradient(Scene.w / 2, Scene.h * 0.42, Math.min(Scene.w, Scene.h) * 0.2, Scene.w / 2, Scene.h * 0.42, Math.max(Scene.w, Scene.h) * 0.8);
+  g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, colors.vignette);
+  Scene.vignette = g;
+}
+function artCanvas(size) {
+  const c = document.createElement('canvas');
+  c.width = c.height = Math.round(size * Scene.dpr);
+  const x = c.getContext('2d'); x.scale(Scene.dpr, Scene.dpr);
+  return [c, x];
+}
+function star8(x, cx, cy, R, inner) {
+  x.beginPath();
+  for (let i = 0; i < 16; i++) { const a = -Math.PI / 2 + i * Math.PI / 8, r = i % 2 ? R * inner : R; x.lineTo(cx + Math.cos(a) * r, cy + Math.sin(a) * r); }
+  x.closePath();
+}
+// Yıldız-haç çini deseni: her karede ortada ve köşelerde sekiz köşeli yıldız
+function buildPattern() {
+  const P = Scene.P, [c, x] = artCanvas(P);
+  x.strokeStyle = colors.pattern; x.fillStyle = colors.patternFill; x.lineWidth = 1.1;
+  for (const [cx, cy] of [[P / 2, P / 2], [0, 0], [P, 0], [0, P], [P, P]]) { star8(x, cx, cy, P * 0.3, 0.765); x.fill(); x.stroke(); }
+  for (const [cx, cy] of [[P / 2, 0], [0, P / 2], [P, P / 2], [P / 2, P]]) {
+    x.beginPath(); x.moveTo(cx, cy - P * 0.07); x.lineTo(cx + P * 0.07, cy); x.lineTo(cx, cy + P * 0.07); x.lineTo(cx - P * 0.07, cy); x.closePath(); x.stroke();
+  }
+  x.fillStyle = colors.pattern;
+  for (const [cx, cy] of [[P / 2, P / 2], [0, 0], [P, 0], [0, P], [P, P]]) { x.beginPath(); x.arc(cx, cy, P * 0.035, 0, 7); x.fill(); }
+  Scene.pattern = c;
+}
+// Şemse (güneş madalyonu): dış halka dilimli taç, iç halka yıldız
+function buildMedal() {
+  const R = Scene.medalR, size = Math.ceil(R * 2 + 8);
+  const [o, ox] = artCanvas(size); ox.translate(size / 2, size / 2); ox.fillStyle = ox.strokeStyle = colors.medal;
+  ox.lineWidth = 2; ox.beginPath(); ox.arc(0, 0, R, 0, 7); ox.stroke();
+  ox.lineWidth = 1; ox.beginPath(); ox.arc(0, 0, R * 0.74, 0, 7); ox.stroke();
+  for (let i = 0; i < 24; i++) { ox.save(); ox.rotate(i * Math.PI / 12); ox.beginPath(); ox.ellipse(0, -R * 0.87, R * 0.055, R * 0.105, 0, 0, 7); ox.fill(); ox.restore(); }
+  for (let i = 0; i < 48; i++) { const a = i * Math.PI / 24; ox.beginPath(); ox.arc(Math.cos(a) * R * 0.79, Math.sin(a) * R * 0.79, R * 0.012 + 0.6, 0, 7); ox.fill(); }
+  const [n, nx] = artCanvas(size); nx.translate(size / 2, size / 2); nx.fillStyle = nx.strokeStyle = colors.medal; nx.lineWidth = 1.5;
+  for (const k of [0, 1]) { nx.save(); nx.rotate(k * Math.PI / 4); nx.strokeRect(-R * 0.48, -R * 0.48, R * 0.96, R * 0.96); nx.restore(); }
+  nx.beginPath();
+  for (let i = 0; i < 32; i++) { const a = i * Math.PI / 16, r = i % 2 ? R * 0.3 : R * 0.42; nx.lineTo(Math.cos(a) * r, Math.sin(a) * r); }
+  nx.closePath(); nx.globalAlpha = 0.35; nx.fill(); nx.globalAlpha = 1; nx.stroke();
+  Scene.medalOuter = o; Scene.medalInner = n; Scene.medalSize = size;
+}
+function buildMotifs() {
+  const S = 44;
+  Scene.motifs = [];
+  for (let m = 0; m < MOTIFS; m++) for (let ci = 0; ci < 5; ci++) {
+    const [c, x] = artCanvas(S); x.translate(S / 2, S / 2);
+    paintMotif(x, m, S * 0.42, colors.tiles[ci]);
+    Scene.motifs[m * 5 + ci] = c;
+  }
+}
+function paintMotif(x, m, k, col) {
+  x.fillStyle = col; x.strokeStyle = col; x.lineWidth = k * 0.1; x.lineCap = 'round';
+  const el = (cx, cy, rx, ry, rot) => { x.beginPath(); x.ellipse(cx, cy, rx, ry, rot, 0, 7); x.fill(); };
+  switch (m) {
+    case 0: // lale
+      el(0, -k * 0.25, k * 0.28, k * 0.62, 0); el(-k * 0.36, -k * 0.1, k * 0.22, k * 0.55, -0.45); el(k * 0.36, -k * 0.1, k * 0.22, k * 0.55, 0.45);
+      x.beginPath(); x.moveTo(0, k * 0.3); x.quadraticCurveTo(k * 0.12, k * 0.7, 0, k); x.stroke();
+      el(-k * 0.28, k * 0.68, k * 0.1, k * 0.3, 0.9); break;
+    case 1: // karanfil
+      for (let i = -2; i <= 2; i++) el(Math.sin(i * 0.38) * k * 0.55, -k * 0.2 - Math.cos(i * 0.38) * k * 0.45, k * 0.16, k * 0.38, i * 0.38);
+      el(0, k * 0.25, k * 0.26, k * 0.2, 0);
+      x.beginPath(); x.moveTo(0, k * 0.4); x.lineTo(0, k); x.stroke(); break;
+    case 2: // saz yaprağı
+      x.rotate(0.5); x.beginPath(); x.moveTo(0, -k); x.quadraticCurveTo(k * 0.55, -k * 0.1, 0, k); x.quadraticCurveTo(-k * 0.55, -k * 0.1, 0, -k); x.fill(); break;
+    case 3: // sekiz köşeli yıldız
+      star8(x, 0, 0, k * 0.9, 0.62); x.fill(); break;
+    default: // rozet
+      for (let i = 0; i < 6; i++) { x.save(); x.rotate(i * Math.PI / 3); el(0, -k * 0.5, k * 0.22, k * 0.45, 0); x.restore(); }
+      x.globalCompositeOperation = 'destination-out'; x.beginPath(); x.arc(0, 0, k * 0.16, 0, 7); x.fill(); x.globalCompositeOperation = 'source-over';
+  }
+}
+
+function drawBg(now, dt) {
+  const x = bgx, w = Scene.w, h = Scene.h, t = REDUCED ? 0 : now;
+  x.globalAlpha = 1;
+  x.fillStyle = colors.bg; x.fillRect(0, 0, w, h);
+  const P = Scene.P, ox = -((t * 0.006) % P), oy = -((t * 0.0035) % P);
+  for (let yy = oy; yy < h; yy += P) for (let xx = ox; xx < w; xx += P) x.drawImage(Scene.pattern, xx, yy, P, P);
+  x.fillStyle = Scene.vignette; x.fillRect(0, 0, w, h);
+
+  // seri sürerken şemsenin arkasında sıcak bir hale
+  const { x: px, y: py } = Scene.plate;
+  const st = G && !G.over ? G.streak : 0;
+  if (st >= 2 && !REDUCED) {
+    const R = Scene.medalR * 1.3, a = Math.min(0.45, 0.12 * (st - 1)) * (0.85 + 0.15 * Math.sin(now / 160));
+    const gl = x.createRadialGradient(px, py, 0, px, py, R);
+    gl.addColorStop(0, hexA(colors.tiles[st >= 4 ? 2 : 4], a)); gl.addColorStop(1, hexA(colors.tiles[4], 0));
+    x.fillStyle = gl; x.fillRect(px - R, py - R, R * 2, R * 2);
+  }
+  const size = Scene.medalSize * (1 + Scene.pulse * 0.07);
+  x.globalAlpha = Math.min(0.5, 0.13 + Scene.pulse * 0.22);
+  x.save(); x.translate(px, py); x.rotate(t * 0.00005); x.drawImage(Scene.medalOuter, -size / 2, -size / 2, size, size); x.restore();
+  x.save(); x.translate(px, py); x.rotate(-t * 0.00008); x.drawImage(Scene.medalInner, -size / 2, -size / 2, size, size); x.restore();
+  x.globalAlpha = 1;
+
+  for (let i = Scene.floaters.length - 1; i >= 0; i--) {
+    const f = Scene.floaters[i];
+    if (!REDUCED) {
+      const k = Math.min(1, dt * 1.6);
+      f.vx += (0 - f.vx) * k; f.vy += (-f.sp - f.vy) * k;
+      f.x += f.vx * dt; f.y += f.vy * dt; f.rot += f.vr * dt;
+    }
+    let a = f.a;
+    if (f.life) {
+      const age = (now - f.born) / 1000;
+      if (age > f.life) { Scene.floaters.splice(i, 1); continue; }
+      a *= 1 - Math.max(0, age - f.life + 0.8) / 0.8;
+    } else if (f.y < -40) { Object.assign(f, newFloater(false)); continue; }
+    const sx = f.x + (REDUCED ? 0 : Math.sin(now / 1000 * f.fr + f.ph) * f.sway);
+    x.globalAlpha = a;
+    x.save(); x.translate(sx, f.y); x.rotate(f.rot); x.drawImage(Scene.motifs[f.m * 5 + f.c], -f.s / 2, -f.s / 2, f.s, f.s); x.restore();
+  }
+  x.globalAlpha = 1;
+
+  for (let i = Scene.waves.length - 1; i >= 0; i--) {
+    const wv = Scene.waves[i], p = (now - wv.t0) / wv.dur;
+    if (p < 0) continue;
+    if (p >= 1) { Scene.waves.splice(i, 1); continue; }
+    x.globalAlpha = (1 - p) * 0.55; x.strokeStyle = wv.color; x.lineWidth = 2 + 10 * (1 - p);
+    x.beginPath(); x.arc(wv.x, wv.y, wv.r0 + (wv.r1 - wv.r0) * easeOut(p), 0, 7); x.stroke();
+  }
+  for (let i = Scene.flashes.length - 1; i >= 0; i--) {
+    const fl = Scene.flashes[i], p = (now - fl.t0) / fl.dur;
+    if (p >= 1) { Scene.flashes.splice(i, 1); continue; }
+    x.globalAlpha = 0.16 * (1 - p); x.fillStyle = fl.color; x.fillRect(0, 0, w, h);
+  }
+  x.globalAlpha = 1;
+  Scene.pulse = Math.max(0, Scene.pulse - dt * 1.6);
+}
+
+function drawCoin(x, X, Y, r) {
+  const g = x.createRadialGradient(X - r * 0.35, Y - r * 0.35, r * 0.1, X, Y, r);
+  g.addColorStop(0, '#FFF3C4'); g.addColorStop(0.6, colors.gold); g.addColorStop(1, '#8F6209');
+  x.fillStyle = g; x.beginPath(); x.arc(X, Y, r, 0, 7); x.fill();
+  x.strokeStyle = 'rgba(0,0,0,0.18)'; x.lineWidth = 1; x.stroke();
+}
+
+function drawFx(now, dt) {
+  const active = Scene.sparks.length || Scene.praises.length || Scene.coins.length;
+  if (!active && !Scene.fxWas) return;
+  const x = fxx;
+  x.clearRect(0, 0, Scene.w, Scene.h);
+  Scene.fxWas = !!active;
+
+  for (let i = Scene.sparks.length - 1; i >= 0; i--) {
+    const p = Scene.sparks[i];
+    if (now < p.t0) continue;
+    const age = (now - p.t0) / 1000;
+    if (age > p.life) { Scene.sparks.splice(i, 1); continue; }
+    const dr = Math.pow(p.drag, dt * 60);
+    p.vx *= dr; p.vy = p.vy * dr + p.g * dt;
+    p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+    x.globalAlpha = Math.max(0, 1 - age / p.life); x.fillStyle = p.color;
+    if (p.kind === 'confetti') { x.save(); x.translate(p.x, p.y); x.rotate(p.rot); x.fillRect(-p.s, -p.s * 0.4, p.s * 2, p.s * 0.8); x.restore(); }
+    else if (p.kind === 'star') {
+      const a = p.s;
+      x.save(); x.translate(p.x, p.y); x.rotate(p.rot * 0.3); x.beginPath();
+      x.moveTo(0, -a); x.lineTo(a * 0.28, -a * 0.28); x.lineTo(a, 0); x.lineTo(a * 0.28, a * 0.28);
+      x.lineTo(0, a); x.lineTo(-a * 0.28, a * 0.28); x.lineTo(-a, 0); x.lineTo(-a * 0.28, -a * 0.28); x.closePath(); x.fill(); x.restore();
+    } else { x.beginPath(); x.arc(p.x, p.y, p.s, 0, 7); x.fill(); }
+  }
+  x.globalAlpha = 1;
+
+  if (Scene.coins.length) {
+    const tr = $('coinPill').querySelector('.coin-dot').getBoundingClientRect();
+    const tx = tr.left + tr.width / 2, ty = tr.top + tr.height / 2;
+    for (let i = Scene.coins.length - 1; i >= 0; i--) {
+      const c = Scene.coins[i], p = (now - c.t0) / c.dur;
+      if (p < 0) { drawCoin(x, c.x0, c.y0, 9); continue; }
+      if (p >= 1) {
+        Scene.coins.splice(i, 1); Scene.pendingCoins -= c.value;
+        syncCoins(); bump($('coinPill')); Sfx.coin();
+        continue;
+      }
+      const e = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2, u = 1 - e;
+      const cx = (c.x0 + tx) / 2 + c.bend, cy = Math.min(c.y0, ty) - 80;
+      drawCoin(x, u * u * c.x0 + 2 * u * e * cx + e * e * tx, u * u * c.y0 + 2 * u * e * cy + e * e * ty, 10 - 3 * e);
+    }
+  }
+
+  for (let i = Scene.praises.length - 1; i >= 0; i--) {
+    const pr = Scene.praises[i], p = (now - pr.t0) / pr.dur;
+    if (p < 0) continue;
+    if (p >= 1) { Scene.praises.splice(i, 1); continue; }
+    let sc = p < 0.16 ? 0.3 + (p / 0.16) * 0.9 : p < 0.28 ? 1.2 - ((p - 0.16) / 0.12) * 0.2 : 1;
+    if (REDUCED) sc = 1;
+    x.font = `${Math.round(pr.size)}px "Yeseva One", Georgia, serif`;
+    const tw = x.measureText(pr.text).width * sc;
+    const X = clamp(pr.x, tw / 2 + 8, Scene.w - tw / 2 - 8);
+    x.save();
+    x.translate(X, pr.y - (p > 0.72 ? (p - 0.72) * 70 : 0)); x.rotate(pr.tilt); x.scale(sc, sc);
+    x.globalAlpha = p > 0.72 ? 1 - (p - 0.72) / 0.28 : 1;
+    x.textAlign = 'center'; x.textBaseline = 'middle'; x.lineJoin = 'round';
+    x.shadowColor = 'rgba(0,0,0,0.25)'; x.shadowBlur = 14; x.shadowOffsetY = 4;
+    x.lineWidth = pr.size * 0.16; x.strokeStyle = colors.field; x.strokeText(pr.text, 0, 0);
+    x.shadowColor = 'transparent';
+    x.fillStyle = pr.color; x.fillText(pr.text, 0, 0);
+    x.restore();
+  }
+  x.globalAlpha = 1;
 }
 
 /* ---------- Giriş: dokunma, fare, klavye ---------- */
@@ -1294,21 +1836,45 @@ function closeModal() { $('modal').hidden = true; if (G && !G.over) canvas.focus
 
 function updateHud() {
   if (!G) return;
-  $('score').textContent = fmt(G.score);
-  $('best').textContent = fmt(Math.max(M.best, G.score));
-  $('coins').textContent = fmt(M.coins);
+  if (REDUCED) scoreShown = G.score;
+  renderScore();
+  syncCoins();
   const sEl = $('streak');
   if (G.streak >= 2 && !G.over) {
     const left = 3 - G.sinceClear;
     sEl.innerHTML = `Seri ×${G.streak} <span class="dots" aria-label="${left} hamle kaldı">${[0, 1, 2].map(k => `<i class="${k < left ? 'on' : ''}"></i>`).join('')}</span>`;
-    sEl.classList.add('show');
-  } else { sEl.textContent = ''; sEl.classList.remove('show'); }
+    sEl.classList.add('show'); sEl.classList.toggle('hot', G.streak >= 4);
+  } else { sEl.textContent = ''; sEl.classList.remove('show', 'hot'); }
   for (const k of Object.keys(BOOSTERS)) {
     const n = M.boosters[k], el = $('c-' + k);
     if (n > 0) { el.textContent = n; el.classList.remove('ad'); $('b-' + k).setAttribute('aria-label', `${BOOSTERS[k].name}, ${n} hak`); }
     else { el.innerHTML = PLAY; el.classList.add('ad'); $('b-' + k).setAttribute('aria-label', `${BOOSTERS[k].name}, hak yok, reklam izleyerek kazan`); }
   }
   $('banner').hidden = M.removeAds;
+}
+
+// Skor plakası: sayaç yuvarlanarak artar, çubuk rekora ne kadar kaldığını gösterir
+function renderScore() {
+  if (!G) return;
+  $('score').textContent = fmt(scoreShown);
+  const rec = $('rec'), fill = $('recFill'), lab = $('recLabel'), base = G.bestAtStart || 0;
+  if (G.recordHit) { rec.classList.add('record'); fill.style.width = '100%'; lab.textContent = 'YENİ REKOR!'; }
+  else {
+    rec.classList.remove('record');
+    fill.style.width = base > 0 ? Math.min(100, scoreShown / base * 100) + '%' : '0%';
+    lab.textContent = base > 0 ? 'Rekor ' + fmt(base) : 'İlk rekorunu kur';
+  }
+}
+function syncCoins() { $('coins').textContent = fmt(M.coins - Scene.pendingCoins); }
+function bump(el) { if (REDUCED || !el) return; el.classList.remove('bump'); void el.offsetWidth; el.classList.add('bump'); }
+
+const SPK_ON = '<svg class="ico" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4.5 4.5 0 0 1 0 6"/><path d="M18 6.5a8 8 0 0 1 0 11"/></svg>';
+const SPK_OFF = '<svg class="ico" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>';
+function renderSoundBtn() {
+  const b = $('soundBtn');
+  b.setAttribute('aria-pressed', String(!!M.sound));
+  b.setAttribute('aria-label', M.sound ? 'Sesi kapat' : 'Sesi aç');
+  b.innerHTML = M.sound ? SPK_ON : SPK_OFF;
 }
 
 function openShop() {
@@ -1418,6 +1984,12 @@ $('panelBtn').addEventListener('click', () => openPanel(true));
 $('panelClose').addEventListener('click', () => openPanel(false));
 $('sheetScrim').addEventListener('click', () => openPanel(false));
 $('shopBtn').addEventListener('click', () => { if (!Ads.showing) openShop(); });
+$('soundBtn').addEventListener('click', () => {
+  M.sound = !M.sound; saveMeta(); renderSoundBtn();
+  if (M.sound) { Sfx.init(); setTimeout(() => Sfx.pick(), 40); }
+});
+// Tarayıcılar sesi ancak bir dokunuştan sonra açar
+for (const ev of ['pointerdown', 'click', 'keydown']) document.addEventListener(ev, () => { if (M.sound) Sfx.init(); }, true);
 for (const k of Object.keys(BOOSTERS)) $('b-' + k).addEventListener('click', () => useBooster(k));
 $('modal').addEventListener('click', e => { if (e.target === $('modal') && modalDismissible) closeModal(); });
 document.addEventListener('keydown', e => {
@@ -1437,6 +2009,7 @@ setInterval(() => {
 }, 1000);
 
 new ResizeObserver(layout).observe($('stage'));
+window.addEventListener('resize', resizeScene);
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
 new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
@@ -1445,7 +2018,7 @@ window.claude?.hot?.snapshot?.(() => ({ G, LOG, impr: Ads.impr, sessionStart: Ad
 
 function boot(data) {
   data = data || {};
-  readColors(); layout();
+  readColors(); resizeScene(); layout();
   if (Array.isArray(data.LOG)) LOG = data.LOG;
   if (data.impr) Ads.impr = data.impr;
   if (data.sessionStart) Ads.sessionStart = data.sessionStart;
@@ -1456,9 +2029,11 @@ function boot(data) {
     track('game_resume', { puan: G.score });
     if (wasStuck) checkStuck();
   } else newGame();
+  if (G.bestAtStart == null) G.bestAtStart = M.best;
+  scoreShown = G.score;
   if (!data.impr && !M.removeAds) { Ads.impr.banner++; track('ad_banner_show', { yer: 'alt' }); }
   track('session_start', { reklamsiz: M.removeAds ? 1 : 0 });
-  updateHud(); renderPanel(); renderLog(); setModeUI();
+  renderSoundBtn(); updateHud(); renderPanel(); renderLog(); setModeUI();
   checkStuck();
   dirty = true;
   requestAnimationFrame(loop);

@@ -22,6 +22,21 @@ Tek dosyadır: `index.html` dosyasını tarayıcıda açmak yeterli. Derleme ya 
 
 Not: "Çini Ustası" adı bir çalışma adıdır. Yayından önce App Store'da ad ve marka kontrolü yapılmalı.
 
+## Görsel ve ses geri bildirimi
+
+Arka plan ve efektler iki ayrı tam ekran canvas'ta çizilir: `#bg` içeriğin altında, `#fx` her şeyin üstünde. İkisi de dokunmayı geçirir.
+
+- **Hareketli sahne:** Yavaşça kayan yıldız-haç çini deseni, skor plakasının arkasında ters yönlere dönen şemse madalyonu ve aşağıdan yükselen lale, karanfil, saz yaprağı, yıldız ve rozet motifleri. Sakin anlarda saniyede ~30 kare çizilir.
+- **Skor tablosu:** Çini pano gibi çerçeveli plaka. Skor yuvarlanarak artar, çubuk rekora ne kadar kaldığını gösterir, oyun içinde rekor geçilince altına döner. Oyun sonunda ilk 5 skorluk **rekor tablosu** görünür.
+- **Çizgi kırınca:** Her çiniden kıvılcım, tahtadan yayılan şok dalgası, şemse nabzı, yükselen motif patlaması. 2+ çizgide renk parlaması, ekran sallanması ve "Harika!", "Muhteşem!", "Efsane!" övgüleri. Seri sürerken tahta kenarındaki baklavalar ve şemsenin arkası ısınır.
+- **Altın:** Altın çiniden ve desenli satırdan çıkan altınlar üstteki sayaca uçar. Altın artık kazanıldığı anda hesaba geçer; oyun sonunda yalnızca skor altını eklenir.
+- **Rekor ve tertemiz duvar:** Havai fişek, konfeti ve fanfar.
+- **Ses:** WebAudio ile anında üretilir, dosya yoktur. Seri büyüdükçe kırılma sesi yükselir. Üst bardaki hoparlör düğmesiyle kapatılır.
+- **Titreşim:** Android tarayıcıda çalışır; iOS Safari desteklemez. Unity sürümünde iOS haptics kullanılmalı.
+- **Erişilebilirlik:** Cihazda "hareketi azalt" açıksa arka plan durağan kalır; sallanma, kıvılcım ve havai fişek gösterilmez.
+
+Efekt şiddeti tek yerden ayarlanır: `Scene.onClear`, `Scene.onRecord` ve `shakeBoard`.
+
 ## Parça üretme algoritması (`genTray`)
 
 1. **Zorluk eğrisi:** Her parça ailesinin bir "erken" ve bir "geç" ağırlığı var. Skor 0'dan 6.000'e çıkarken ağırlık erkenden geçe kayar, büyük parçalar sıklaşır.
