@@ -44,6 +44,15 @@ window.OK_KACIS_CONFIG = {
   interstitialEveryNLevels: 2, // sonra her 2 seviyede bir
   interstitialMinSeconds: 45, // iki reklam arasında en az bu kadar saniye
 
+  // Zamana karşı modu
+  timeAttack: {
+    startSeconds: 60, // tur bu süreyle başlar
+    clearBonusSeconds: 8, // her temizlenen tahta için eklenen süre
+    mistakePenaltySeconds: 3, // her çarpmada düşen süre (bu modda can yok)
+    reviveSeconds: 15, // süre bitince ödüllü reklamla eklenen süre (tur başına bir kez)
+    interstitialEveryNRuns: 1, // "Tekrar oyna"da kaç turda bir geçiş reklamı (45 sn kuralı da geçerli)
+  },
+
   // Oyun ekonomisi
   hearts: 3, // seviye başına can
   startHints: 3, // ilk açılışta verilen ipucu

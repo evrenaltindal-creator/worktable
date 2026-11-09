@@ -140,6 +140,9 @@ body {
 .tools {
   grid-area: tools;
 }
+.timer {
+  grid-area: hearts;
+}
 /* dar ekranda kalpler kendi satırına iner */
 @media (max-width: 459px) {
   .hud {
@@ -295,6 +298,104 @@ body {
   color: var(--board);
 }
 
+/* zamana karşı sayacı */
+.timer {
+  position: relative;
+  justify-self: center;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+}
+.timer svg {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.timer-num {
+  min-width: 4ch;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.timer-bar {
+  width: 92px;
+  height: 10px;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: var(--board);
+  overflow: hidden;
+}
+.timer-bar i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left center;
+}
+.timer.is-low {
+  color: var(--danger);
+}
+.timer.is-low .timer-bar {
+  border-color: var(--danger);
+}
+.timer.is-low .timer-bar i {
+  background: var(--danger);
+}
+.timer.is-low .timer-num {
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+@keyframes timer-pulse {
+  50% {
+    transform: scale(1.12);
+  }
+}
+.timer-delta {
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  margin-left: 8px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.timer-delta.is-good {
+  color: var(--a3);
+}
+.timer-delta.is-bad {
+  color: var(--danger);
+}
+.timer-delta.show {
+  animation: delta-float 1.2s ease-out;
+}
+@keyframes delta-float {
+  0% {
+    opacity: 0;
+    transform: translateY(-20%);
+  }
+  15% {
+    opacity: 1;
+    transform: translateY(-50%);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-130%);
+  }
+}
+
 /* ---------------------------------------------------------------- Tahta */
 .stage {
   position: relative;
@@ -448,6 +549,12 @@ body {
   letter-spacing: -0.035em;
 }
 .card--fail .card-title {
+  color: var(--danger);
+}
+.card--record .card-eyebrow {
+  color: var(--gold);
+}
+.card--timeup .card-eyebrow {
   color: var(--danger);
 }
 .menu-mark {

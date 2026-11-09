@@ -7,6 +7,11 @@ reklam altyapısı hazır, oynanabilir bir prototip var.
 - Önü tahtanın kenarına kadar boşsa kaçar. Önünde başka bir ok varsa çarpar,
   geri döner ve bir can gider.
 - Bütün okları çıkarınca seviye biter. Hata sayına göre 1-3 yıldız alırsın.
+- **Zamana karşı modu:** 60 saniyeyle başlarsın, art arda gelen tahtalardan
+  olabildiğince çok ok kaçırırsın. Her temizlenen tahta +8 sn kazandırır, her
+  çarpma −3 sn götürür (bu modda can yok). Tahtalar büyüdükçe zorlaşır, her tur
+  farklı tahtalarla başlar. Rekor kaydedilir. Ana menüden iki mod arasında
+  geçilir; yarıda bırakılan oyun kaldığı yerden devam eder.
 - Seviyeler sonsuzdur ve otomatik üretilir. Aynı seviye numarası herkeste aynı
   tahtayı verir. Her seviyenin çözülebildiği testle kontrol edilir.
 - Telefon tarayıcısında, bilgisayarda ve (Capacitor ile) Android/iOS uygulaması
@@ -43,7 +48,8 @@ ok-kacis/
     js/ads.js          reklam katmanı (AdMob, AdSense, CrazyGames, test)
     js/sound.js        ses efektleri
     manifest.webmanifest, icon.svg
-  test/levels.test.js  300 seviyeyi üretip çözer:  node ok-kacis/test/levels.test.js
+  test/levels.test.js  300 seviye + 300 zamana karşı tahtası üretip çözer:
+                       node ok-kacis/test/levels.test.js
 ```
 
 ## Reklamlar oyunun neresinde?
@@ -53,6 +59,8 @@ ok-kacis/
 | Seviye arası | Geçiş (interstitial) | 3. seviyeden sonra, her 2 seviyede bir, en az 45 sn arayla. "Sonraki seviye"ye basınca çıkar. | `firstInterstitialLevel`, `interstitialEveryNLevels`, `interstitialMinSeconds` |
 | Can bitince | Ödüllü (rewarded) | Oyuncu "Reklam izle, +1 can" derse. Tahta olduğu gibi kalır. | — |
 | İpucu bitince | Ödüllü (rewarded) | "Reklam izle, +3 ipucu" | `hintsPerAd` |
+| Zamana karşı, süre bitince | Ödüllü (rewarded) | "Reklam izle, +15 sn". Tur başına bir kez. | `timeAttack.reviveSeconds` |
+| Zamana karşı, "Tekrar oyna" | Geçiş (interstitial) | Her turdan sonra, yine en az 45 sn arayla | `timeAttack.interstitialEveryNRuns` |
 | Ekranın altı | Banner | Oyun boyunca | `banner: true/false` |
 
 Ödüllü reklamlar genelde en çok kazandıran ve oyuncuyu en az rahatsız eden
@@ -175,17 +183,25 @@ yüzden ilk iki yol genelde daha hızlı sonuç verir.
 | `interstitialMinSeconds` | `45` | İki reklam arası en az süre |
 | `hearts` | `3` | Seviye başına can |
 | `startHints` / `hintsPerAd` | `3` / `3` | Başlangıç ipucu / reklam başına ipucu |
+| `timeAttack.startSeconds` | `60` | Zamana karşı turunun başlangıç süresi |
+| `timeAttack.clearBonusSeconds` | `8` | Temizlenen her tahta için eklenen süre |
+| `timeAttack.mistakePenaltySeconds` | `3` | Her çarpmada düşen süre |
+| `timeAttack.reviveSeconds` | `15` | Ödüllü reklamla eklenen süre |
+| `timeAttack.interstitialEveryNRuns` | `1` | "Tekrar oyna"da kaç turda bir geçiş reklamı |
 
 ## Neler test edildi, neler edilmedi
 
 Test edildi:
 
-- 300 seviye: çakışma yok, her ok kurallara uygun, hepsi çözülebiliyor
-  (`node ok-kacis/test/levels.test.js`).
+- 300 seviye ve 300 zamana karşı tahtası: çakışma yok, her ok kurallara
+  uygun, hepsi çözülebiliyor (`node ok-kacis/test/levels.test.js`).
 - Tarayıcıda telefon ve bilgisayar boyutunda, açık ve koyu temada: dokunma,
   çarpma ve can kaybı, seviye geçişi, 3. seviyeden sonra geçiş reklamı, canı
   bitince ödüllü reklamla devam, ipucu ve ipucu için ödüllü reklam, sayfa
   yenilenince kaldığı seviyeden devam. Konsolda hata yok.
+- Zamana karşı: sayaç, çarpma cezası, tahta bonusu, ana menüde sayacın
+  durması ve devam, son 10 saniye uyarısı, rekor, +15 sn ödüllü reklam (tur
+  başına bir kez), turlar arası geçiş reklamı ve 45 sn kuralı.
 - AdMob katmanının mantığı, sahte bir Capacitor eklentisiyle (ödül alındı,
   reklam yarıda kapatıldı, olay dinleyicisi yok durumları).
 

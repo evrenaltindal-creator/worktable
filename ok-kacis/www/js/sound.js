@@ -114,5 +114,8 @@
     tick() {
       tone({ type: 'square', f0: 880, dur: 0.035, vol: 0.05 });
     },
+    clock() {
+      tone({ type: 'sine', f0: 1320, dur: 0.07, vol: 0.14 });
+    },
   };
 })(window);

@@ -43,8 +43,11 @@
     return h >>> 0;
   }
 
-  /** Seviye numarasına göre tahta boyutu ve zorluk ayarları. */
-  function levelParams(level) {
+  /**
+   * Seviye numarasına göre tahta boyutu ve zorluk ayarları.
+   * seed verilirse aynı zorlukta farklı bir tahta üretilir (zamana karşı modu).
+   */
+  function levelParams(level, seed) {
     const n = Math.max(1, Math.floor(level));
     let w, h;
     if (n <= 15) {
@@ -52,7 +55,7 @@
       h = Math.min(13, w + Math.min(3, Math.floor(n / 4)));
     } else {
       // 15'ten sonra boyut biraz oynasın ki tahtalar birbirine benzemesin
-      const r = mulberry32(hashLevel(n) ^ 0x5bd1e995);
+      const r = mulberry32((seed == null ? hashLevel(n) : seed >>> 0) ^ 0x5bd1e995);
       w = 8 + Math.floor(r() * 3);
       h = Math.min(13, w + 2 + Math.floor(r() * 2));
     }
@@ -67,10 +70,10 @@
     };
   }
 
-  function generate(level) {
+  function generate(level, seed) {
     const n = Math.max(1, Math.floor(level));
-    const p = levelParams(n);
-    const rng = mulberry32(hashLevel(n));
+    const p = levelParams(n, seed);
+    const rng = mulberry32(seed == null ? hashLevel(n) : seed >>> 0);
     const { w, h } = p;
     const N = w * h;
     const occ = new Int16Array(N).fill(-1);

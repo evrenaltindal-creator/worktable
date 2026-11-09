@@ -514,18 +514,34 @@
       const c = this.cfg;
       if (completedLevel < (c.firstInterstitialLevel || 3)) return false;
       if (this.levelsSince < (c.interstitialEveryNLevels || 2)) return false;
-      if (Date.now() - this.lastAdAt < (c.interstitialMinSeconds || 45) * 1000) return false;
+      if (!(await this._interstitial('level_complete'))) return false;
+      this.levelsSince = 0;
+      return true;
+    },
+
+    /** Zamana karşı modunda yeni tura geçerken çağrılır. */
+    async maybeInterstitialAfterRun() {
+      await this.ready;
+      this.runsSince = (this.runsSince || 0) + 1;
+      const every = (this.cfg.timeAttack && this.cfg.timeAttack.interstitialEveryNRuns) || 1;
+      if (this.runsSince < every) return false;
+      if (!(await this._interstitial('time_attack_retry'))) return false;
+      this.runsSince = 0;
+      return true;
+    },
+
+    async _interstitial(placement) {
+      if (Date.now() - this.lastAdAt < (this.cfg.interstitialMinSeconds || 45) * 1000) return false;
       if (this.busy) return false;
       this.busy = true;
       try {
-        await this.provider.showInterstitial('level_complete', this.hooks);
+        await this.provider.showInterstitial(placement, this.hooks);
       } catch (e) {
         console.warn('[OkAds] geçiş reklamı hatası', e);
       } finally {
         this.busy = false;
       }
       this.lastAdAt = Date.now();
-      this.levelsSince = 0;
       return true;
     },
 

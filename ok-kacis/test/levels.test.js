@@ -71,4 +71,23 @@ for (let n = 5; n <= LEVELS; n++) {
   assert.ok(free < b.arrows.length, `seviye ${n}: bütün oklar baştan açık, bulmaca yok`);
 }
 
+// Zamana karşı modu: aynı zorlukta, tohuma göre farklı ama yine çözülebilir tahtalar
+let seeded = 0;
+for (let stage = 1; stage <= 20; stage++) {
+  const level = Math.min(40, 2 + stage * 2);
+  const shapes = new Set();
+  for (let k = 0; k < 15; k++) {
+    const seed = (k * 2654435761 + stage * 97) >>> 0;
+    const b = L.generate(level, seed);
+    assert.ok(L.solve(b), `tur tahtası ${stage}/${k}: çözülemiyor`);
+    assert.deepStrictEqual(L.generate(level, seed), b, `tur tahtası ${stage}/${k}: tekrar üretilince farklı`);
+    shapes.add(JSON.stringify(b.arrows.map((a) => a.cells)));
+    seeded++;
+  }
+  assert.ok(shapes.size > 10, `tur ${stage}: tohumlar yeterince farklı tahta üretmiyor`);
+}
+// Tohum verilmezse eski seviyeler değişmemeli
+assert.deepStrictEqual(L.generate(7), L.generate(7, undefined));
+
+console.log(`OK: ${seeded} zamana karşı tahtası üretildi ve çözüldü`);
 console.log(`OK: ${LEVELS} seviye üretildi ve çözüldü, toplam ${totalArrows} ok, ${Date.now() - t0} ms`);

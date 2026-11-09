@@ -10,6 +10,10 @@
     { hearts: 3, startHints: 3, hintsPerAd: 3, banner: true },
     window.OK_KACIS_CONFIG || {}
   );
+  const TA = (CFG.timeAttack = Object.assign(
+    { startSeconds: 60, clearBonusSeconds: 8, mistakePenaltySeconds: 3, reviveSeconds: 15, interstitialEveryNRuns: 1 },
+    CFG.timeAttack || {}
+  ));
   const Levels = window.OkLevels;
   const Sound = window.OkSound;
   const Ads = window.OkAds;
@@ -54,6 +58,28 @@
       aSoundOn: 'Sesi kapat',
       aSoundOff: 'Sesi aç',
       aHearts: '{n} can kaldı',
+      aHome: 'Ana menü',
+      aTimer: '{t} kaldı',
+      score: 'PUAN',
+      stage: 'TAHTA {n}',
+      resume: 'Devam et',
+      modeTime: 'Zamana karşı',
+      timeSubNew: '{s} saniyede en çok oku kaçır',
+      timeSubBest: 'Rekor: {n} ok',
+      timeSubResume: 'Kalan süre {t}',
+      timeRules: 'Her tahta +{b} sn, her çarpma −{p} sn.',
+      stageClear: 'Tahta temiz! +{b} sn',
+      timeUpEyebrow: 'SÜRE DOLDU',
+      newRecordEyebrow: 'YENİ REKOR',
+      timeUpTitle: '{n} ok kaçırdın',
+      rowStage: 'TAHTA',
+      rowBest: 'REKOR',
+      moreTime: 'Reklam izle, +{s} sn',
+      moreTimeToast: '+{s} sn. Devam!',
+      playAgain: 'Tekrar oyna',
+      mainMenu: 'Ana menü',
+      plusSec: '+{n} sn',
+      minusSec: '−{n} sn',
     },
     en: {
       level: 'LEVEL',
@@ -90,6 +116,28 @@
       aSoundOn: 'Mute',
       aSoundOff: 'Unmute',
       aHearts: '{n} hearts left',
+      aHome: 'Main menu',
+      aTimer: '{t} left',
+      score: 'SCORE',
+      stage: 'BOARD {n}',
+      resume: 'Resume',
+      modeTime: 'Time attack',
+      timeSubNew: 'Clear as many arrows as you can in {s}s',
+      timeSubBest: 'Best: {n} arrows',
+      timeSubResume: '{t} left',
+      timeRules: 'Each board +{b}s, each crash −{p}s.',
+      stageClear: 'Board clear! +{b}s',
+      timeUpEyebrow: "TIME'S UP",
+      newRecordEyebrow: 'NEW BEST',
+      timeUpTitle: '{n} arrows cleared',
+      rowStage: 'BOARD',
+      rowBest: 'BEST',
+      moreTime: 'Watch ad, +{s}s',
+      moreTimeToast: '+{s}s. Keep going!',
+      playAgain: 'Play again',
+      mainMenu: 'Main menu',
+      plusSec: '+{n}s',
+      minusSec: '−{n}s',
     },
   };
   function t(key, vars) {
@@ -110,7 +158,7 @@
       return {};
     }
   }
-  const save = Object.assign({ level: 1, hints: CFG.startHints, sound: true, tutorialDone: false, best: {} }, readSave());
+  const save = Object.assign({ level: 1, hints: CFG.startHints, sound: true, tutorialDone: false, best: {}, timeBest: 0 }, readSave());
   function writeSave() {
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(save));
@@ -131,6 +179,11 @@
   const btnHint = $('btnHint');
   const btnRestart = $('btnRestart');
   const btnSound = $('btnSound');
+  const btnHome = $('btnHome');
+  const timerEl = $('timer');
+  const timerNum = $('timerNum');
+  const timerBar = $('timerBar');
+  const timerDelta = $('timerDelta');
 
   // ------------------------------------------------------------------ Tema (renkler CSS'ten okunur)
   let theme = { arrows: [] };
@@ -155,13 +208,16 @@
 
   // ------------------------------------------------------------------ Durum
   const S = {
+    mode: 'classic', // classic | time
+    run: null, // zamana karşı turu
+    pausedBy: '',
     level: 1,
     board: null,
     arrows: [],
     occ: null,
     hearts: CFG.hearts,
     mistakes: 0,
-    phase: 'menu', // menu | play | paused | won | lost
+    phase: 'menu', // menu | play | paused | won | lost | timeup
     shake: 0,
     particles: [],
     tutorial: false,
@@ -199,11 +255,8 @@
   }
 
   // ------------------------------------------------------------------ Seviye
-  function loadLevel(n, phase) {
-    const board = Levels.generate(n);
-    S.level = n;
+  function setupBoard(board, phase) {
     S.board = board;
-    S.hearts = CFG.hearts;
     S.mistakes = 0;
     S.particles.length = 0;
     S.occ = new Int16Array(board.w * board.h).fill(-1);
@@ -232,12 +285,175 @@
       };
     });
     for (const a of S.arrows) for (const [x, y] of a.cells) S.occ[y * board.w + x] = a.id;
-    S.tutorial = n === 1 && !save.tutorialDone;
+    S.tutorial = false;
     S.phase = phase || 'play';
+    S.pausedBy = '';
+    clearTimeout(S.tipTimer);
     layoutBoard();
+  }
+
+  function loadLevel(n, phase) {
+    S.mode = 'classic';
+    S.level = n;
+    S.hearts = CFG.hearts;
+    setupBoard(Levels.generate(n), phase);
+    S.tutorial = n === 1 && !save.tutorialDone;
     renderHearts();
     updateHud();
     setTip(levelTip());
+  }
+
+  // ------------------------------------------------------------------ Zamana karşı
+  // Süre azalırken art arda tahta temizlenir. Her tur farklı tahtalarla başlar,
+  // tahtalar giderek büyür. Bu modda can yok: çarpmak süre kaybettirir.
+  const timeLevel = (stage) => Math.min(40, 2 + stage * 2);
+
+  function startRun() {
+    S.mode = 'time';
+    S.hearts = CFG.hearts;
+    S.run = {
+      seed: (Math.random() * 2147483647) | 0,
+      stage: 1,
+      score: 0,
+      timeLeft: TA.startSeconds,
+      revived: false,
+      active: true,
+      lastWhole: -1,
+    };
+    loadStage('play');
+    setTip(t('timeRules', { b: TA.clearBonusSeconds, p: TA.mistakePenaltySeconds }));
+    S.tipTimer = setTimeout(() => setTip(''), 4000);
+    Ads.event('gameplayStart');
+  }
+
+  function loadStage(phase) {
+    const r = S.run;
+    setupBoard(Levels.generate(timeLevel(r.stage), (r.seed + Math.imul(r.stage, 2654435761)) >>> 0), phase);
+    updateHud();
+  }
+
+  function stageClear() {
+    S.phase = 'won';
+    const r = S.run;
+    r.timeLeft += TA.clearBonusSeconds;
+    r.stage++;
+    Sound.win();
+    confetti();
+    showDelta(TA.clearBonusSeconds);
+    setTip(t('stageClear', { b: TA.clearBonusSeconds }));
+    updateHud();
+    setTimeout(() => {
+      if (S.mode !== 'time' || S.phase !== 'won' || S.run !== r) return;
+      loadStage('play');
+      setTip('');
+    }, reducedMotion ? 300 : 900);
+  }
+
+  function timeUp() {
+    const r = S.run;
+    r.timeLeft = 0;
+    S.phase = 'timeup';
+    const record = r.score > (save.timeBest || 0);
+    if (record) {
+      save.timeBest = r.score;
+      writeSave();
+      confetti();
+    }
+    clearTimeout(S.tipTimer);
+    setTip('');
+    Sound.lose();
+    haptic(60);
+    Ads.event('gameplayStop');
+    updateHud();
+    setTimeout(() => showTimeUp(record), 450);
+  }
+
+  function showTimeUp(record) {
+    const r = S.run;
+    const actions = [];
+    if (!r.revived) {
+      actions.push({
+        kind: 'primary',
+        icon: 'ad',
+        label: t('moreTime', { s: TA.reviveSeconds }),
+        onClick: async () => {
+          dialogBusy = true;
+          const res = await Ads.rewarded('more_time');
+          dialogBusy = false;
+          if (res === true) {
+            r.revived = true;
+            r.timeLeft = TA.reviveSeconds;
+            r.lastWhole = -1;
+            hideDialog();
+            S.phase = 'play';
+            updateHud();
+            toast(t('moreTimeToast', { s: TA.reviveSeconds }));
+            Ads.event('gameplayStart');
+          } else toast(res === false ? t('noReward') : t('noAd'));
+        },
+      });
+    }
+    actions.push({
+      kind: r.revived ? 'primary' : 'secondary',
+      icon: 'restart',
+      label: t('playAgain'),
+      onClick: async () => {
+        dialogBusy = true;
+        hideDialog();
+        r.active = false;
+        try {
+          await Ads.maybeInterstitialAfterRun();
+        } finally {
+          dialogBusy = false;
+        }
+        startRun();
+      },
+    });
+    actions.push({
+      kind: 'ghost',
+      label: t('mainMenu'),
+      onClick: () => {
+        r.active = false;
+        S.phase = 'menu';
+        showMenu();
+      },
+    });
+    showDialog({
+      variant: record ? 'record' : 'timeup',
+      eyebrow: record ? t('newRecordEyebrow') : t('timeUpEyebrow'),
+      title: t('timeUpTitle', { n: r.score }),
+      rows: [
+        [t('rowStage'), String(r.stage)],
+        [t('rowBest'), String(save.timeBest || 0)],
+      ],
+      actions,
+    });
+  }
+
+  function fmtTime(sec) {
+    const v = Math.max(0, Math.ceil(sec));
+    return Math.floor(v / 60) + ':' + String(v % 60).padStart(2, '0');
+  }
+
+  let lastTimerText = '';
+  function renderTimer() {
+    const r = S.run;
+    if (!r) return;
+    const txt = fmtTime(r.timeLeft);
+    if (txt !== lastTimerText) {
+      lastTimerText = txt;
+      timerNum.textContent = txt;
+      timerEl.setAttribute('aria-label', t('aTimer', { t: txt }));
+    }
+    timerBar.style.transform = 'scaleX(' + Math.max(0, Math.min(1, r.timeLeft / TA.startSeconds)) + ')';
+    timerEl.classList.toggle('is-low', r.timeLeft < 10);
+  }
+
+  function showDelta(sec) {
+    timerDelta.textContent = sec > 0 ? t('plusSec', { n: sec }) : t('minusSec', { n: -sec });
+    timerDelta.className = 'timer-delta ' + (sec > 0 ? 'is-good' : 'is-bad');
+    void timerDelta.offsetWidth;
+    timerDelta.classList.add('show');
   }
 
   function levelTip() {
@@ -258,7 +474,7 @@
 
   // ------------------------------------------------------------------ Hamle
   function tapArrow(a) {
-    if (S.phase !== 'play' || a.state !== 'idle' || S.hearts <= 0) return;
+    if (S.phase !== 'play' || a.state !== 'idle' || (S.mode === 'classic' && S.hearts <= 0)) return;
     const now = performance.now();
     const pr = Levels.probe(S.board.w, S.board.h, S.occ, a);
     a.hintUntil = 0;
@@ -270,6 +486,7 @@
       for (const [x, y] of a.cells) S.occ[y * S.board.w + x] = -1;
       Sound.whoosh();
       haptic(10);
+      if (S.mode === 'time') S.run.score++;
       if (S.tutorial) {
         S.tutorial = false;
         save.tutorialDone = true;
@@ -289,8 +506,11 @@
 
   function onImpact(a, now) {
     const b = S.arrows[a.blocker];
-    S.hearts = Math.max(0, S.hearts - 1);
     S.mistakes++;
+    if (S.mode === 'time') {
+      S.run.timeLeft = Math.max(0, S.run.timeLeft - TA.mistakePenaltySeconds);
+      showDelta(-TA.mistakePenaltySeconds);
+    } else S.hearts = Math.max(0, S.hearts - 1);
     a.flashAt = now;
     if (b) {
       b.flashAt = now;
@@ -301,10 +521,10 @@
     haptic(45);
     renderHearts(true);
     updateHud();
-    if (S.hearts > 0) {
+    if (S.mode === 'time' || S.hearts > 0) {
       setTip(t('bumped'));
       clearTimeout(S.tipTimer);
-      S.tipTimer = setTimeout(() => setTip(S.phase === 'play' ? levelTip() : ''), 2400);
+      S.tipTimer = setTimeout(() => setTip(S.phase === 'play' && S.mode === 'classic' ? levelTip() : ''), 2400);
     }
   }
 
@@ -421,6 +641,7 @@
 
   function showNoHints() {
     S.phase = 'paused';
+    S.pausedBy = 'hints';
     showDialog({
       eyebrow: t('hintsEyebrow'),
       title: t('hintsTitle'),
@@ -481,12 +702,26 @@
           if (u >= 1) {
             a.s = 0;
             a.state = 'idle';
-            if (S.hearts <= 0 && S.phase === 'play') fail();
+            if (S.mode === 'classic' && S.hearts <= 0 && S.phase === 'play') fail();
           } else a.s = a.bumpTarget * (1 - easeInOutQuad(u));
         }
       }
     }
-    if (S.phase === 'play' && S.arrows.length && S.arrows.every((a) => a.state === 'gone')) win();
+    if (S.mode === 'time' && S.run && S.phase === 'play') {
+      const r = S.run;
+      r.timeLeft -= dt;
+      const whole = Math.ceil(r.timeLeft);
+      if (whole !== r.lastWhole) {
+        if (whole > 0 && whole <= 5 && r.lastWhole !== -1) Sound.clock();
+        r.lastWhole = whole;
+      }
+      if (r.timeLeft <= 0) timeUp();
+      renderTimer();
+    }
+    if (S.phase === 'play' && S.arrows.length && S.arrows.every((a) => a.state === 'gone')) {
+      if (S.mode === 'time') stageClear();
+      else win();
+    }
 
     for (let i = S.particles.length - 1; i >= 0; i--) {
       const p = S.particles[i];
@@ -780,6 +1015,7 @@
     play: '<path d="M8 5.5v13l10.5-6.5z" fill="currentColor" stroke="none"/>',
     ad: '<rect x="3" y="5" width="18" height="13" rx="2.5"/><path d="M10 9.3v5.4l4.6-2.7z" fill="currentColor" stroke="none"/><path d="M8 21h8"/>',
     restart: '<path d="M3.5 12a8.5 8.5 0 1 0 2.8-6.3"/><path d="M3.5 4v5h5"/>',
+    clock: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 3h5"/>',
     heart:
       '<path d="M12 20.3s-7.4-4.5-9.2-9C1.5 8 3.4 4.6 6.9 4.6c2 0 3.6 1.1 5.1 3 1.5-1.9 3.1-3 5.1-3 3.5 0 5.4 3.4 4.1 6.7-1.8 4.5-9.2 9-9.2 9z"/>',
     star: '<path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/>',
@@ -819,10 +1055,16 @@
 
   function updateHud() {
     if (!S.board) return;
-    $('lvLabel').textContent = t('level');
-    $('lvNum').textContent = String(S.level);
-    $('lvSize').textContent = t('size', { w: S.board.w, h: S.board.h });
-    $('lvLeft').textContent = t('left', { n: aliveCount() });
+    const timed = S.mode === 'time' && !!S.run;
+    const size = t('size', { w: S.board.w, h: S.board.h });
+    $('lvLabel').textContent = timed ? t('score') : t('level');
+    $('lvNum').textContent = String(timed ? S.run.score : S.level);
+    $('lvSize').textContent = timed ? t('stage', { n: S.run.stage }) : size;
+    $('lvLeft').textContent = timed ? size : t('left', { n: aliveCount() });
+    heartsEl.hidden = timed;
+    timerEl.hidden = !timed;
+    if (timed) renderTimer();
+    btnHome.setAttribute('aria-label', t('aHome'));
     const badge = $('hintBadge');
     badge.textContent = save.hints > 0 ? String(save.hints) : '+';
     badge.classList.toggle('is-empty', save.hints <= 0);
@@ -919,20 +1161,66 @@
   }
 
   function showMenu() {
+    const paused = S.phase === 'paused' && S.pausedBy === 'menu';
+    const classicResume = paused && S.mode === 'classic';
+    const timeResume = paused && S.mode === 'time' && !!S.run && S.run.active;
+    let timeSub = t('timeSubNew', { s: TA.startSeconds });
+    if (timeResume) timeSub = t('timeSubResume', { t: fmtTime(S.run.timeLeft) });
+    else if (save.timeBest) timeSub = t('timeSubBest', { n: save.timeBest });
     showDialog({
       variant: 'menu',
       eyebrow: t('menuEyebrow'),
       title: 'Ok Kaçış',
       body: t('howto'),
-      actions: [{ kind: 'primary', icon: 'play', label: t('play'), sub: t('playLevel', { n: S.level }), onClick: startPlay }],
+      actions: [
+        {
+          kind: 'primary',
+          icon: 'play',
+          label: classicResume ? t('resume') : t('play'),
+          sub: t('playLevel', { n: classicResume ? S.level : save.level }),
+          onClick: classicResume ? resumeGame : startClassic,
+        },
+        {
+          kind: 'secondary',
+          icon: 'clock',
+          label: timeResume ? t('resume') : t('modeTime'),
+          sub: timeSub,
+          onClick: timeResume ? resumeGame : startTimeAttack,
+        },
+      ],
     });
   }
 
-  function startPlay() {
+  let bannerShown = false;
+  function ensureBanner() {
+    if (bannerShown) return;
+    bannerShown = true;
+    Ads.showBanner(bannerSlot);
+  }
+
+  function startClassic() {
+    hideDialog();
+    if (S.run) S.run.active = false;
+    ensureBanner();
+    // açılışta menünün arkasında hazırlanan tahtayı kullan
+    if (S.mode === 'classic' && S.phase === 'menu' && S.board && S.level === save.level) {
+      S.phase = 'play';
+      setTip(levelTip());
+    } else loadLevel(save.level, 'play');
+    Ads.event('gameplayStart');
+  }
+
+  function startTimeAttack() {
+    hideDialog();
+    ensureBanner();
+    startRun();
+  }
+
+  function resumeGame() {
     hideDialog();
     S.phase = 'play';
+    S.pausedBy = '';
     Ads.event('gameplayStart');
-    Ads.showBanner(bannerSlot);
   }
 
   btnHint.addEventListener('click', () => {
@@ -943,7 +1231,17 @@
     Sound.unlock();
     if (S.phase !== 'play') return;
     Sound.tick();
-    loadLevel(S.level, 'play');
+    if (S.mode === 'time') startRun();
+    else loadLevel(S.level, 'play');
+  });
+  btnHome.addEventListener('click', () => {
+    Sound.unlock();
+    if (S.phase !== 'play') return;
+    Sound.tick();
+    S.phase = 'paused';
+    S.pausedBy = 'menu';
+    Ads.event('gameplayStop');
+    showMenu();
   });
   btnSound.addEventListener('click', () => {
     save.sound = !save.sound;
@@ -955,10 +1253,7 @@
     updateHud();
   });
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && !overlay.hidden && S.phase === 'paused') {
-      hideDialog();
-      S.phase = 'play';
-    }
+    if (e.key === 'Escape' && !overlay.hidden && S.phase === 'paused' && !dialogBusy) resumeGame();
   });
 
   // ------------------------------------------------------------------ Açılış
@@ -996,6 +1291,13 @@
           return { x: r.left + px(head[0]), y: r.top + py(head[1]) };
         },
         load: (n) => loadLevel(n, 'play'),
+        startRun: () => {
+          hideDialog();
+          startRun();
+        },
+        setTime: (sec) => {
+          if (S.run) S.run.timeLeft = sec;
+        },
       };
     }
   }
