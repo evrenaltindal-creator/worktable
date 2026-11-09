@@ -1,0 +1,142 @@
+# Huzur Mahjong
+
+Büyük taşlı, sakin, yaşlı oyunculara da uygun bir **Mahjong Solitaire** (taş eşleştirme)
+oyunu. iPhone ve iPad için hazırlandı; aynı kod Android'de de çalışır.
+
+> **Neden "klon" değil?** Mahjong Solitaire herkesin yapabileceği genel bir oyun türü,
+> ama başka bir uygulamanın adını, görsellerini, dizilimlerini veya görünüşünü kopyalamak
+> hem telif/marka sorunu yaratır hem de Apple'ın **4.1 (Taklitçi uygulamalar)** kuralı
+> gereği uygulamanın reddedilmesine yol açar. Bu yüzden bu oyundaki **her şey özgündür**:
+> ad, taş çizimleri, ikon, 16 dizilim, sesler ve arayüz bu proje için sıfırdan üretildi.
+> Mağaza açıklamasında veya anahtar kelimelerde başka bir uygulamanın adını kullanmayın
+> (Apple bunu da reddeder, kural 2.3.7).
+
+## Özellikler
+
+- **Büyük, okunaklı taşlar:** dizilimler en fazla 8 sütun; taşlar ekrana göre otomatik büyür.
+- **Seçilebilir taşlar belirgin:** kapalı taşlar soluk gösterilir (ayarlardan kapatılabilir).
+- **Her seviye çözülebilir:** dağıtım, geçerli bir çözüm garanti edilerek üretilir.
+- **Sınırsız ipucu, geri alma ve karıştırma** — süre baskısı yok.
+- **200 seviye**, 16 özgün dizilim (kalp, ev, kelebek, kale, piramit…).
+- **Otomatik kayıt:** uygulama kapansa da oyun kaldığı yerden devam eder.
+- Türkçe ve İngilizce (telefon diline göre otomatik), ses efektleri, titreşim.
+- İnternet gerektirmez, **hiçbir kullanıcı verisi toplamaz**.
+
+## Bilgisayarınızda / telefonunuzda deneme (Windows'ta da çalışır)
+
+1. [Node.js LTS](https://nodejs.org) kurun.
+2. Bu klasörde bir komut satırı açıp:
+   ```bash
+   npm install
+   npx expo start
+   ```
+3. iPhone'a App Store'dan **Expo Go** uygulamasını kurun, ekrandaki QR kodu iPhone
+   kamerasıyla okutun. Oyun telefonunuzda açılır; kodda yaptığınız değişiklikler anında yansır.
+   (Tarayıcıda denemek için terminalde `w` tuşuna basın.)
+
+## App Store'da yayınlama (Mac GEREKMEZ)
+
+Derleme ve imzalama Expo'nun bulut sunucularında yapılır (EAS Build).
+
+### Bir kerelik hazırlık
+
+1. **Apple Developer Program** üyeliği alın — yıllık 99 USD:
+   <https://developer.apple.com/programs/>
+   (Bireysel hesap en hızlısıdır. Şirket adına yayınlayacaksanız D-U-N-S numarası gerekir.)
+2. Ücretsiz bir **Expo hesabı** açın: <https://expo.dev/signup>
+3. `app.json` içindeki `ios.bundleIdentifier` değerini kontrol edin
+   (şu an `com.evrenaltindal.huzurmahjong`). **İlk yüklemeden sonra değiştirilemez.**
+4. Uygulama adı App Store'da benzersiz olmalı. "Huzur Mahjong" alınmışsa `app.json`
+   içindeki `name` değerini ve `src/i18n.ts` içindeki `appName` değerini değiştirin.
+
+### Derleme ve yükleme
+
+```bash
+npx eas-cli@latest login          # Expo hesabınızla giriş
+npx eas-cli@latest init           # projeyi Expo hesabınıza bağlar (bir kez)
+npm run build:ios                 # bulutta iOS derlemesi (~15-30 dk)
+```
+
+`build:ios` sırasında Apple kimliğinizle giriş yapmanız istenir; sertifika ve
+provisioning profile'ı **otomatik** oluşturmasına izin verin.
+
+Derleme bitince:
+
+```bash
+npm run submit:ios                # derlemeyi App Store Connect'e (TestFlight) yükler
+```
+
+İlk gönderimde App Store Connect'te uygulama kaydı yoksa EAS sizin için oluşturmayı
+teklif eder.
+
+### App Store Connect'te doldurulacaklar (<https://appstoreconnect.apple.com>)
+
+1. **TestFlight:** derleme birkaç dakika içinde görünür; kendi iPhone'unuzda test edin.
+2. **Ekran görüntüleri:** hazır — `store/screenshots/tr/` (Türkçe) ve `store/screenshots/en/`
+   (İngilizce). `iphone-6.9` klasörü 6.9" iPhone, `ipad-13` klasörü 13" iPad içindir.
+3. **Açıklama, anahtar kelimeler, alt başlık:** taslaklar `store/app-store-listing.md` dosyasında.
+4. **Gizlilik politikası adresi (zorunlu):** `store/privacy-policy.md` metnini bir web sayfasında
+   yayınlayın (ör. GitHub Pages, Google Sites) ve adresini girin.
+5. **App Privacy (Uygulama Gizliliği):** "Veri toplanmıyor" (*Data Not Collected*) seçin.
+6. **Yaş derecelendirmesi:** anketteki tüm sorulara "Hayır/Yok" → 4+.
+7. **Kategori:** Oyunlar → Bulmaca (Puzzle), ikinci: Masa Oyunu (Board).
+8. **Fiyat:** Ücretsiz (veya istediğiniz fiyat). Sonra **İncelemeye Gönder**.
+
+Apple incelemesi genellikle 1-3 gün sürer.
+
+### Güncelleme yayınlama
+
+Kodu değiştirin, `app.json` içinde `version` değerini artırın (ör. `1.0.1`), sonra yine
+`npm run build:ios` ve `npm run submit:ios`. Yapı numarası otomatik artar.
+
+## Proje yapısı
+
+```
+App.tsx                    Ekranlar arası geçiş, ilerleme kaydı
+src/game/
+  tiles.ts                 Taş türleri ve eşleşme kuralı
+  layouts.ts               16 dizilim (ASCII çizim olarak, kolayca yenisi eklenir)
+  engine.ts                Kurallar, çözülebilir dağıtım, ipucu, karıştırma
+  levels.ts                Seviye -> dizilim + tohum eşlemesi
+src/screens/               Ana sayfa, Seviyeler, Oyun ekranları
+src/components/            Taş, tahta, düğmeler, açılır pencere
+src/i18n.ts                Tüm Türkçe/İngilizce metinler
+src/theme.ts               Renkler ve yazı boyutları
+src/storage.ts             Cihazda kayıt (ilerleme, ayarlar, yarım kalan oyun)
+assets/tiles, assets/ui    Üretilmiş taş ve simge görselleri (PNG)
+assets/sounds              Üretilmiş ses efektleri (WAV)
+scripts/                   Görsel/ses üreticileri, oyun motoru testi, mağaza görüntüleri
+store/                     Mağaza ekran görüntüleri, açıklama taslağı, gizlilik politikası
+```
+
+### Sık yapılacak değişiklikler
+
+- **Yeni dizilim eklemek:** `src/game/layouts.ts` içine `build('ad', [...])` ekleyin
+  (`#` = taş, `.` = boşluk; üst katlar `dx/dy` ile yarım taş kaydırılabilir), sonra
+  `npm run check:game` ile kontrol edin. Bu test her dizilimi ve 200 seviyenin hepsini
+  çözerek doğrular.
+- **Renkler:** `src/theme.ts`
+- **Metinler / dil eklemek:** `src/i18n.ts`
+- **Taş çizimleri:** `scripts/generate-art.cjs` içindeki SVG kodları; değiştirdikten sonra
+  `npm run gen:art` (Playwright gerektirir, dosyanın başındaki nota bakın).
+
+### Kontroller
+
+```bash
+npm run typecheck      # TypeScript
+npx expo lint          # kod kalitesi
+npm run check:game     # oyun motoru: dizilimler + 200 seviyenin çözülebilirliği
+npx expo-doctor        # Expo yapılandırma kontrolü
+```
+
+## Lisanslar ve kaynaklar
+
+- Taş üzerindeki Çince karakterler **Noto Serif TC** yazı tipiyle çizilip PNG'ye
+  dönüştürüldü (SIL Open Font License 1.1 — ticari kullanıma uygun).
+- Diğer tüm görseller ve sesler bu projedeki betiklerle üretildi.
+
+## Sonraki adımlar için öneriler
+
+- Gelir modeli: ödüllü reklam (ör. ekstra ipucu karşılığı) veya reklamsız sürüm satın alma.
+- Günlük bulmaca, başarımlar, Game Center skor tablosu.
+- Daha fazla dizilim ve tema (arka plan / taş rengi seçimi).
