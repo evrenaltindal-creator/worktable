@@ -93,9 +93,22 @@
       ducked = !!v;
       apply();
     },
-    whoosh() {
-      noise({ f0: 500, f1: 3400, dur: 0.24, vol: 0.32 });
-      tone({ type: 'triangle', f0: 360, f1: 920, dur: 0.14, vol: 0.1 });
+    /** level: kombo çarpanı; yükseldikçe ses tizleşir. */
+    whoosh(level) {
+      const k = 1 + ((level || 1) - 1) * 0.14;
+      noise({ f0: 500 * k, f1: 3400 * k, dur: 0.24, vol: 0.32 });
+      tone({ type: 'triangle', f0: 360 * k, f1: 920 * k, dur: 0.14, vol: 0.1 });
+    },
+    combo(level) {
+      const notes = [523.25, 659.25, 783.99, 1046.5, 1318.5, 1568];
+      const n = Math.min(notes.length, (level || 2) + 1);
+      for (let i = 0; i < n; i++) tone({ type: 'triangle', f0: notes[i], dur: 0.16, vol: 0.16, delay: i * 0.05 });
+      noise({ f0: 5000, f1: 9000, dur: 0.35, vol: 0.08, delay: 0.05 });
+    },
+    pop(i) {
+      const k = 1 + (i || 0) * 0.12;
+      noise({ f0: 2400 * k, f1: 500, dur: 0.22, vol: 0.28 });
+      tone({ type: 'sine', f0: 220 * k, f1: 70, dur: 0.18, vol: 0.3 });
     },
     bump() {
       tone({ type: 'sine', f0: 170, f1: 52, dur: 0.22, vol: 0.55 });

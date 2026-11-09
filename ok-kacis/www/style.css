@@ -14,6 +14,8 @@
   --gold: #f2a900;
   --hint: #ffd400;
   --scrim: rgba(20, 36, 58, 0.42);
+  --glass: rgba(251, 252, 254, 0.8);
+  --board-shadow: rgba(20, 36, 58, 0.2);
 
   /* ok renkleri */
   --a1: #1f5fd6;
@@ -52,6 +54,8 @@
     --gold: #ffd24a;
     --hint: #ffffff;
     --scrim: rgba(3, 10, 22, 0.62);
+    --glass: rgba(14, 42, 77, 0.74);
+    --board-shadow: rgba(0, 4, 12, 0.55);
     --a1: #ffd24a;
     --a2: #ff6f8e;
     --a3: #3ee0b0;
@@ -75,6 +79,8 @@
   --gold: #ffd24a;
   --hint: #ffffff;
   --scrim: rgba(3, 10, 22, 0.62);
+  --glass: rgba(14, 42, 77, 0.74);
+  --board-shadow: rgba(0, 4, 12, 0.55);
   --a1: #ffd24a;
   --a2: #ff6f8e;
   --a3: #3ee0b0;
@@ -114,7 +120,19 @@ body {
   overscroll-behavior: none;
 }
 
+.bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
 .app {
+  position: relative;
+  z-index: 1;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -124,35 +142,11 @@ body {
 
 /* ---------------------------------------------------------------- Üst bilgi */
 .hud {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas: "tb hearts tools";
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 12px;
-  padding-block: 12px 4px;
-}
-.titleblock {
-  grid-area: tb;
-}
-.hearts {
-  grid-area: hearts;
-}
-.tools {
-  grid-area: tools;
-}
-.timer {
-  grid-area: hearts;
-}
-/* dar ekranda kalpler kendi satırına iner */
-@media (max-width: 459px) {
-  .hud {
-    grid-template-columns: auto 1fr;
-    grid-template-areas: "tb tools" "hearts hearts";
-    row-gap: 6px;
-  }
-  .tools {
-    justify-self: end;
-  }
+  padding-block: 12px 0;
 }
 
 .titleblock {
@@ -301,15 +295,19 @@ body {
 /* zamana karşı sayacı */
 .timer {
   position: relative;
-  justify-self: center;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-areas: "ic num" "bar bar";
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  column-gap: 6px;
+  row-gap: 5px;
   color: var(--ink);
 }
 .timer svg {
-  width: 20px;
-  height: 20px;
+  grid-area: ic;
+  width: 18px;
+  height: 18px;
   flex: none;
   fill: none;
   stroke: currentColor;
@@ -318,6 +316,7 @@ body {
   stroke-linejoin: round;
 }
 .timer-num {
+  grid-area: num;
   min-width: 4ch;
   font-family: var(--font-mono);
   font-size: 22px;
@@ -326,8 +325,9 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .timer-bar {
-  width: 92px;
-  height: 10px;
+  grid-area: bar;
+  width: 84px;
+  height: 8px;
   border: 1.5px solid var(--ink);
   border-radius: 6px;
   background: var(--board);
@@ -396,6 +396,285 @@ body {
   }
 }
 
+/* ---------------------------------------------------------------- Skor şeridi */
+.scorebar {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding: 7px 14px 8px;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 3px 0 var(--ink);
+}
+.sb-score,
+.sb-combo {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sb-combo {
+  align-items: flex-end;
+  text-align: right;
+}
+.sb-mid {
+  display: flex;
+  justify-content: center;
+}
+.sb-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+}
+.sb-value {
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.sb-value.bump {
+  animation: sb-bump 0.28s ease-out;
+}
+@keyframes sb-bump {
+  40% {
+    transform: scale(1.18);
+    color: var(--accent);
+  }
+}
+.sb-sub {
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.sb-sub.is-hot {
+  color: var(--gold);
+  font-weight: 700;
+  animation: timer-pulse 0.9s ease-in-out infinite;
+}
+.sb-combo {
+  --combo: var(--ink-soft);
+}
+.sb-combo[data-level="2"] {
+  --combo: var(--a3);
+}
+.sb-combo[data-level="3"] {
+  --combo: var(--a4);
+}
+.sb-combo[data-level="4"] {
+  --combo: var(--a2);
+}
+.sb-combo[data-level="5"] {
+  --combo: var(--a5);
+}
+.sb-combo .sb-value {
+  color: var(--combo);
+  transform-origin: right center;
+}
+.sb-combo.is-up .sb-value {
+  animation: combo-pop 0.45s cubic-bezier(0.2, 1.8, 0.4, 1);
+}
+@keyframes combo-pop {
+  from {
+    transform: scale(1.8) rotate(-8deg);
+  }
+}
+.sb-combo.is-broken {
+  animation: shake 0.35s;
+}
+@keyframes shake {
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+.sb-meter {
+  width: 72px;
+  height: 6px;
+  margin-top: 5px;
+  border-radius: 3px;
+  background: var(--grid);
+  overflow: hidden;
+}
+.sb-meter i {
+  display: block;
+  height: 100%;
+  background: var(--combo);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.scorebar.is-fire {
+  animation: fire-glow 0.7s ease-in-out infinite alternate;
+}
+@keyframes fire-glow {
+  from {
+    box-shadow: 0 3px 0 var(--ink), 0 0 0 0 var(--a4);
+  }
+  to {
+    box-shadow: 0 3px 0 var(--ink), 0 0 22px 4px var(--a4);
+  }
+}
+
+/* ---------------------------------------------------------------- Puan, rozet, skor tablosu */
+.card-points {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.cp-value {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+.cp-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+}
+.card-badge {
+  align-self: flex-start;
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  animation: badge-in 0.5s cubic-bezier(0.2, 1.8, 0.4, 1) 0.4s both;
+}
+:root[data-theme="dark"] .card-badge {
+  color: var(--on-accent);
+}
+@keyframes badge-in {
+  from {
+    transform: scale(0.3) rotate(-10deg);
+    opacity: 0;
+  }
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1.5px solid var(--grid-strong);
+  border-radius: 10px;
+}
+.tab {
+  flex: 1;
+  min-height: 36px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.tab.is-active {
+  background: var(--ink);
+  color: var(--board);
+}
+.tab:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+.lb {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1.5px solid var(--grid-strong);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.lb li {
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+}
+.lb li + li {
+  border-top: 1px solid var(--grid);
+}
+.lb-rank {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1.5px solid var(--grid-strong);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-soft);
+}
+.lb li:nth-child(1) .lb-rank {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+.lb li:nth-child(2) .lb-rank,
+.lb li:nth-child(3) .lb-rank {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.lb-sub {
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lb-main {
+  font-size: 17px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.lb li.is-me {
+  background: var(--hint);
+  color: var(--on-accent);
+  animation: badge-in 0.5s ease-out 0.3s both;
+}
+:root:not([data-theme="dark"]) .lb li.is-me {
+  color: var(--ink);
+}
+.lb li.is-me .lb-sub {
+  color: inherit;
+}
+.lb-empty {
+  margin: 0;
+  padding: 14px;
+  border: 1.5px dashed var(--grid-strong);
+  border-radius: 8px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
 /* ---------------------------------------------------------------- Tahta */
 .stage {
   position: relative;
@@ -410,24 +689,28 @@ body {
 }
 .tip {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 50%;
   bottom: 6px;
+  width: max-content;
+  max-width: calc(100% - 16px);
   margin: 0;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--glass);
   text-align: center;
   font-family: var(--font-mono);
   font-size: 12.5px;
   font-weight: 500;
   color: var(--ink-soft);
   opacity: 0;
-  transform: translateY(6px);
+  transform: translate(-50%, 6px);
   transition: opacity 0.25s, transform 0.25s;
   pointer-events: none;
   text-wrap: balance;
 }
 .tip.show {
   opacity: 1;
-  transform: none;
+  transform: translate(-50%, 0);
 }
 
 .toast {
@@ -512,6 +795,8 @@ body {
 .card {
   width: 100%;
   max-width: 350px;
+  max-height: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;

@@ -14,6 +14,12 @@
     { startSeconds: 60, clearBonusSeconds: 8, mistakePenaltySeconds: 3, reviveSeconds: 15, interstitialEveryNRuns: 1 },
     CFG.timeAttack || {}
   ));
+  const SC = (CFG.score = Object.assign(
+    { perArrowCell: 10, comboWindow: 2.4, clearBonus: 100, perfectBonus: 150 },
+    CFG.score || {}
+  ));
+  const Fx = window.OkFx;
+  const Bg = window.OkBackground;
   const Levels = window.OkLevels;
   const Sound = window.OkSound;
   const Ads = window.OkAds;
@@ -60,12 +66,12 @@
       aHearts: '{n} can kaldı',
       aHome: 'Ana menü',
       aTimer: '{t} kaldı',
-      score: 'PUAN',
+      score: 'SKOR',
       stage: 'TAHTA {n}',
       resume: 'Devam et',
       modeTime: 'Zamana karşı',
       timeSubNew: '{s} saniyede en çok oku kaçır',
-      timeSubBest: 'Rekor: {n} ok',
+      timeSubBest: 'Rekor: {n} puan',
       timeSubResume: 'Kalan süre {t}',
       timeRules: 'Her tahta +{b} sn, her çarpma −{p} sn.',
       stageClear: 'Tahta temiz! +{b} sn',
@@ -78,6 +84,30 @@
       moreTimeToast: '+{s} sn. Devam!',
       playAgain: 'Tekrar oyna',
       mainMenu: 'Ana menü',
+      boardLabel: 'TAHTA',
+      bestLabel: 'REKOR {n}',
+      totalLabel: 'TOPLAM {n}',
+      liveRecord: 'YENİ REKOR!',
+      comboLabel: 'KOMBO',
+      comboBanner: 'KOMBO x{n}!',
+      perfect: 'KUSURSUZ!',
+      boardClear: 'TAHTA TEMİZ!',
+      pointsUnit: 'PUAN',
+      rowChain: 'EN UZUN SERİ',
+      rankBadge: 'Skor tablosunda {n}. sıradasın!',
+      newRecordTitle: 'Yeni rekor!',
+      leaderboard: 'Skor tablosu',
+      lbEyebrow: 'EN İYİ 5',
+      lbTime: 'Zamana karşı',
+      lbLevels: 'Seviye modu',
+      lbEmptyTime: 'Henüz skor yok. İlk turunu oyna!',
+      lbEmptyLevels: 'Henüz skor yok. Bir seviye bitir!',
+      lbEntryTime: '{a} ok · {b} tahta · {d}',
+      lbEntryLevel: 'Seviye {l} · {s} · {d}',
+      statTotal: 'TOPLAM PUAN',
+      statLevel: 'EN YÜKSEK SEVİYE',
+      statChain: 'EN UZUN SERİ',
+      back: 'Geri',
       plusSec: '+{n} sn',
       minusSec: '−{n} sn',
     },
@@ -123,7 +153,7 @@
       resume: 'Resume',
       modeTime: 'Time attack',
       timeSubNew: 'Clear as many arrows as you can in {s}s',
-      timeSubBest: 'Best: {n} arrows',
+      timeSubBest: 'Best: {n} points',
       timeSubResume: '{t} left',
       timeRules: 'Each board +{b}s, each crash −{p}s.',
       stageClear: 'Board clear! +{b}s',
@@ -136,6 +166,30 @@
       moreTimeToast: '+{s}s. Keep going!',
       playAgain: 'Play again',
       mainMenu: 'Main menu',
+      boardLabel: 'BOARD',
+      bestLabel: 'BEST {n}',
+      totalLabel: 'TOTAL {n}',
+      liveRecord: 'NEW BEST!',
+      comboLabel: 'COMBO',
+      comboBanner: 'COMBO x{n}!',
+      perfect: 'PERFECT!',
+      boardClear: 'BOARD CLEAR!',
+      pointsUnit: 'POINTS',
+      rowChain: 'BEST CHAIN',
+      rankBadge: 'You placed #{n} on the leaderboard!',
+      newRecordTitle: 'New best!',
+      leaderboard: 'Leaderboard',
+      lbEyebrow: 'TOP 5',
+      lbTime: 'Time attack',
+      lbLevels: 'Levels',
+      lbEmptyTime: 'No scores yet. Play your first run!',
+      lbEmptyLevels: 'No scores yet. Finish a level!',
+      lbEntryTime: '{a} arrows · {b} boards · {d}',
+      lbEntryLevel: 'Level {l} · {s} · {d}',
+      statTotal: 'TOTAL POINTS',
+      statLevel: 'HIGHEST LEVEL',
+      statChain: 'BEST CHAIN',
+      back: 'Back',
       plusSec: '+{n}s',
       minusSec: '−{n}s',
     },
@@ -158,7 +212,21 @@
       return {};
     }
   }
-  const save = Object.assign({ level: 1, hints: CFG.startHints, sound: true, tutorialDone: false, best: {}, timeBest: 0 }, readSave());
+  const save = Object.assign({
+      level: 1,
+      hints: CFG.startHints,
+      sound: true,
+      tutorialDone: false,
+      best: {},
+      timeTop: [],
+      levelTop: [],
+      totalPts: 0,
+      bestChain: 0,
+    },
+    readSave()
+  );
+  if (!Array.isArray(save.timeTop)) save.timeTop = [];
+  if (!Array.isArray(save.levelTop)) save.levelTop = [];
   function writeSave() {
     try {
       localStorage.setItem(SAVE_KEY, JSON.stringify(save));
@@ -184,6 +252,14 @@
   const timerNum = $('timerNum');
   const timerBar = $('timerBar');
   const timerDelta = $('timerDelta');
+  const scorebar = $('scorebar');
+  const sbScore = $('sbScore');
+  const sbSub = $('sbSub');
+  const sbCombo = $('sbCombo');
+  const sbComboVal = $('sbComboVal');
+  const sbComboBar = $('sbComboBar');
+  const sbScoreLabel = $('sbScoreLabel');
+  const sbComboLabel = $('sbComboLabel');
 
   // ------------------------------------------------------------------ Tema (renkler CSS'ten okunur)
   let theme = { arrows: [] };
@@ -198,7 +274,11 @@
       danger: v('--danger'),
       hint: v('--hint'),
       arrows: [1, 2, 3, 4, 5, 6, 7].map((i) => v('--a' + i)),
+      accent: v('--accent'),
+      gold: v('--gold'),
+      boardShadow: v('--board-shadow'),
     };
+    Bg.setTheme({ grid: theme.grid, arrows: theme.arrows });
   }
   if (window.matchMedia) {
     const mq = matchMedia('(prefers-color-scheme: dark)');
@@ -211,6 +291,10 @@
     mode: 'classic', // classic | time
     run: null, // zamana karşı turu
     pausedBy: '',
+    points: 0, // bu seviyenin / bu turun puanı
+    shownPoints: 0, // ekranda sayarak yükselen değer
+    committed: false, // seviye puanı toplam puana eklendi mi
+    combo: { count: 0, mult: 1, left: 0, best: 0 },
     level: 1,
     board: null,
     arrows: [],
@@ -219,7 +303,6 @@
     mistakes: 0,
     phase: 'menu', // menu | play | paused | won | lost | timeup
     shake: 0,
-    particles: [],
     tutorial: false,
     tipTimer: 0,
   };
@@ -258,7 +341,6 @@
   function setupBoard(board, phase) {
     S.board = board;
     S.mistakes = 0;
-    S.particles.length = 0;
     S.occ = new Int16Array(board.w * board.h).fill(-1);
     const now = performance.now();
     const cx = (board.w - 1) / 2;
@@ -296,6 +378,7 @@
     S.mode = 'classic';
     S.level = n;
     S.hearts = CFG.hearts;
+    resetScore();
     setupBoard(Levels.generate(n), phase);
     S.tutorial = n === 1 && !save.tutorialDone;
     renderHearts();
@@ -311,6 +394,7 @@
   function startRun() {
     S.mode = 'time';
     S.hearts = CFG.hearts;
+    resetScore();
     S.run = {
       seed: (Math.random() * 2147483647) | 0,
       stage: 1,
@@ -338,7 +422,10 @@
     r.timeLeft += TA.clearBonusSeconds;
     r.stage++;
     Sound.win();
-    confetti();
+    const perfect = S.mistakes === 0;
+    const bonus = SC.clearBonus + (perfect ? SC.perfectBonus : 0);
+    addPoints(bonus);
+    boardFireworks(perfect, bonus);
     showDelta(TA.clearBonusSeconds);
     setTip(t('stageClear', { b: TA.clearBonusSeconds }));
     updateHud();
@@ -346,18 +433,21 @@
       if (S.mode !== 'time' || S.phase !== 'won' || S.run !== r) return;
       loadStage('play');
       setTip('');
-    }, reducedMotion ? 300 : 900);
+    }, reducedMotion ? 300 : 1100);
   }
 
   function timeUp() {
     const r = S.run;
     r.timeLeft = 0;
     S.phase = 'timeup';
-    const record = r.score > (save.timeBest || 0);
+    if (!r.entry) r.entry = { p: 0, a: 0, b: 0, d: Date.now() };
+    Object.assign(r.entry, { p: S.points, a: r.score, b: r.stage });
+    const rank = pushTop(save.timeTop, r.entry);
+    const record = rank === 0;
+    writeSave();
     if (record) {
-      save.timeBest = r.score;
-      writeSave();
       confetti();
+      Bg.boost(4);
     }
     clearTimeout(S.tipTimer);
     setTip('');
@@ -365,10 +455,10 @@
     haptic(60);
     Ads.event('gameplayStop');
     updateHud();
-    setTimeout(() => showTimeUp(record), 450);
+    setTimeout(() => showTimeUp(record, rank), 450);
   }
 
-  function showTimeUp(record) {
+  function showTimeUp(record, rank) {
     const r = S.run;
     const actions = [];
     if (!r.revived) {
@@ -421,11 +511,10 @@
     showDialog({
       variant: record ? 'record' : 'timeup',
       eyebrow: record ? t('newRecordEyebrow') : t('timeUpEyebrow'),
-      title: t('timeUpTitle', { n: r.score }),
-      rows: [
-        [t('rowStage'), String(r.stage)],
-        [t('rowBest'), String(save.timeBest || 0)],
-      ],
+      title: record ? t('newRecordTitle') : t('timeUpTitle', { n: r.score }),
+      points: S.points,
+      badge: rank > 0 ? t('rankBadge', { n: rank + 1 }) : null,
+      list: { items: timeItems(rank), empty: t('lbEmptyTime') },
       actions,
     });
   }
@@ -456,6 +545,223 @@
     timerDelta.classList.add('show');
   }
 
+  // ------------------------------------------------------------------ Puan, kombo ve patlamalar
+  // Ok başına puan = hücre sayısı × perArrowCell × kombo çarpanı. Kombo,
+  // comboWindow saniye içinde yeni bir ok kaçırıldıkça sürer; çarpmak bozar.
+  const multFor = (c) => (c >= 15 ? 5 : c >= 10 ? 4 : c >= 6 ? 3 : c >= 3 ? 2 : 1);
+  const COMBO_COLOR = [2, 2, 2, 3, 1, 4];
+  const numFmt = new Intl.NumberFormat(lang === 'tr' ? 'tr-TR' : 'en-US');
+  const fmtNum = (n) => numFmt.format(Math.round(n));
+  const dateFmt = new Intl.DateTimeFormat(lang === 'tr' ? 'tr-TR' : 'en-US', { day: 'numeric', month: 'short' });
+  const fmtDate = (ms) => {
+    try {
+      return dateFmt.format(new Date(ms));
+    } catch (e) {
+      return '';
+    }
+  };
+
+  function restartAnim(node, cls) {
+    node.classList.remove(cls);
+    void node.offsetWidth;
+    node.classList.add(cls);
+  }
+
+  function resetScore() {
+    S.points = 0;
+    S.shownPoints = 0;
+    S.committed = false;
+    S.combo.count = 0;
+    S.combo.mult = 1;
+    S.combo.left = 0;
+    S.combo.best = 0;
+    sbScore.textContent = '0';
+  }
+
+  function breakCombo() {
+    if (!S.combo.count) return;
+    S.combo.count = 0;
+    S.combo.mult = 1;
+    S.combo.left = 0;
+    restartAnim(sbCombo, 'is-broken');
+    updateScorebar();
+  }
+
+  function addPoints(n) {
+    S.points += n;
+    updateScorebar();
+    restartAnim(sbScore, 'bump');
+  }
+
+  function onEscape(a) {
+    const c = S.combo;
+    c.count = c.left > 0 ? c.count + 1 : 1;
+    c.left = SC.comboWindow;
+    c.best = Math.max(c.best, c.count);
+    const prev = c.mult;
+    c.mult = multFor(c.count);
+    const pts = SC.perArrowCell * a.cells.length * c.mult;
+    const head = a.cells[a.cells.length - 1];
+    Fx.text(px(head[0]), py(head[1]) - cell * 0.2, '+' + fmtNum(pts), {
+      color: theme.arrows[a.color % theme.arrows.length],
+      outline: theme.board,
+      size: 16 + 4 * c.mult,
+    });
+    addPoints(pts);
+    Sound.whoosh(c.mult);
+    if (c.mult > prev) comboUp(c.mult);
+  }
+
+  function comboUp(m) {
+    const color = theme.arrows[COMBO_COLOR[Math.min(5, m)]];
+    Fx.banner(t('comboBanner', { n: m }), { color, outline: theme.board, size: 44 + m * 4 });
+    Fx.flash(color, 0.1 + 0.03 * m, 0.4);
+    Bg.boost(m);
+    const r = canvas.getBoundingClientRect();
+    Bg.pulse(r.left + cw / 2, r.top + ch * 0.42, color, 0.5 + 0.15 * m);
+    Sound.combo(m);
+    haptic([12, 40, 18]);
+    restartAnim(sbCombo, 'is-up');
+  }
+
+  /** Ok tahtanın kenarından çıktığı anda: kıvılcım, halka, arka planda dalga. */
+  function edgeBurst(a) {
+    const head = a.cells[a.cells.length - 1];
+    const k = a.rayLen + 0.5;
+    const x = px(head[0] + a.dir[0] * k);
+    const y = py(head[1] + a.dir[1] * k);
+    const color = theme.arrows[a.color % theme.arrows.length];
+    const m = S.combo.mult;
+    Fx.burst(x, y, [color, color, theme.hint], 14 + 5 * m, 360 + 60 * m, [-a.dir[0], -a.dir[1]]);
+    Fx.ring(x, y, color, cell * (1.1 + 0.25 * m), 3 + m);
+    const r = canvas.getBoundingClientRect();
+    Bg.pulse(r.left + x, r.top + y, color, 0.25 + 0.05 * m);
+  }
+
+  /** Tahta bitince: havai fişek, konfeti, büyük yazı, bonus puan. */
+  function boardFireworks(perfect, bonus) {
+    const bw = cell * S.board.w;
+    const bh = cell * S.board.h;
+    const cx = ox + bw / 2;
+    const cy = oy + bh / 2;
+    Fx.confetti(cx, cy, theme.arrows, 100);
+    Fx.banner(perfect ? t('perfect') : t('boardClear'), {
+      color: perfect ? theme.gold : theme.accent,
+      outline: theme.board,
+      size: 54,
+      life: 1.4,
+    });
+    Fx.text(cx, cy + Math.min(70, bh * 0.2), '+' + fmtNum(bonus), {
+      color: theme.gold,
+      outline: theme.board,
+      size: 30,
+      life: 1.3,
+      rise: 40,
+    });
+    Fx.flash(theme.hint, 0.22, 0.5);
+    const shots = reducedMotion ? 1 : 5;
+    for (let i = 0; i < shots; i++) {
+      setTimeout(() => {
+        const x = ox + bw * (0.15 + Math.random() * 0.7);
+        const y = oy + bh * (0.15 + Math.random() * 0.7);
+        const col = theme.arrows[i % theme.arrows.length];
+        Fx.burst(x, y, [col, theme.hint, theme.arrows[(i + 3) % theme.arrows.length]], 30, 560);
+        Fx.ring(x, y, col, cell * 2.4, 5);
+        Sound.pop(i);
+      }, i * 130);
+    }
+    const r = canvas.getBoundingClientRect();
+    Bg.pulse(r.left + cx, r.top + cy, theme.accent, 1.3);
+    Bg.boost(3);
+    haptic([20, 50, 20, 50, 40]);
+  }
+
+  // ------------------------------------------------------------------ Skor tablosu (bu cihazda, en iyi 5)
+  function pushTop(list, entry) {
+    if (!(entry.p > 0)) return -1;
+    if (!list.includes(entry)) list.push(entry);
+    list.sort((a, b) => b.p - a.p);
+    const idx = list.indexOf(entry);
+    if (list.length > 5) list.length = 5;
+    return idx < 5 ? idx : -1;
+  }
+  const bestTime = () => (save.timeTop.length ? save.timeTop[0].p : 0);
+  function timeItems(hi) {
+    return save.timeTop.map((e, i) => ({
+      main: fmtNum(e.p),
+      sub: t('lbEntryTime', { a: e.a, b: e.b, d: fmtDate(e.d) }),
+      me: i === hi,
+    }));
+  }
+  function levelItems(hi) {
+    return save.levelTop.map((e, i) => ({
+      main: fmtNum(e.p),
+      sub: t('lbEntryLevel', { l: e.l, s: '★'.repeat(e.s || 0), d: fmtDate(e.d) }),
+      me: i === hi,
+    }));
+  }
+
+  function showLeaderboard(tab) {
+    const time = tab !== 'levels';
+    showDialog({
+      variant: 'board',
+      eyebrow: t('lbEyebrow'),
+      title: t('leaderboard'),
+      tabs: [
+        { label: t('lbTime'), active: time, onClick: () => showLeaderboard('time') },
+        { label: t('lbLevels'), active: !time, onClick: () => showLeaderboard('levels') },
+      ],
+      list: time ? { items: timeItems(-1), empty: t('lbEmptyTime') } : { items: levelItems(-1), empty: t('lbEmptyLevels') },
+      rows: time
+        ? null
+        : [
+            [t('statTotal'), fmtNum(save.totalPts || 0)],
+            [t('statLevel'), String(Math.max(0, save.level - 1))],
+            [t('statChain'), String(save.bestChain || 0)],
+          ],
+      actions: [{ kind: 'secondary', label: t('back'), onClick: showMenu }],
+    });
+  }
+
+  function updateScorebar() {
+    let sub;
+    let hot = false;
+    if (S.mode === 'time') {
+      const best = bestTime();
+      if (best > 0 && S.points > best) {
+        sub = t('liveRecord');
+        hot = true;
+      } else sub = t('bestLabel', { n: fmtNum(best) });
+    } else sub = t('totalLabel', { n: fmtNum((save.totalPts || 0) + (S.committed ? 0 : S.points)) });
+    if (sbSub.textContent !== sub) sbSub.textContent = sub;
+    sbSub.classList.toggle('is-hot', hot);
+    const m = S.combo.mult;
+    sbCombo.dataset.level = String(m);
+    sbComboVal.textContent = 'x' + m;
+    scorebar.classList.toggle('is-fire', m >= 4 && !reducedMotion);
+    sbScoreLabel.textContent = t('score');
+    sbComboLabel.textContent = t('comboLabel');
+  }
+
+  let countToken = 0;
+  function countUp(node, target) {
+    const my = ++countToken;
+    const dur = reducedMotion ? 0 : Math.min(1400, 500 + target * 0.4);
+    const t0 = performance.now();
+    let lastTick = 0;
+    const stepFn = (now) => {
+      if (my !== countToken) return;
+      const u = dur ? Math.min(1, (now - t0) / dur) : 1;
+      node.textContent = fmtNum(target * (1 - Math.pow(1 - u, 3)));
+      if (u < 1 && now - lastTick > 70) {
+        Sound.tick();
+        lastTick = now;
+      }
+      if (u < 1) requestAnimationFrame(stepFn);
+    };
+    requestAnimationFrame(stepFn);
+  }
+
   function levelTip() {
     if (S.level === 1) return t('tip1');
     if (S.level === 2) return t('tip2');
@@ -484,9 +790,9 @@
       a.rayLen = pr.dist;
       a.exitEnd = pr.dist + a.len + 3;
       for (const [x, y] of a.cells) S.occ[y * S.board.w + x] = -1;
-      Sound.whoosh();
       haptic(10);
       if (S.mode === 'time') S.run.score++;
+      onEscape(a);
       if (S.tutorial) {
         S.tutorial = false;
         save.tutorialDone = true;
@@ -507,6 +813,8 @@
   function onImpact(a, now) {
     const b = S.arrows[a.blocker];
     S.mistakes++;
+    breakCombo();
+    Fx.flash(theme.danger, 0.16, 0.3);
     if (S.mode === 'time') {
       S.run.timeLeft = Math.max(0, S.run.timeLeft - TA.mistakePenaltySeconds);
       showDelta(-TA.mistakePenaltySeconds);
@@ -530,17 +838,28 @@
 
   function win() {
     S.phase = 'won';
-    const stars = S.mistakes === 0 ? 3 : S.mistakes === 1 ? 2 : 1;
+    const perfect = S.mistakes === 0;
+    const stars = perfect ? 3 : S.mistakes === 1 ? 2 : 1;
+    const bonus = SC.clearBonus + (perfect ? SC.perfectBonus : 0);
+    addPoints(bonus);
+    boardFireworks(perfect, bonus);
+    const rank = pushTop(save.levelTop, { p: S.points, l: S.level, s: stars, d: Date.now() });
     save.level = S.level + 1;
     save.best[S.level] = Math.max(save.best[S.level] || 0, stars);
+    save.totalPts = (save.totalPts || 0) + S.points;
+    save.bestChain = Math.max(save.bestChain || 0, S.combo.best);
+    S.committed = true;
     writeSave();
+    updateScorebar();
     clearTimeout(S.tipTimer);
     setTip('');
     Sound.win();
-    confetti();
     Ads.event('gameplayStop');
     Ads.event('happytime');
     const level = S.level;
+    const points = S.points;
+    const mistakes = S.mistakes;
+    const chain = S.combo.best;
     setTimeout(
       () =>
         showDialog({
@@ -548,13 +867,16 @@
           eyebrow: t('winEyebrow'),
           title: t('winTitle', { n: level }),
           stars,
+          points,
+          badge: rank >= 0 && rank < 3 && save.levelTop.length > 1 ? t('rankBadge', { n: rank + 1 }) : null,
           rows: [
             [t('rowBoard'), S.board.w + '×' + S.board.h],
-            [t('rowMistakes'), String(S.mistakes)],
+            [t('rowMistakes'), String(mistakes)],
+            [t('rowChain'), String(chain)],
           ],
           actions: [{ kind: 'primary', icon: 'play', label: t('next'), onClick: goNext }],
         }),
-      reducedMotion ? 250 : 800
+      reducedMotion ? 250 : 1100
     );
   }
 
@@ -688,6 +1010,10 @@
       if (a.state === 'exit') {
         a.v += 85 * dt;
         a.s += a.v * dt;
+        if (!a.burst && a.s >= a.rayLen + 0.1) {
+          a.burst = true;
+          edgeBurst(a);
+        }
         if (a.s >= a.exitEnd) a.state = 'gone';
       } else if (a.state === 'bump') {
         const tt = (now - a.t0) / 1000;
@@ -723,37 +1049,27 @@
       else win();
     }
 
-    for (let i = S.particles.length - 1; i >= 0; i--) {
-      const p = S.particles[i];
-      p.vy += 1300 * dt;
-      p.vx *= 0.99;
-      p.x += p.vx * dt;
-      p.y += p.vy * dt;
-      p.rot += p.vr * dt;
-      p.life -= dt;
-      if (p.life <= 0) S.particles.splice(i, 1);
+    Fx.update(dt);
+    if (S.phase === 'play' && S.combo.left > 0) {
+      S.combo.left -= dt;
+      if (S.combo.left <= 0) {
+        S.combo.left = 0;
+        S.combo.count = 0;
+        S.combo.mult = 1;
+        updateScorebar();
+      }
+    }
+    sbComboBar.style.transform = 'scaleX(' + (S.combo.left / SC.comboWindow).toFixed(3) + ')';
+    if (S.shownPoints !== S.points) {
+      const diff = S.points - S.shownPoints;
+      S.shownPoints = Math.abs(diff) < 1 ? S.points : S.shownPoints + diff * Math.min(1, dt * 10);
+      sbScore.textContent = fmtNum(S.shownPoints);
     }
   }
 
   function confetti() {
-    if (reducedMotion || !S.board) return;
-    const x = ox + (cell * S.board.w) / 2;
-    const y = oy + (cell * S.board.h) / 2;
-    for (let i = 0; i < 90; i++) {
-      const ang = Math.random() * Math.PI * 2;
-      const sp = 250 + Math.random() * 520;
-      S.particles.push({
-        x,
-        y,
-        vx: Math.cos(ang) * sp,
-        vy: Math.sin(ang) * sp - 380,
-        rot: Math.random() * 6,
-        vr: (Math.random() - 0.5) * 14,
-        size: 6 + Math.random() * 6,
-        color: theme.arrows[i % theme.arrows.length],
-        life: 1.4 + Math.random() * 0.9,
-      });
-    }
+    if (!S.board) return;
+    Fx.confetti(ox + (cell * S.board.w) / 2, oy + (cell * S.board.h) / 2, theme.arrows, 100);
   }
 
   // ------------------------------------------------------------------ Çizim
@@ -789,9 +1105,14 @@
     const { w, h } = S.board;
     const bw = cell * w;
     const bh = cell * h;
+    ctx.save();
+    ctx.shadowColor = theme.boardShadow;
+    ctx.shadowBlur = 28;
+    ctx.shadowOffsetY = 10;
     ctx.fillStyle = theme.board;
     roundRect(ox - 8, oy - 8, bw + 16, bh + 16, 10);
     ctx.fill();
+    ctx.restore();
 
     // milimetrik kağıt: yarım hücre çizgileri silik, hücre çizgileri belirgin
     ctx.lineWidth = 1;
@@ -947,15 +1268,7 @@
     }
     for (const [a, g] of geo) drawArrow(a, now, g);
 
-    for (const p of S.particles) {
-      ctx.save();
-      ctx.globalAlpha = clamp01(p.life / 0.5);
-      ctx.translate(p.x, p.y);
-      ctx.rotate(p.rot);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
-      ctx.restore();
-    }
+    Fx.draw(ctx, cw, ch);
     ctx.restore();
   }
 
@@ -1016,6 +1329,7 @@
     ad: '<rect x="3" y="5" width="18" height="13" rx="2.5"/><path d="M10 9.3v5.4l4.6-2.7z" fill="currentColor" stroke="none"/><path d="M8 21h8"/>',
     restart: '<path d="M3.5 12a8.5 8.5 0 1 0 2.8-6.3"/><path d="M3.5 4v5h5"/>',
     clock: '<circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 3h5"/>',
+    trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0V4z"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20.5h7M10 17h4"/>',
     heart:
       '<path d="M12 20.3s-7.4-4.5-9.2-9C1.5 8 3.4 4.6 6.9 4.6c2 0 3.6 1.1 5.1 3 1.5-1.9 3.1-3 5.1-3 3.5 0 5.4 3.4 4.1 6.7-1.8 4.5-9.2 9-9.2 9z"/>',
     star: '<path d="M12 2.8l2.8 5.8 6.3.9-4.6 4.4 1.1 6.3L12 17.2l-5.6 3 1.1-6.3L2.9 9.5l6.3-.9z"/>',
@@ -1056,11 +1370,10 @@
   function updateHud() {
     if (!S.board) return;
     const timed = S.mode === 'time' && !!S.run;
-    const size = t('size', { w: S.board.w, h: S.board.h });
-    $('lvLabel').textContent = timed ? t('score') : t('level');
-    $('lvNum').textContent = String(timed ? S.run.score : S.level);
-    $('lvSize').textContent = timed ? t('stage', { n: S.run.stage }) : size;
-    $('lvLeft').textContent = timed ? size : t('left', { n: aliveCount() });
+    $('lvLabel').textContent = timed ? t('boardLabel') : t('level');
+    $('lvNum').textContent = String(timed ? S.run.stage : S.level);
+    $('lvSize').textContent = t('size', { w: S.board.w, h: S.board.h });
+    $('lvLeft').textContent = t('left', { n: aliveCount() });
     heartsEl.hidden = timed;
     timerEl.hidden = !timed;
     if (timed) renderTimer();
@@ -1073,6 +1386,7 @@
     btnSound.setAttribute('aria-pressed', String(!!save.sound));
     btnSound.setAttribute('aria-label', save.sound ? t('aSoundOn') : t('aSoundOff'));
     btnSound.classList.toggle('is-off', !save.sound);
+    updateScorebar();
   }
 
   function setTip(msg) {
@@ -1110,6 +1424,22 @@
         '<path d="M194 6 L214 16 L194 26 Z" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>';
       card.appendChild(mark);
     }
+    if (o.tabs) {
+      const tabs = el('div', 'tabs');
+      tabs.setAttribute('role', 'tablist');
+      for (const tb of o.tabs) {
+        const b = el('button', 'tab' + (tb.active ? ' is-active' : ''), tb.label);
+        b.type = 'button';
+        b.setAttribute('role', 'tab');
+        b.setAttribute('aria-selected', String(!!tb.active));
+        b.addEventListener('click', () => {
+          Sound.tick();
+          tb.onClick();
+        });
+        tabs.appendChild(b);
+      }
+      card.appendChild(tabs);
+    }
     if (o.stars != null) {
       const row = el('div', 'stars');
       row.setAttribute('role', 'img');
@@ -1121,7 +1451,30 @@
       }
       card.appendChild(row);
     }
+    if (o.points != null) {
+      const box = el('div', 'card-points');
+      const val = el('span', 'cp-value', '0');
+      box.appendChild(val);
+      box.appendChild(el('span', 'cp-label', t('pointsUnit')));
+      card.appendChild(box);
+      countUp(val, o.points);
+    }
+    if (o.badge) card.appendChild(el('p', 'card-badge', o.badge));
     if (o.body) card.appendChild(el('p', 'card-body', o.body));
+    if (o.list) {
+      if (!o.list.items.length) card.appendChild(el('p', 'lb-empty', o.list.empty));
+      else {
+        const ol = el('ol', 'lb');
+        for (const it of o.list.items) {
+          const li = el('li', it.me ? 'is-me' : null);
+          li.appendChild(el('span', 'lb-rank', String(ol.childElementCount + 1)));
+          li.appendChild(el('span', 'lb-sub', it.sub));
+          li.appendChild(el('span', 'lb-main', it.main));
+          ol.appendChild(li);
+        }
+        card.appendChild(ol);
+      }
+    }
     if (o.rows) {
       const dl = el('dl', 'tb-table');
       for (const [k, v] of o.rows) {
@@ -1166,7 +1519,7 @@
     const timeResume = paused && S.mode === 'time' && !!S.run && S.run.active;
     let timeSub = t('timeSubNew', { s: TA.startSeconds });
     if (timeResume) timeSub = t('timeSubResume', { t: fmtTime(S.run.timeLeft) });
-    else if (save.timeBest) timeSub = t('timeSubBest', { n: save.timeBest });
+    else if (bestTime()) timeSub = t('timeSubBest', { n: fmtNum(bestTime()) });
     showDialog({
       variant: 'menu',
       eyebrow: t('menuEyebrow'),
@@ -1187,6 +1540,7 @@
           sub: timeSub,
           onClick: timeResume ? resumeGame : startTimeAttack,
         },
+        { kind: 'ghost', icon: 'trophy', label: t('leaderboard'), onClick: () => showLeaderboard('time') },
       ],
     });
   }
@@ -1263,7 +1617,9 @@
       if (typeof hotData.hints === 'number') save.hints = hotData.hints;
     }
     Sound.setEnabled(save.sound);
+    Fx.setReduced(reducedMotion);
     readTheme();
+    Bg.init($('bg'), { reduced: reducedMotion });
     resize();
     if (window.ResizeObserver) new ResizeObserver(resize).observe(stage);
     else window.addEventListener('resize', resize);
@@ -1291,6 +1647,7 @@
           return { x: r.left + px(head[0]), y: r.top + py(head[1]) };
         },
         load: (n) => loadLevel(n, 'play'),
+        leaderboard: (tab) => showLeaderboard(tab),
         startRun: () => {
           hideDialog();
           startRun();

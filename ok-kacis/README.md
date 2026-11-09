@@ -12,6 +12,16 @@ reklam altyapısı hazır, oynanabilir bir prototip var.
   çarpma −3 sn götürür (bu modda can yok). Tahtalar büyüdükçe zorlaşır, her tur
   farklı tahtalarla başlar. Rekor kaydedilir. Ana menüden iki mod arasında
   geçilir; yarıda bırakılan oyun kaldığı yerden devam eder.
+- **Puan ve kombo:** Uzun oklar daha çok puan verir. Hızlı art arda doğru
+  hamleler kombo çarpanını büyütür (x2'den x5'e kadar), çarpmak komboyu bozar.
+  Tahta bitince bonus, hatasız bitince "KUSURSUZ!" bonusu gelir.
+- **Görsel şov:** Hareketli arka plan (akan oklar, kayan ızgara, ışık bulutları,
+  kayan yıldız oklar), her okun çıktığı yerde kıvılcım patlaması ve uçan puan,
+  kombo atlayınca ortada patlayan "KOMBO x3!" yazısı, tahta bitince havai fişek
+  ve konfeti. x4'ten sonra skor paneli alev alır. Cihazda "hareketi azalt"
+  açıksa efektler sadeleşir.
+- **Skor tablosu:** Her iki mod için en iyi 5 skor (bu cihazda saklanır).
+  Menüden açılır; tur bitince kaçıncı sıraya girdiğin gösterilir.
 - Seviyeler sonsuzdur ve otomatik üretilir. Aynı seviye numarası herkeste aynı
   tahtayı verir. Her seviyenin çözülebildiği testle kontrol edilir.
 - Telefon tarayıcısında, bilgisayarda ve (Capacitor ile) Android/iOS uygulaması
@@ -44,7 +54,9 @@ ok-kacis/
     style.css          görünüm (renkler en üstte)
     config.js          REKLAM KİMLİKLERİ ve reklam sıklığı burada
     js/levels.js       seviye üretici
-    js/game.js         oyun, çizim, ekranlar
+    js/game.js         oyun, çizim, puan/kombo, skor tablosu, ekranlar
+    js/fx.js           patlamalar, kıvılcımlar, uçan puanlar, büyük yazılar
+    js/background.js   hareketli arka plan
     js/ads.js          reklam katmanı (AdMob, AdSense, CrazyGames, test)
     js/sound.js        ses efektleri
     manifest.webmanifest, icon.svg
@@ -183,6 +195,9 @@ yüzden ilk iki yol genelde daha hızlı sonuç verir.
 | `interstitialMinSeconds` | `45` | İki reklam arası en az süre |
 | `hearts` | `3` | Seviye başına can |
 | `startHints` / `hintsPerAd` | `3` / `3` | Başlangıç ipucu / reklam başına ipucu |
+| `score.perArrowCell` | `10` | Ok başına puan = hücre sayısı × bu × kombo çarpanı |
+| `score.comboWindow` | `2.4` | Kombonun sürmesi için iki ok arasındaki en uzun süre (sn) |
+| `score.clearBonus` / `score.perfectBonus` | `100` / `150` | Tahta bitince / hatasız bitince ek puan |
 | `timeAttack.startSeconds` | `60` | Zamana karşı turunun başlangıç süresi |
 | `timeAttack.clearBonusSeconds` | `8` | Temizlenen her tahta için eklenen süre |
 | `timeAttack.mistakePenaltySeconds` | `3` | Her çarpmada düşen süre |
@@ -202,6 +217,9 @@ Test edildi:
 - Zamana karşı: sayaç, çarpma cezası, tahta bonusu, ana menüde sayacın
   durması ve devam, son 10 saniye uyarısı, rekor, +15 sn ödüllü reklam (tur
   başına bir kez), turlar arası geçiş reklamı ve 45 sn kuralı.
+- Puan, kombo (x5'e kadar, çarpınca sıfırlanma), patlamalar, skor tablosu ve
+  sıralama, açık/koyu tema ve "hareketi azalt" ayarı. Efektler yoğunken
+  bile tarayıcıda saniyede 60 kare.
 - AdMob katmanının mantığı, sahte bir Capacitor eklentisiyle (ödül alındı,
   reklam yarıda kapatıldı, olay dinleyicisi yok durumları).
 
@@ -213,6 +231,9 @@ Test edilemedi (gerçek hesap ve cihaz gerekiyor):
 
 ## Sonraki adımlar için fikirler
 
+- **Dünya skor tablosu:** Şu anki tablo sadece bu cihazdaki skorları gösterir.
+  Oyuncuların birbirleriyle yarışması için bir sunucu gerekir (Android'de
+  Google Play Games skor tabloları en kolay yol).
 - **Analitik** (Firebase veya GameAnalytics): oyuncular hangi seviyede
   bırakıyor? Reklam sıklığını buna göre ayarlarsın.
 - **"Reklamları kaldır" satın alımı**: genelde reklam gelirine ek gelir getirir.

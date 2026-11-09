@@ -53,6 +53,14 @@ window.OK_KACIS_CONFIG = {
     interstitialEveryNRuns: 1, // "Tekrar oyna"da kaç turda bir geçiş reklamı (45 sn kuralı da geçerli)
   },
 
+  // Puanlama
+  score: {
+    perArrowCell: 10, // ok başına puan = hücre sayısı × bu değer × kombo çarpanı
+    comboWindow: 2.4, // bu kadar saniye içinde yeni ok kaçırılırsa kombo sürer
+    clearBonus: 100, // tahta bitince
+    perfectBonus: 150, // tahta hatasız bitince ek
+  },
+
   // Oyun ekonomisi
   hearts: 3, // seviye başına can
   startHints: 3, // ilk açılışta verilen ipucu
