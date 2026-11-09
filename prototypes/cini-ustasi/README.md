@@ -57,7 +57,22 @@ Oyun 7 dilde: Türkçe, İngilizce, Portekizce (Brezilya), Almanca, Fransızca, 
 4. **Adalet garantisi:** 1.500 puanın altında, gelen üç parçanın bir sırayla mutlaka yerleşebildiği arama ile doğrulanır. Skor arttıkça bu garanti %70'e kadar gevşer. Oyunu bitiren de bu gevşemedir.
 5. Her üçlüde en az bir parçanın bir yere sığması şarttır.
 
-Ayar noktaları kodda: `SHAPE_DEFS` (ağırlıklar), `guaranteeChance`, `genTray` içindeki `mercy` ve `pHelp`.
+6. **Uzman seviyesi (10.000 puan):** Oyun bir kez kutlar ("Uzman seviyesi!"), tahta ve skor plakası bordoya döner, plakaya "UZMAN" rozeti gelir. Sonra:
+   - 8 yeni şekil ailesi gelmeye başlar: artı, U, büyük T, merdiven, büyük Z, uzun L ve iki çapraz. Çaprazlar köşeden değen hücrelerden oluşur ve yerleştirmesi en zor olanlardır.
+   - Yeni şekiller düşük ağırlıkla başlar ve 6.000 puan içinde tam ağırlığa çıkar.
+   - Yerleşme garantisi %70'ten 20.000 puanda %50'ye iner.
+   - Merhamet yarıya, yardımcı parça olasılığı %60'ına düşer.
+
+   Simülasyonla ölçülen yeni şekil oranı (boş tahtada, 1.500 üçlü):
+
+   | Skor | Yeni şekil oranı | Garanti |
+   |---|---|---|
+   | 9.999 | %0 | %70 |
+   | 10.000 | %12 | %70 |
+   | 13.000 | %21 | %64 |
+   | 16.000+ | %28 | %58 → %50 |
+
+Ayar noktaları kodda: `SHAPE_DEFS` ve `EXPERT_DEFS` (ağırlıklar), `guaranteeChance`, `expertLevel`, `genTray` içindeki `mercy` ve `pHelp`. Eşik geliştirici panelindeki **Zorluk** bölümünden değiştirilebilir. **Uzman seviyesine atla** test düğmesi geçişi hemen gösterir.
 
 ## Reklam yerleşimleri
 

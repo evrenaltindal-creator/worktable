@@ -34,6 +34,7 @@
   --pattern-fill:rgba(28,63,122,.035);
   --vignette:rgba(28,63,122,.10);
   --medal:#1C3F7A;
+  --frame-expert:#7B2233;
   --t0:#2457B3; --t1:#13909A; --t2:#C33E2C; --t3:#37844D; --t4:#D6961C;
   --shadow:0 1px 2px rgba(19,33,58,.08), 0 10px 28px rgba(19,33,58,.10);
   /* reklam simülasyonu bilerek tek temalı: reklamlar oyunun kendi dünyasının dışında durur */
@@ -51,7 +52,7 @@
     --frame:#2A538F; --frame-ink:#BFD3F2; --field:#0E192B; --well:#18263E;
     --primary:#5C8BDD; --on-primary:#06101F; --ad:#E8B04A; --on-ad:#231700; --ad-ink:#E8B04A; --ok-ink:#6CC08A;
     --gold:#E2B13E; --danger:#E06650; --scrim:rgba(2,5,10,.62);
-    --plate:rgba(17,28,48,.84); --frame-soft:rgba(140,175,235,.28); --pattern:rgba(140,175,235,.10); --pattern-fill:rgba(140,175,235,.03); --vignette:rgba(0,0,0,.38); --medal:#7FA3E6;
+    --plate:rgba(17,28,48,.84); --frame-soft:rgba(140,175,235,.28); --pattern:rgba(140,175,235,.10); --pattern-fill:rgba(140,175,235,.03); --vignette:rgba(0,0,0,.38); --medal:#7FA3E6; --frame-expert:#A23A4B;
     --t0:#3A70D0; --t1:#1FA5AE; --t2:#D6533F; --t3:#47A061; --t4:#E0A32C;
     --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.35);
     color-scheme:dark;
@@ -62,7 +63,7 @@
   --frame:#2A538F; --frame-ink:#BFD3F2; --field:#0E192B; --well:#18263E;
   --primary:#5C8BDD; --on-primary:#06101F; --ad:#E8B04A; --on-ad:#231700; --ad-ink:#E8B04A; --ok-ink:#6CC08A;
   --gold:#E2B13E; --danger:#E06650; --scrim:rgba(2,5,10,.62);
-    --plate:rgba(17,28,48,.84); --frame-soft:rgba(140,175,235,.28); --pattern:rgba(140,175,235,.10); --pattern-fill:rgba(140,175,235,.03); --vignette:rgba(0,0,0,.38); --medal:#7FA3E6;
+    --plate:rgba(17,28,48,.84); --frame-soft:rgba(140,175,235,.28); --pattern:rgba(140,175,235,.10); --pattern-fill:rgba(140,175,235,.03); --vignette:rgba(0,0,0,.38); --medal:#7FA3E6; --frame-expert:#A23A4B;
   --t0:#3A70D0; --t1:#1FA5AE; --t2:#D6533F; --t3:#47A061; --t4:#E0A32C;
   --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.35);
   color-scheme:dark;
@@ -115,6 +116,11 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 .streak .dots{display:inline-flex;gap:3px}
 .streak .dots i{width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.3}
 .streak .dots i.on{opacity:1}
+/* Uzman seviyesi: plaka bordo çerçeve ve köşede rozet alır */
+.tier{position:absolute;top:-12px;right:18px;height:20px;display:none;align-items:center;padding:0 8px;border-radius:999px;background:var(--frame-expert);color:#FFFFFF;font-size:.58rem;font-weight:800;letter-spacing:.12em;white-space:nowrap;box-shadow:var(--shadow)}
+.plate.expert{border-color:var(--frame-expert)}
+.plate.expert .tier{display:flex}
+.plate.expert .gem{background:var(--gold);border-color:var(--frame-expert)}
 
 /* Sahne */
 .stage{flex:1 1 auto;min-height:0;position:relative;display:grid;place-items:center}
@@ -164,6 +170,7 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 .check{display:flex;align-items:center;gap:8px;font-size:.82rem;margin-top:10px}
 .tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .tool{height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);font-size:.78rem;font-weight:700;padding:0 6px}
+.tool.wide{grid-column:1/-1}
 .log-wrap{border-top:1px solid var(--line);padding-top:10px;display:grid;gap:8px}
 .log-wrap h3{margin:0;font-size:.88rem}
 .log{list-style:none;margin:0;padding:0;font-family:var(--font-mono);font-size:.7rem}
@@ -250,7 +257,7 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 
     <div class="scoreboard">
       <div class="plate" id="plate">
-        <i class="gem tl"></i><i class="gem tr"></i><i class="gem bl"></i><i class="gem br"></i>
+        <i class="gem tl"></i><i class="gem tr"></i><i class="gem bl"></i><i class="gem br"></i><span class="tier" data-i18n="tier_badge">UZMAN</span>
         <div class="plate-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg><span data-i18n="title">ÇİNİ USTASI</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg></div>
         <div class="score" id="score" data-i18n-aria="score" aria-label="Skor">0</div>
         <div class="rec" id="rec"><span class="rec-track"><span id="recFill"></span></span><span id="recLabel">İlk rekorunu kur</span></div>
@@ -326,6 +333,14 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
     </details>
 
     <details>
+      <summary>Zorluk</summary>
+      <div class="form">
+        <label for="cfgExpert">Uzman seviyesi eşiği (puan)</label><input id="cfgExpert" type="number" min="500" max="100000" step="500">
+      </div>
+      <p class="note" style="margin-top:10px">Eşikten sonra 8 yeni şekil ailesi gelir: artı, U, büyük T, merdiven, büyük Z, uzun L ve iki çapraz. Yerleşme garantisi %70'ten %50'ye iner, kolaylaştırıcı parçalar azalır.</p>
+    </details>
+
+    <details>
       <summary>Test araçları</summary>
       <label class="check"><input type="checkbox" id="cfgFast"> Hızlı reklam (1 sn)</label>
       <div class="tools">
@@ -335,6 +350,7 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
         <button class="tool" id="tNoAds">Reklamsızı sıfırla</button>
         <button class="tool" id="tGames">Oyun sayacını sıfırla</button>
         <button class="tool" id="tStats">İstatistikleri sıfırla</button>
+        <button class="tool wide" id="tExpert">Uzman seviyesine atla</button>
       </div>
     </details>
 
@@ -439,6 +455,18 @@ const SHAPE_DEFS = [
   ['L', 4, 4, ['#.', '#.', '##']],
   ['J', 4, 4, ['.#', '.#', '##']]
 ];
+// Uzman seviyesinde (varsayılan 10.000 puan) gelmeye başlayan şekiller: [aile, ağırlık, desen]
+// Çaprazlar köşeden değen hücrelerden oluşur; yerleştirmesi en zor olanlar bunlar.
+const EXPERT_DEFS = [
+  ['artı', 3, ['.#.', '###', '.#.']],
+  ['U', 3, ['#.#', '###']],
+  ['büyük T', 3, ['###', '.#.', '.#.']],
+  ['merdiven', 2, ['#..', '##.', '.##']],
+  ['büyük Z', 2, ['##.', '.#.', '.##']],
+  ['uzun L', 3, ['#...', '####']],
+  ['çapraz2', 3, ['#.', '.#']],
+  ['çapraz3', 2, ['#..', '.#.', '..#']]
+];
 function normalize(cells) {
   let mr = Infinity, mc = Infinity;
   for (const p of cells) { if (p[0] < mr) mr = p[0]; if (p[1] < mc) mc = p[1]; }
@@ -456,7 +484,7 @@ function withMasks(cells) {
   return { cells, w, h, rowMasks };
 }
 const CATALOG = [];
-for (const [family, early, late, rows] of SHAPE_DEFS) {
+for (const [family, early, late, rows, mw] of [...SHAPE_DEFS, ...EXPERT_DEFS.map(([f, w, r]) => [f, 0, 0, r, w])]) {
   let cells = [];
   rows.forEach((row, r) => [...row].forEach((ch, c) => { if (ch === '#') cells.push([r, c]); }));
   cells = normalize(cells);
@@ -466,7 +494,7 @@ for (const [family, early, late, rows] of SHAPE_DEFS) {
     if (!seen.has(k)) { seen.add(k); variants.push(cells); }
     cells = rotateCells(cells);
   }
-  for (const v of variants) CATALOG.push({ family, early: early / variants.length, late: late / variants.length, ...withMasks(v) });
+  for (const v of variants) CATALOG.push({ family, early: early / variants.length, late: late / variants.length, expert: !!mw, ew: (mw || 0) / variants.length, ...withMasks(v) });
 }
 const byFamily = f => CATALOG.find(s => s.family === f);
 
@@ -519,8 +547,14 @@ function solvable(m, shapes, budget) {
    2) Merhamet: tahta %50'den doluysa 1–3 hücrelik parçalar sıklaşır.
    3) Yardım: tahta doldukça, satır tamamlayabilen bir parçanın gelme ihtimali artar.
    4) Adalet: düşük skorda üçlünün tamamı mutlaka yerleşebilir. Skor arttıkça
-      bu garanti %70'e kadar gevşer; oyunu bitiren de bu boşluktur.          */
-const guaranteeChance = score => score < 1500 ? 1 : Math.max(0.7, 1 - (score - 1500) / 15000);
+      bu garanti %70'e kadar gevşer; oyunu bitiren de bu boşluktur.
+   5) Uzman seviyesi (varsayılan 10.000 puan): yeni şekiller %35 ağırlıkla başlar ve
+      6.000 puan içinde tam ağırlığa çıkar. Garanti %70'ten %50'ye iner,
+      merhamet ve yardımcı parça azalır.          */
+const guaranteeChance = score => score < 1500 ? 1
+  : score < CFG.expertScore ? Math.max(0.7, 1 - (score - 1500) / 15000)
+  : Math.max(0.5, 0.7 - (score - CFG.expertScore) / 50000);
+const expertLevel = score => score < CFG.expertScore ? 0 : 0.35 + 0.65 * Math.min(1, (score - CFG.expertScore) / 6000);
 function makePiece(shape) {
   const cells = shape.cells.map(([r, c]) => [r, c, 0]);
   if (Math.random() < 0.09) cells[rnd(cells.length)][2] = 1; // altın çini
@@ -531,13 +565,14 @@ function genTray(forceSolvable) {
   const m = masksOf(G.cells);
   const filled = m.reduce((a, x) => a + bits(x), 0) / 64;
   const t = Math.min(1, G.score / 6000);
-  const mercy = filled > 0.5 ? 1 + (filled - 0.5) * 8 : 1;
-  const base = CATALOG.map(s => (s.early * (1 - t) + s.late * t) * (s.cells.length <= 3 ? mercy : 1));
-  const pHelp = Math.min(0.6, 0.12 + Math.max(0, filled - 0.35) * 1.2);
+  const el = expertLevel(G.score);
+  const mercy = filled > 0.5 ? 1 + (filled - 0.5) * (el ? 4 : 8) : 1;
+  const base = CATALOG.map(s => s.expert ? s.ew * el : (s.early * (1 - t) + s.late * t) * (s.cells.length <= 3 ? mercy : 1));
+  const pHelp = Math.min(0.6, 0.12 + Math.max(0, filled - 0.35) * 1.2) * (el ? 0.6 : 1);
   const mustSolve = forceSolvable || Math.random() < guaranteeChance(G.score);
   let fallback = null;
   for (let a = 0; a < 30; a++) {
-    const w = a < 12 ? base : base.map((x, i) => CATALOG[i].cells.length <= 3 ? x * 4 : x * 0.5);
+    const w = a < 12 ? base : base.map((x, i) => CATALOG[i].cells.length <= 3 && !CATALOG[i].expert ? x * 4 : x * 0.5);
     const shapes = [];
     if (Math.random() < pHelp) {
       const idx = [];
@@ -556,7 +591,7 @@ function genTray(forceSolvable) {
 }
 
 /* ---------- Kalıcı durum ---------- */
-const DEFAULT_CFG = { minGames: 2, cooldownSec: 90, graceSec: 45, midGameSec: 0, fastAds: false, ecpm: { rewarded: 16, interstitial: 9, banner: 0.4 } };
+const DEFAULT_CFG = { minGames: 2, cooldownSec: 90, graceSec: 45, midGameSec: 0, fastAds: false, expertScore: 10000, ecpm: { rewarded: 16, interstitial: 9, banner: 0.4 } };
 const CFG = Object.assign({}, DEFAULT_CFG, store.get('cfg', {}));
 CFG.ecpm = Object.assign({}, DEFAULT_CFG.ecpm, CFG.ecpm || {});
 const M = Object.assign({ best: 0, coins: 60, removeAds: false, gamesCompleted: 0, seenTutorial: false, sound: true, records: [] }, store.get('meta', {}));
@@ -600,7 +635,8 @@ const STR = {
     remove_ads_on: "Reklamsız sürüm etkin ✓", btn_remove_ads: "Reklamları kaldır · {price}", btn_coin_pack: "250 altın · {price}", btn_restore: "Satın alımları geri yükle", btn_close: "Kapat",
     toast_noads: "Reklamsız sürüm etkin. Ödüllü reklamlar isteğe bağlı kaldı.", toast_coins: "+250 altın", toast_restored: "Satın alımlar geri yüklendi.", toast_none: "Geri yüklenecek satın alım yok.",
     pattern_done: "Desen tamam!", praise2: "Harika!", praise3: "Muhteşem!", praise4: "Efsane!", praise_clean: "Duvar tertemiz!", praise_record: "Yeni rekor!", praise_continue: "Devam!",
-    lang_title: "Dil"
+    lang_title: "Dil",
+    tier_up: "Uzman seviyesi!", tier_toast: "Yeni şekiller geldi. Oyun biraz zorlaşıyor!", tier_badge: "UZMAN"
   },
   en: {
     title: "TILE MASTER", coins: "coins", score: "Score", sound_off: "Mute sound", sound_on: "Turn sound on", shop: "Shop", language: "Language",
@@ -629,7 +665,8 @@ const STR = {
     remove_ads_on: "Ad-free version active ✓", btn_remove_ads: "Remove ads · {price}", btn_coin_pack: "250 coins · {price}", btn_restore: "Restore purchases", btn_close: "Close",
     toast_noads: "Ads removed. Rewarded ads are still there if you want them.", toast_coins: "+250 coins", toast_restored: "Purchases restored.", toast_none: "No purchases to restore.",
     pattern_done: "Pattern complete!", praise2: "Great!", praise3: "Amazing!", praise4: "Legendary!", praise_clean: "Wall cleared!", praise_record: "New record!", praise_continue: "Keep going!",
-    lang_title: "Language"
+    lang_title: "Language",
+    tier_up: "Expert level!", tier_toast: "New shapes unlocked. It gets a little harder!", tier_badge: "EXPERT"
   },
   pt: {
     title: "MESTRE DO AZULEJO", coins: "moedas", score: "Pontuação", sound_off: "Desativar som", sound_on: "Ativar som", shop: "Loja", language: "Idioma",
@@ -658,7 +695,8 @@ const STR = {
     remove_ads_on: "Versão sem anúncios ativa ✓", btn_remove_ads: "Remover anúncios · {price}", btn_coin_pack: "250 moedas · {price}", btn_restore: "Restaurar compras", btn_close: "Fechar",
     toast_noads: "Anúncios removidos. Os anúncios premiados continuam opcionais.", toast_coins: "+250 moedas", toast_restored: "Compras restauradas.", toast_none: "Nenhuma compra para restaurar.",
     pattern_done: "Padrão completo!", praise2: "Ótimo!", praise3: "Incrível!", praise4: "Lendário!", praise_clean: "Parede limpa!", praise_record: "Novo recorde!", praise_continue: "Continue!",
-    lang_title: "Idioma"
+    lang_title: "Idioma",
+    tier_up: "Nível especialista!", tier_toast: "Novas formas liberadas. O jogo fica um pouco mais difícil!", tier_badge: "ESPECIALISTA"
   },
   de: {
     title: "FLIESENMEISTER", coins: "Münzen", score: "Punkte", sound_off: "Ton aus", sound_on: "Ton an", shop: "Shop", language: "Sprache",
@@ -687,7 +725,8 @@ const STR = {
     remove_ads_on: "Werbefreie Version aktiv ✓", btn_remove_ads: "Werbung entfernen · {price}", btn_coin_pack: "250 Münzen · {price}", btn_restore: "Käufe wiederherstellen", btn_close: "Schließen",
     toast_noads: "Werbung entfernt. Belohnte Werbung bleibt freiwillig verfügbar.", toast_coins: "+250 Münzen", toast_restored: "Käufe wiederhergestellt.", toast_none: "Keine Käufe zum Wiederherstellen.",
     pattern_done: "Muster komplett!", praise2: "Super!", praise3: "Fantastisch!", praise4: "Legendär!", praise_clean: "Wand blitzblank!", praise_record: "Neuer Rekord!", praise_continue: "Weiter geht's!",
-    lang_title: "Sprache"
+    lang_title: "Sprache",
+    tier_up: "Expertenstufe!", tier_toast: "Neue Formen freigeschaltet. Jetzt wird es etwas schwerer!", tier_badge: "EXPERTE"
   },
   fr: {
     title: "MAÎTRE CÉRAMISTE", coins: "pièces", score: "Score", sound_off: "Couper le son", sound_on: "Activer le son", shop: "Boutique", language: "Langue",
@@ -716,7 +755,8 @@ const STR = {
     remove_ads_on: "Version sans pub active ✓", btn_remove_ads: "Supprimer les pubs · {price}", btn_coin_pack: "250 pièces · {price}", btn_restore: "Restaurer les achats", btn_close: "Fermer",
     toast_noads: "Pubs supprimées. Les pubs récompensées restent disponibles si tu le souhaites.", toast_coins: "+250 pièces", toast_restored: "Achats restaurés.", toast_none: "Aucun achat à restaurer.",
     pattern_done: "Motif complet !", praise2: "Génial !", praise3: "Magnifique !", praise4: "Légendaire !", praise_clean: "Mur nettoyé !", praise_record: "Nouveau record !", praise_continue: "On continue !",
-    lang_title: "Langue"
+    lang_title: "Langue",
+    tier_up: "Niveau expert\u202F!", tier_toast: "Nouvelles formes débloquées. Ça se corse un peu\u202F!", tier_badge: "EXPERT"
   },
   ja: {
     title: "タイル職人", coins: "コイン", score: "スコア", sound_off: "サウンドをオフ", sound_on: "サウンドをオン", shop: "ショップ", language: "言語",
@@ -745,7 +785,8 @@ const STR = {
     remove_ads_on: "広告なし版が有効 ✓", btn_remove_ads: "広告を削除 · {price}", btn_coin_pack: "250コイン · {price}", btn_restore: "購入を復元", btn_close: "閉じる",
     toast_noads: "広告を削除しました。リワード広告は見たいときに使えます。", toast_coins: "+250コイン", toast_restored: "購入を復元しました。", toast_none: "復元できる購入はありません。",
     pattern_done: "模様がそろった！", praise2: "すごい！", praise3: "見事！", praise4: "伝説級！", praise_clean: "壁がまっさら！", praise_record: "新記録！", praise_continue: "続行！",
-    lang_title: "言語"
+    lang_title: "言語",
+    tier_up: "上級レベル！", tier_toast: "新しい形が登場！少し難しくなります", tier_badge: "上級"
   },
   ko: {
     title: "타일 장인", coins: "코인", score: "점수", sound_off: "소리 끄기", sound_on: "소리 켜기", shop: "상점", language: "언어",
@@ -774,7 +815,8 @@ const STR = {
     remove_ads_on: "광고 제거 적용됨 ✓", btn_remove_ads: "광고 제거 · {price}", btn_coin_pack: "코인 250개 · {price}", btn_restore: "구매 복원", btn_close: "닫기",
     toast_noads: "광고가 제거되었습니다. 보상형 광고는 원할 때 계속 볼 수 있어요.", toast_coins: "코인 +250", toast_restored: "구매를 복원했습니다.", toast_none: "복원할 구매 내역이 없습니다.",
     pattern_done: "무늬 완성!", praise2: "멋져요!", praise3: "대단해요!", praise4: "전설급!", praise_clean: "벽 클리어!", praise_record: "신기록!", praise_continue: "계속!",
-    lang_title: "언어"
+    lang_title: "언어",
+    tier_up: "고수 레벨!", tier_toast: "새로운 모양 등장! 조금 더 어려워집니다", tier_badge: "고수"
   }
 };
 let FONTS = { display: '"Yeseva One", Georgia, serif', ui: 'Manrope, system-ui, sans-serif' };
@@ -929,6 +971,7 @@ function newGame() {
   anims.length = 0; parts.length = 0; pops.length = 0; popIn.clear();
   setModeUI();
   hideToast();
+  updateTierUI();
   track('game_start', { oyun_no: M.gamesCompleted + 1 });
   updateHud(); saveGame(); dirty = true;
   if (!M.seenTutorial) {
@@ -991,12 +1034,24 @@ function place(i, r, c) {
     Scene.onRecord(true);
     track('new_record_live', { puan: G.score, onceki: G.bestAtStart });
   }
+  checkTier(false);
 
   let wait = null;
   if (G.tray.every(x => !x)) { G.tray = genTray(false); wait = maybeBreak(); }
   updateHud(); saveGame(); dirty = true;
   Promise.resolve(wait).then(checkStuck);
 }
+
+// Uzman seviyesine geçiş: bir kez kutlanır, tahta ve skor plakası bordoya döner
+function checkTier(silent) {
+  if (!G || G.expert || G.score < CFG.expertScore) return;
+  G.expert = true;
+  updateTierUI();
+  if (silent) return;
+  Scene.onTier();
+  track('expert_level', { puan: G.score });
+}
+function updateTierUI() { $('plate').classList.toggle('expert', !!(G && G.expert)); dirty = true; }
 
 // Uzun oturumda üçlü yenilendiğinde "oyun içi mola" geçiş reklamı (varsayılan kapalı).
 function maybeBreak() {
@@ -1219,7 +1274,7 @@ function readColors() {
     frame: v('--frame'), frameInk: v('--frame-ink'), field: v('--field'), well: v('--well'),
     ink: v('--ink'), primary: v('--primary'), gold: v('--gold'), danger: v('--danger'),
     tiles: [v('--t0'), v('--t1'), v('--t2'), v('--t3'), v('--t4')],
-    bg: v('--bg'), pattern: v('--pattern'), patternFill: v('--pattern-fill'), vignette: v('--vignette'), medal: v('--medal')
+    bg: v('--bg'), pattern: v('--pattern'), patternFill: v('--pattern-fill'), vignette: v('--vignette'), medal: v('--medal'), frameExpert: v('--frame-expert')
   };
   buildSprites();
   if (Scene.w) { buildSceneArt(); Scene.lastBg = -1e9; }
@@ -1358,7 +1413,7 @@ function currentTarget() {
 
 function drawFrame(now) {
   // kenar suyu (bordür)
-  rrect(ctx, 0, 0, W, B + 2 * frame, cs * 0.32); ctx.fillStyle = colors.frame; ctx.fill();
+  rrect(ctx, 0, 0, W, B + 2 * frame, cs * 0.32); ctx.fillStyle = G && G.expert ? colors.frameExpert : colors.frame; ctx.fill();
   // seri sürerken kenar suyundaki baklavalar yanıp söner
   const hot = G && !G.over && G.streak >= 2 && !REDUCED;
   ctx.fillStyle = hot ? colors.tiles[G.streak >= 4 ? 2 : 4] : colors.frameInk;
@@ -1667,6 +1722,18 @@ const Scene = {
     }
     const s = cellScreen(r, c);
     this.waves.push({ x: s.x, y: s.y, r0: 10, r1: Math.hypot(this.w, this.h) * 0.4, t0: performance.now(), dur: 600, color: colors.danger });
+  },
+
+  onTier() {
+    Sfx.record(); buzz([40, 60, 40, 60, 80]);
+    bump($('plate'));
+    this.pulse = 1.3;
+    this.praise(t('tier_up'), colors.frameExpert, 1.05, 520, 0);
+    flashToast(t('tier_toast'), 3800);
+    if (REDUCED) return;
+    const b = boardScreen(), now = performance.now();
+    this.waves.push({ x: b.x, y: b.y, r0: b.r * 0.6, r1: Math.hypot(this.w, this.h) * 0.7, t0: now + 300, dur: 1100, color: colors.frameExpert });
+    for (let i = 0; i < 3; i++) this.firework(this.w * (0.2 + Math.random() * 0.6), this.h * (0.12 + Math.random() * 0.35), 400 + i * 260);
   },
 
   praise(text, color, scale = 1, delay = 0, dy = -0.12) {
@@ -2229,6 +2296,7 @@ bindNum('cfgMid', () => CFG.midGameSec, v => CFG.midGameSec = v);
 bindNum('ecpmRew', () => CFG.ecpm.rewarded, v => CFG.ecpm.rewarded = v);
 bindNum('ecpmInt', () => CFG.ecpm.interstitial, v => CFG.ecpm.interstitial = v);
 bindNum('ecpmBan', () => CFG.ecpm.banner, v => CFG.ecpm.banner = v);
+bindNum('cfgExpert', () => CFG.expertScore, v => CFG.expertScore = Math.max(500, Math.round(v)));
 $('cfgFast').checked = CFG.fastAds;
 $('cfgFast').addEventListener('change', e => { CFG.fastAds = e.target.checked; saveCfg(); });
 
@@ -2249,6 +2317,17 @@ $('tFill').addEventListener('click', () => {
 $('tEnd').addEventListener('click', () => { if (window.innerWidth < 980) openPanel(false); endGame(); });
 $('tNoAds').addEventListener('click', () => { M.removeAds = false; saveMeta(); updateHud(); renderPanel(); track('debug_reset_iap'); });
 $('tGames').addEventListener('click', () => { M.gamesCompleted = 0; saveMeta(); renderPanel(); track('debug_reset_games'); });
+$('tExpert').addEventListener('click', () => {
+  if (!G || G.over) return;
+  if (window.innerWidth < 980) openPanel(false);
+  G.score = Math.max(G.score, CFG.expertScore);
+  checkTier(false);
+  G.tray = genTray(false);
+  G.stuck = false;
+  updateHud(); saveGame(); dirty = true;
+  track('debug_expert', { puan: G.score });
+  checkStuck();
+});
 $('tStats').addEventListener('click', () => {
   Ads.impr = { rewarded: 0, interstitial: 0, banner: M.removeAds ? 0 : 1 };
   Ads.sessionStart = Date.now(); LOG = []; renderLog(); renderPanel();
@@ -2310,6 +2389,7 @@ function boot(data) {
   } else newGame();
   if (G.bestAtStart == null) G.bestAtStart = M.best;
   scoreShown = G.score;
+  checkTier(true); updateTierUI();
   if (!data.impr && !M.removeAds) { Ads.impr.banner++; track('ad_banner_show', { yer: 'alt' }); }
   track('session_start', { reklamsiz: M.removeAds ? 1 : 0 });
   renderSoundBtn(); updateHud(); renderPanel(); renderLog(); setModeUI();
