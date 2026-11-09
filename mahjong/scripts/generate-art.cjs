@@ -14,6 +14,7 @@ const path = require('path');
 const { chromium } = require('playwright');
 
 const ROOT = path.join(__dirname, '..');
+const extra = require('./art-scenes.cjs');
 const OUT_TILES = path.join(ROOT, 'assets', 'tiles');
 const OUT_UI = path.join(ROOT, 'assets', 'ui');
 
@@ -330,7 +331,20 @@ async function main() {
   await render(appIcon(1024, false).replace(/fill="#[0-9A-Fa-f]{6}"/g, 'fill="#000000"'), path.join(A, 'android-icon-monochrome.png'), 1024, 1024);
   await render(appIcon(48), path.join(A, 'favicon.png'), 48, 48);
 
-  // Önizleme sayfası (kontrol için)
+  // Tema sahneleri, parçacıklar, cilalı taş gövdesi, yıldızlar
+  const OUT_SCENES = path.join(ROOT, 'assets', 'scenes');
+  const OUT_FX = path.join(ROOT, 'assets', 'fx');
+  fs.mkdirSync(OUT_SCENES, { recursive: true });
+  fs.mkdirSync(OUT_FX, { recursive: true });
+  for (const [id, s] of Object.entries(extra.scenes)) {
+    await render(s, path.join(OUT_SCENES, `${id}.png`), extra.SCENE_W, extra.SCENE_H);
+  }
+  for (const [id, s] of Object.entries(extra.sprites)) {
+    const m = s.match(/viewBox="0 0 ([\d.]+) ([\d.]+)"/);
+    await render(s, path.join(OUT_FX, `${id}.png`), Math.round(+m[1] * 2), Math.round(+m[2] * 2));
+  }
+  await render(extra.tileBody, path.join(OUT_TILES, 'body.png'), Math.round((88 + 12.32) * 3), Math.round((116 + 12.32) * 3));
+
   await browser.close();
   console.log(`Üretildi: ${Object.keys(tiles).length} taş, ${Object.keys(ui).length} simge, uygulama ikonları.`);
 }

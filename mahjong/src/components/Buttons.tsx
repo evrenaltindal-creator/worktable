@@ -1,4 +1,3 @@
-import { ReactNode } from 'react';
 import { Image, Pressable, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { IconName, UI_ICONS } from '../images';
 import { colors, font } from '../theme';
@@ -40,25 +39,45 @@ interface ToolButtonProps {
   label: string;
   icon: IconName;
   onPress: () => void;
+  /** Kalan hak sayısı (köşede rozet olarak görünür) */
+  count?: number;
+  tone?: 'teal' | 'amber' | 'violet';
   disabled?: boolean;
-  badge?: ReactNode;
 }
 
-/** Oyun altındaki araç düğmesi: simge + yazı. */
-export function ToolButton({ label, icon, onPress, disabled }: ToolButtonProps) {
+const TONES = {
+  teal: { bg: '#2A9D8F', edge: '#1C6E64', fg: '#FFFFFF' },
+  amber: { bg: '#F4B942', edge: '#B9822A', fg: '#3A2A08' },
+  violet: { bg: '#7A5AC8', edge: '#563B93', fg: '#FFFFFF' },
+};
+
+/** Oyun altındaki güçlendirici düğmesi: simge + yazı + kalan hak rozeti. */
+export function ToolButton({ label, icon, onPress, count, tone = 'teal', disabled }: ToolButtonProps) {
+  const c = TONES[tone];
+  const empty = count !== undefined && count <= 0;
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={count !== undefined ? `${label}, ${count}` : label}
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [styles.tool, pressed && styles.pressed, disabled && styles.disabled]}
+      style={({ pressed }) => [
+        styles.tool,
+        { backgroundColor: c.bg, borderBottomColor: c.edge },
+        pressed && styles.pressed,
+        (disabled || empty) && styles.disabled,
+      ]}
     >
-      <Image source={UI_ICONS[icon]} style={styles.toolIcon} />
-      <Text style={styles.toolLabel} numberOfLines={1}>
+      <Image source={UI_ICONS[icon]} style={[styles.toolIcon, { tintColor: c.fg }]} />
+      <Text style={[styles.toolLabel, { color: c.fg }]} numberOfLines={1}>
         {label}
       </Text>
+      {count !== undefined ? (
+        <View style={[styles.badge, empty && styles.badgeEmpty]}>
+          <Text style={styles.badgeText}>{count}</Text>
+        </View>
+      ) : null}
     </Pressable>
   );
 }
@@ -105,7 +124,7 @@ const styles = StyleSheet.create({
   bigSub: { color: colors.textSoft, fontSize: font.small, fontWeight: '600', textAlign: 'center' },
   textDark: { color: '#3A2A08' },
   pressed: { opacity: 0.8, transform: [{ translateY: 2 }] },
-  disabled: { opacity: 0.4 },
+  disabled: { opacity: 0.5 },
   tool: {
     flex: 1,
     minHeight: 76,
@@ -119,7 +138,23 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   toolIcon: { width: 32, height: 32, marginBottom: 4 },
-  toolLabel: { color: colors.text, fontSize: font.small, fontWeight: '700' },
+  toolLabel: { color: colors.text, fontSize: font.small, fontWeight: '800' },
+  badge: {
+    position: 'absolute',
+    top: -8,
+    right: -6,
+    minWidth: 30,
+    height: 30,
+    borderRadius: 15,
+    paddingHorizontal: 6,
+    backgroundColor: '#E5484D',
+    borderWidth: 2.5,
+    borderColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  badgeEmpty: { backgroundColor: '#7D7D7D' },
+  badgeText: { color: '#FFFFFF', fontSize: 15, fontWeight: '900' },
   round: {
     width: 52,
     height: 52,

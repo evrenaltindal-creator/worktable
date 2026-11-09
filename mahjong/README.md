@@ -16,7 +16,14 @@ oyunu. iPhone ve iPad için hazırlandı; aynı kod Android'de de çalışır.
 - **Büyük, okunaklı taşlar:** dizilimler en fazla 8 sütun; taşlar ekrana göre otomatik büyür.
 - **Seçilebilir taşlar belirgin:** kapalı taşlar soluk gösterilir (ayarlardan kapatılabilir).
 - **Her seviye çözülebilir:** dağıtım, geçerli bir çözüm garanti edilerek üretilir.
-- **Sınırsız ipucu, geri alma ve karıştırma** — süre baskısı yok.
+- **Hareketli temalar:** her 10 seviyede değişen sahneler (lale bahçesi, Boğaz'da gün batımı,
+  Kapadokya'da balonlar, Ege kıyısı) ve üzerlerinde süzülen yapraklar, martılar, balonlar, yelkenliler.
+- **Canlı efektler:** taşlar seviye başında düşerek gelir, eşleşenler birbirine uçup parıltıyla
+  patlar; art arda hızlı eşleşmelerde kombo yazısı ("Harika! x3"), bitişte konfeti ve 1-3 yıldız.
+- **Sınırlı güçlendiriciler:** ipucu, karıştır ve geri al hakları sayılıdır (başlangıçta 3 / 2 / 5).
+  Yeni bir seviyeyi ilk kez bitirince ödül kazanılır: her seviye +1 geri al, 3 yıldız +1 ipucu,
+  her 5. seviye +1 karıştır ve +1 ipucu. Hamle kalmazsa karıştırma ücretsizdir (oyun kilitlenmez).
+- **Yıldızlar:** hiç ipucu/karıştırma kullanmadan bitirmek 3 yıldız; süre baskısı yok.
 - **200 seviye**, 16 özgün dizilim (kalp, ev, kelebek, kale, piramit…).
 - **Otomatik kayıt:** uygulama kapansa da oyun kaldığı yerden devam eder.
 - Türkçe ve İngilizce (telefon diline göre otomatik), ses efektleri, titreşim.
@@ -100,10 +107,13 @@ src/game/
   levels.ts                Seviye -> dizilim + tohum eşlemesi
 src/screens/               Ana sayfa, Seviyeler, Oyun ekranları
 src/components/            Taş, tahta, düğmeler, açılır pencere
+src/boosters.ts            Güçlendirici hakları, ödüller, yıldız ve puan kuralları
+src/themes.ts              Tema sahneleri ve süzülen parçacıklar (seviyeye göre)
 src/i18n.ts                Tüm Türkçe/İngilizce metinler
 src/theme.ts               Renkler ve yazı boyutları
 src/storage.ts             Cihazda kayıt (ilerleme, ayarlar, yarım kalan oyun)
 assets/tiles, assets/ui    Üretilmiş taş ve simge görselleri (PNG)
+assets/scenes, assets/fx   Tema sahneleri ve efekt parçacıkları (PNG)
 assets/sounds              Üretilmiş ses efektleri (WAV)
 scripts/                   Görsel/ses üreticileri, oyun motoru testi, mağaza görüntüleri
 store/                     Mağaza ekran görüntüleri, açıklama taslağı, gizlilik politikası
@@ -116,6 +126,8 @@ store/                     Mağaza ekran görüntüleri, açıklama taslağı, g
   `npm run check:game` ile kontrol edin. Bu test her dizilimi ve 200 seviyenin hepsini
   çözerek doğrular.
 - **Renkler:** `src/theme.ts`
+- **Güçlendirici sayıları ve ödüller:** `src/boosters.ts` (`START_BOOSTERS`, `levelRewards`)
+- **Temalar ve hareketli parçacıklar:** `src/themes.ts`; sahne çizimleri `scripts/art-scenes.cjs`
 - **Metinler / dil eklemek:** `src/i18n.ts`
 - **Taş çizimleri:** `scripts/generate-art.cjs` içindeki SVG kodları; değiştirdikten sonra
   `npm run gen:art` (Playwright gerektirir, dosyanın başındaki nota bakın).
@@ -137,6 +149,7 @@ npx expo-doctor        # Expo yapılandırma kontrolü
 
 ## Sonraki adımlar için öneriler
 
-- Gelir modeli: ödüllü reklam (ör. ekstra ipucu karşılığı) veya reklamsız sürüm satın alma.
+- Gelir modeli: hakkı biten oyuncuya ödüllü reklam karşılığı ipucu/karıştırma, veya uygulama içi
+  satın alma ile güçlendirici paketleri (altyapı `src/boosters.ts` içinde hazır).
 - Günlük bulmaca, başarımlar, Game Center skor tablosu.
 - Daha fazla dizilim ve tema (arka plan / taş rengi seçimi).

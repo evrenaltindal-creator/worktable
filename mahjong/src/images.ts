@@ -62,3 +62,28 @@ export const UI_ICONS = {
 } satisfies Record<string, ImageSourcePropType>;
 
 export type IconName = keyof typeof UI_ICONS;
+
+/** Cilalı taş gövdesi (yüz + kalınlık), tüm taşlarda ortak */
+export const TILE_BODY: ImageSourcePropType = require('../assets/tiles/body.png');
+
+export const SCENES = {
+  spring: require('../assets/scenes/spring.png'),
+  sunset: require('../assets/scenes/sunset.png'),
+  dawn: require('../assets/scenes/dawn.png'),
+  sea: require('../assets/scenes/sea.png'),
+} satisfies Record<string, ImageSourcePropType>;
+
+export const FX = {
+  petal: require('../assets/fx/petal.png'),
+  sparkle: require('../assets/fx/sparkle.png'),
+  glow: require('../assets/fx/glow.png'),
+  gull: require('../assets/fx/gull.png'),
+  boat: require('../assets/fx/boat.png'),
+  balloonRed: require('../assets/fx/balloon-red.png'),
+  balloonBlue: require('../assets/fx/balloon-blue.png'),
+  balloonGreen: require('../assets/fx/balloon-green.png'),
+  starGold: require('../assets/fx/star-gold.png'),
+  starEmpty: require('../assets/fx/star-empty.png'),
+} satisfies Record<string, ImageSourcePropType>;
+
+export type FxName = keyof typeof FX;

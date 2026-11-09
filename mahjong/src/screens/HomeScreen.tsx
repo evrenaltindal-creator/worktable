@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Animated, Easing, Image, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BigButton } from '../components/Buttons';
 import { Overlay } from '../components/Overlay';
-import { TILE_IMAGES } from '../images';
+import { TILE_BODY, TILE_IMAGES } from '../images';
 import { t } from '../i18n';
 import { Settings } from '../storage';
 import { colors, font } from '../theme';
@@ -17,6 +17,57 @@ interface Props {
 }
 
 const SHOWCASE = ['dr', 'f2', 'd5', 'b1', 'we'];
+const native = Platform.OS !== 'web';
+
+/** Ana sayfadaki hafifçe süzülen taş */
+function FloatingTile({ face, i }: { face: string; i: number }) {
+  const [v] = useState(() => new Animated.Value(0));
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(v, { toValue: 1, duration: 1600 + i * 180, easing: Easing.inOut(Easing.sin), useNativeDriver: native }),
+        Animated.timing(v, { toValue: 0, duration: 1600 + i * 180, easing: Easing.inOut(Easing.sin), useNativeDriver: native }),
+      ]),
+    );
+    const id = setTimeout(() => loop.start(), i * 220);
+    return () => {
+      clearTimeout(id);
+      loop.stop();
+    };
+  }, [v, i]);
+  return (
+    <Animated.View
+      style={[
+        styles.miniTile,
+        {
+          transform: [
+            { translateY: Animated.add(v.interpolate({ inputRange: [0, 1], outputRange: [0, -12] }), Math.abs(i - 2) * 10) },
+            { rotate: `${(i - 2) * 7}deg` },
+          ],
+        },
+      ]}
+    >
+      <Image source={TILE_BODY} style={styles.miniBody} resizeMode="stretch" />
+      <Image source={TILE_IMAGES[face]} style={styles.miniImg} resizeMode="contain" />
+    </Animated.View>
+  );
+}
+
+/** "Oyna" düğmesi dikkat çeksin diye hafifçe nefes alır */
+function Pulse({ children }: { children: React.ReactNode }) {
+  const [v] = useState(() => new Animated.Value(0));
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(v, { toValue: 1, duration: 900, easing: Easing.inOut(Easing.quad), useNativeDriver: native }),
+        Animated.timing(v, { toValue: 0, duration: 900, easing: Easing.inOut(Easing.quad), useNativeDriver: native }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [v]);
+  return <Animated.View style={{ transform: [{ scale: v.interpolate({ inputRange: [0, 1], outputRange: [1, 1.045] }) }] }}>{children}</Animated.View>;
+}
 
 export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsChange }: Props) {
   const insets = useSafeAreaInsets();
@@ -30,11 +81,7 @@ export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsCh
     >
       <View style={styles.showcase}>
         {SHOWCASE.map((f, i) => (
-          <View key={f} style={[styles.miniTile, { transform: [{ rotate: `${(i - 2) * 6}deg` }, { translateY: Math.abs(i - 2) * 8 }] }]}>
-            <View style={styles.miniFace}>
-              <Image source={TILE_IMAGES[f]} style={styles.miniImg} resizeMode="contain" />
-            </View>
-          </View>
+          <FloatingTile key={f} face={f} i={i} />
         ))}
       </View>
 
@@ -44,7 +91,9 @@ export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsCh
       <Text style={styles.tagline}>{t.tagline}</Text>
 
       <View style={styles.buttons}>
-        <BigButton variant="primary" icon="play" label={t.play} sublabel={t.continueLevel(nextLevel)} onPress={onPlay} />
+        <Pulse>
+          <BigButton variant="primary" icon="play" label={t.play} sublabel={t.continueLevel(nextLevel)} onPress={onPlay} />
+        </Pulse>
         <BigButton icon="grid" label={t.levels} onPress={onLevels} />
         <BigButton icon="hint" label={t.howToPlay} onPress={() => setShowRules(true)} />
         <BigButton icon="settings" label={t.settings} onPress={() => setShowSettings(true)} />
@@ -101,23 +150,29 @@ function SettingRow({ label, value, onChange }: { label: string; value: boolean;
 const styles = StyleSheet.create({
   root: { flexGrow: 1, alignItems: 'center', paddingHorizontal: 24 },
   showcase: { flexDirection: 'row', justifyContent: 'center', marginBottom: 26, height: 110 },
-  miniTile: {
-    width: 62,
-    height: 80,
-    marginHorizontal: -3,
-    borderRadius: 9,
-    backgroundColor: colors.tileSide,
+  miniTile: { width: 66, height: 86, marginHorizontal: -2 },
+  miniBody: { position: 'absolute', width: 66, height: 86 },
+  miniImg: { position: 'absolute', left: 0, top: 0, width: 58, height: 76 },
+  title: {
+    color: colors.text,
+    fontSize: font.huge,
+    fontWeight: '900',
+    textAlign: 'center',
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 3 },
+    textShadowRadius: 8,
   },
-  miniFace: {
-    width: 56,
-    height: 74,
-    borderRadius: 9,
-    backgroundColor: colors.tileFace,
-    overflow: 'hidden',
+  tagline: {
+    color: colors.text,
+    fontSize: font.normal,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: 6,
+    marginBottom: 34,
+    textShadowColor: 'rgba(0,0,0,0.5)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
   },
-  miniImg: { width: '100%', height: '100%' },
-  title: { color: colors.text, fontSize: font.huge, fontWeight: '900', textAlign: 'center' },
-  tagline: { color: colors.textSoft, fontSize: font.normal, textAlign: 'center', marginTop: 6, marginBottom: 34 },
   buttons: { width: '100%', maxWidth: 440, gap: 16 },
   ruleRow: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
   ruleNum: {

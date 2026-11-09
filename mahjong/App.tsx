@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useCallback, useEffect, useState } from 'react';
 import { BackHandler, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { BoosterKind, addBoosters, levelRewards } from './src/boosters';
+import { SceneBackground } from './src/components/SceneBackground';
 import { initFeedback, setFeedbackSettings } from './src/feedback';
 import { LEVEL_COUNT } from './src/game/levels';
-import { GameScreen } from './src/screens/GameScreen';
+import { GameScreen, WinResult } from './src/screens/GameScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
 import { LevelsScreen } from './src/screens/LevelsScreen';
 import {
@@ -17,7 +18,7 @@ import {
   saveGame,
   saveProgress,
 } from './src/storage';
-import { colors } from './src/theme';
+import { themeForLevel } from './src/themes';
 
 type Route = { name: 'home' } | { name: 'levels' } | { name: 'game'; level: number };
 
@@ -67,22 +68,36 @@ export default function App() {
     saveGame(g);
   }, []);
 
+  const onUseBooster = useCallback(
+    (kind: BoosterKind) => {
+      updateProgress((p) => ({ ...p, boosters: { ...p.boosters, [kind]: Math.max(0, p.boosters[kind] - 1) } }));
+    },
+    [updateProgress],
+  );
+
   const onWin = useCallback(
-    (level: number, seconds: number) => {
-      updateProgress((p) => ({
-        ...p,
-        unlocked: Math.min(LEVEL_COUNT, Math.max(p.unlocked, level + 1)),
-        best: { ...p.best, [level]: Math.min(p.best[level] ?? Infinity, seconds) },
-      }));
+    ({ level, seconds, stars }: WinResult) => {
+      updateProgress((p) => {
+        const firstTime = p.best[level] === undefined;
+        return {
+          ...p,
+          unlocked: Math.min(LEVEL_COUNT, Math.max(p.unlocked, level + 1)),
+          best: { ...p.best, [level]: Math.min(p.best[level] ?? Infinity, seconds) },
+          stars: { ...p.stars, [level]: Math.max(p.stars[level] ?? 0, stars) },
+          boosters: firstTime ? addBoosters(p.boosters, levelRewards(level, stars)) : p.boosters,
+        };
+      });
     },
     [updateProgress],
   );
 
   const nextLevel = progress ? (saved?.level ?? progress.unlocked) : 1;
+  const themeLevel = route.name === 'game' ? route.level : route.name === 'levels' ? (progress?.unlocked ?? 1) : nextLevel;
+  const theme = themeForLevel(themeLevel);
 
   return (
     <SafeAreaProvider>
-      <LinearGradient colors={[colors.bgTop, colors.bgBottom]} style={StyleSheet.absoluteFill} />
+      <SceneBackground key={theme.id} theme={theme} />
       <StatusBar style="light" />
       <View style={styles.root}>
         {!progress ? null : route.name === 'home' ? (
@@ -96,7 +111,7 @@ export default function App() {
         ) : route.name === 'levels' ? (
           <LevelsScreen
             unlocked={progress.unlocked}
-            best={progress.best}
+            stars={progress.stars}
             onBack={() => setRoute({ name: 'home' })}
             onPick={(level) => setRoute({ name: 'game', level })}
           />
@@ -106,6 +121,9 @@ export default function App() {
             level={route.level}
             saved={saved}
             settings={progress.settings}
+            boosters={progress.boosters}
+            firstTime={progress.best[route.level] === undefined}
+            onUseBooster={onUseBooster}
             onSave={onSaveGame}
             onWin={onWin}
             onNext={() => setRoute({ name: 'game', level: Math.min(LEVEL_COUNT, route.level + 1) })}

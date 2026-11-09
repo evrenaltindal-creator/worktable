@@ -15,7 +15,7 @@ anahtar kelimeler 100, tanıtım metni 170, açıklama 4000.
 **Alt başlık:** Büyük taşlı, sakin eşleştirme
 
 **Tanıtım metni (Promotional Text):**
-Gözü yormayan büyük taşlar, süre baskısı yok. Aynı taşları eşleştirin, tahtayı temizleyin, rahatlayın.
+Büyük taşlar, hareketli sahneler: lale bahçesinden Kapadokya balonlarına. Eşleştirin, kombo yapın, yıldızları toplayın.
 
 **Anahtar kelimeler:**
 mahjong,taş,eşleştirme,bulmaca,solitaire,zeka,beyin,klasik,büyük,kolay,rahatlatıcı,çevrimdışı
@@ -32,9 +32,14 @@ GÖZ YORMAYAN TASARIM
 • Seçilebilir taşlar parlak, kapalı taşlar soluk görünür
 • Büyük düğmeler, büyük yazılar
 
+CANLI SAHNELER
+• Lale bahçesi, Boğaz'da gün batımı, Kapadokya balonları ve Ege kıyısı
+• Taşlar eşleşince parıltıyla patlar, hızlı eşleşmeler kombo yapar
+• Her seviyede 3 yıldız topla, konfetiyle kutla
+
 ACELE YOK
 • Süre baskısı yok
-• Sınırsız ipucu, geri alma ve karıştırma
+• İpucu, karıştırma ve geri alma hakları; yeni seviyeler bitirdikçe artar
 • Her seviye çözülebilir olarak hazırlanır
 
 BOL BOL OYUN
@@ -53,7 +58,7 @@ Huzur Mahjong çevrimdışı çalışır ve hiçbir kişisel veri toplamaz.
 **Subtitle:** Calm tile matching, big tiles
 
 **Promotional Text:**
-Big, easy-to-read tiles and no timer pressure. Match pairs, clear the board, and relax.
+Big tiles and living scenes, from a tulip garden to Cappadocia balloons. Match pairs, build combos, collect stars.
 
 **Keywords:**
 mahjong,tile,match,puzzle,solitaire,brain,classic,big,large,easy,relaxing,offline,pairs
@@ -71,9 +76,14 @@ EASY ON THE EYES
 • Playable tiles are bright, blocked tiles are dimmed
 • Large buttons and large text
 
+LIVING SCENES
+• Tulip garden, Bosphorus sunset, Cappadocia balloons and the Aegean coast
+• Matched tiles burst with sparkles, quick matches build combos
+• Earn up to 3 stars per level and celebrate with confetti
+
 NO RUSH
 • No timer pressure
-• Unlimited hints, undo and shuffle
+• Hints, shuffles and undos you earn by finishing new levels
 • Every level is guaranteed solvable
 
 PLENTY TO PLAY

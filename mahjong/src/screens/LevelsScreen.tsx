@@ -3,18 +3,19 @@ import { FlatList, Image, Pressable, StyleSheet, Text, useWindowDimensions, View
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RoundIconButton } from '../components/Buttons';
 import { LEVEL_COUNT } from '../game/levels';
-import { UI_ICONS } from '../images';
+import { FX, UI_ICONS } from '../images';
 import { t } from '../i18n';
 import { colors, font } from '../theme';
 
 interface Props {
   unlocked: number;
-  best: Record<number, number>;
+  /** Bitirilen seviyelerin yıldızları (1-3) */
+  stars: Record<number, number>;
   onPick: (level: number) => void;
   onBack: () => void;
 }
 
-export function LevelsScreen({ unlocked, best, onPick, onBack }: Props) {
+export function LevelsScreen({ unlocked, stars, onPick, onBack }: Props) {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const columns = width >= 700 ? 6 : 4;
@@ -41,12 +42,13 @@ export function LevelsScreen({ unlocked, best, onPick, onBack }: Props) {
         contentContainerStyle={{ paddingBottom: insets.bottom + 20, paddingHorizontal: 10 }}
         renderItem={({ item: n }) => {
           const locked = n > unlocked;
-          const done = best[n] !== undefined;
+          const earned = stars[n] ?? 0;
+          const done = earned > 0;
           return (
             <View style={styles.cellWrap}>
               <Pressable
                 accessibilityRole="button"
-                accessibilityLabel={locked ? `${t.level(n)}, ${t.locked}` : t.level(n)}
+                accessibilityLabel={locked ? `${t.level(n)}, ${t.locked}` : done ? `${t.level(n)}, ${earned}/3` : t.level(n)}
                 accessibilityState={{ disabled: locked }}
                 disabled={locked}
                 onPress={() => onPick(n)}
@@ -64,8 +66,10 @@ export function LevelsScreen({ unlocked, best, onPick, onBack }: Props) {
                   <Text style={[styles.num, n === unlocked && styles.numCurrent]}>{n}</Text>
                 )}
                 {done ? (
-                  <View style={styles.check}>
-                    <Image source={UI_ICONS.check} style={styles.checkIcon} />
+                  <View style={styles.starRow}>
+                    {[0, 1, 2].map((k) => (
+                      <Image key={k} source={k < earned ? FX.starGold : FX.starEmpty} style={styles.star} />
+                    ))}
                   </View>
                 ) : null}
               </Pressable>
@@ -94,21 +98,9 @@ const styles = StyleSheet.create({
   cellDone: { backgroundColor: '#2E7D5B', borderBottomColor: '#1F5A40' },
   cellCurrent: { backgroundColor: colors.accent, borderBottomColor: colors.accentDark },
   cellLocked: { backgroundColor: 'rgba(0,0,0,0.25)', borderBottomColor: 'rgba(0,0,0,0.3)' },
-  num: { color: colors.text, fontSize: 28, fontWeight: '800' },
+  num: { color: colors.text, fontSize: 28, fontWeight: '800', lineHeight: 32 },
   numCurrent: { color: '#3A2A08' },
   lock: { width: 26, height: 26, opacity: 0.6 },
-  check: {
-    position: 'absolute',
-    top: -4,
-    right: -4,
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: '#2FA866',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-  },
-  checkIcon: { width: 14, height: 14 },
+  starRow: { flexDirection: 'row', marginTop: 2 },
+  star: { width: 17, height: 17 },
 });

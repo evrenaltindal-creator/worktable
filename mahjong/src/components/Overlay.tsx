@@ -8,11 +8,13 @@ interface Props {
   children?: ReactNode;
   /** Her zaman görünen alt kısım (kaydırmayla kaybolmaz): düğmeler için */
   footer?: ReactNode;
+  /** Kutunun üstünde süzülen süs (ör. konfeti); dokunmaları engellemez */
+  decoration?: ReactNode;
   onRequestClose?: () => void;
 }
 
 /** Ekranın ortasında açılan büyük bilgi kutusu. */
-export function Overlay({ visible, title, children, footer, onRequestClose }: Props) {
+export function Overlay({ visible, title, children, footer, decoration, onRequestClose }: Props) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onRequestClose} statusBarTranslucent>
       <Pressable style={styles.backdrop} onPress={onRequestClose} accessible={false}>
@@ -25,6 +27,12 @@ export function Overlay({ visible, title, children, footer, onRequestClose }: Pr
           </ScrollView>
           {footer ? <View style={styles.footer}>{footer}</View> : null}
         </Pressable>
+        {/* Modal'ın tek çocuğu olmalı (web'de yerleşim bozulmasın): süs arka planın içinde */}
+        {decoration ? (
+          <View pointerEvents="none" style={[StyleSheet.absoluteFill, styles.clip]}>
+            {decoration}
+          </View>
+        ) : null}
       </Pressable>
     </Modal>
   );
@@ -54,4 +62,5 @@ const styles = StyleSheet.create({
   scroll: { flexGrow: 0, flexShrink: 1 },
   content: { gap: 14 },
   footer: { gap: 14, marginTop: 16 },
+  clip: { overflow: 'hidden' },
 });

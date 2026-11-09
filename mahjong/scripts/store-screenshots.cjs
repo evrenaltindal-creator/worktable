@@ -22,8 +22,14 @@ const DEVICES = [
   { name: 'ipad-13', viewport: { width: 1032, height: 1376 }, scale: 2, mobile: true },
 ];
 
-const progress = (unlocked) =>
-  JSON.stringify({ unlocked, best: {}, settings: { sound: true, haptics: true, highlightFree: true } });
+const progress = (unlocked, stars = {}) =>
+  JSON.stringify({
+    unlocked,
+    best: Object.fromEntries(Object.keys(stars).map((k) => [k, 60])),
+    stars,
+    boosters: { hint: 3, shuffle: 2, undo: 5 },
+    settings: { sound: true, haptics: true, highlightFree: true },
+  });
 
 async function shoot(browser, dev, locale) {
   const ctx = await browser.newContext({
@@ -40,38 +46,43 @@ async function shoot(browser, dev, locale) {
     ? { levels: 'Seviyeler', level: (n) => `Seviye ${n}`, hint: 'İpucu' }
     : { levels: 'Levels', level: (n) => `Level ${n}`, hint: 'Hint' };
 
-  await page.goto(URL, { waitUntil: 'networkidle' });
-  await page.evaluate((p) => {
-    localStorage.clear();
-    localStorage.setItem('huzur:progress:v1', p);
-  }, progress(24));
-  await page.reload({ waitUntil: 'networkidle' });
-  await page.waitForTimeout(800);
-  await page.screenshot({ path: path.join(dir, '1-home.png') });
-
-  async function openLevel(n) {
+  async function setProgress(p) {
     await page.goto(URL, { waitUntil: 'networkidle' });
-    await page.getByText(L.levels, { exact: true }).click();
-    await page.waitForTimeout(400);
-    await page.getByRole('button', { name: L.level(n), exact: true }).click();
+    await page.evaluate((v) => {
+      localStorage.clear();
+      localStorage.setItem('huzur:progress:v1', v);
+    }, p);
+    await page.reload({ waitUntil: 'networkidle' });
     await page.waitForTimeout(900);
   }
 
-  await openLevel(9);
-  await page.screenshot({ path: path.join(dir, '2-butterfly.png') });
+  async function openLevel(n) {
+    await setProgress(progress(n));
+    await page.getByText(L.levels, { exact: true }).click();
+    await page.waitForTimeout(500);
+    await page.getByRole('button', { name: L.level(n), exact: true }).click();
+    await page.waitForTimeout(2200); // taşlar düşerek yerleşsin
+  }
 
-  await openLevel(2);
+  await setProgress(progress(1));
+  await page.screenshot({ path: path.join(dir, '1-home.jpg'), type: 'jpeg', quality: 90 });
+
+  await openLevel(12);
   await page.getByText(L.hint, { exact: true }).click();
   await page.waitForTimeout(500);
-  await page.screenshot({ path: path.join(dir, '3-hint.png') });
+  await page.screenshot({ path: path.join(dir, '2-sunset-hint.jpg'), type: 'jpeg', quality: 90 });
 
-  await openLevel(16);
-  await page.screenshot({ path: path.join(dir, '4-pyramid.png') });
+  await openLevel(23);
+  await page.screenshot({ path: path.join(dir, '3-dawn.jpg'), type: 'jpeg', quality: 90 });
 
-  await page.goto(URL, { waitUntil: 'networkidle' });
+  await openLevel(34);
+  await page.screenshot({ path: path.join(dir, '4-sea.jpg'), type: 'jpeg', quality: 90 });
+
+  const stars = { 1: 3, 2: 3, 3: 2, 4: 3, 5: 1, 6: 3, 7: 2, 8: 3, 9: 3, 10: 2, 11: 3 };
+  await setProgress(progress(12, stars));
   await page.getByText(L.levels, { exact: true }).click();
-  await page.waitForTimeout(600);
-  await page.screenshot({ path: path.join(dir, '5-levels.png') });
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: path.join(dir, '5-levels.jpg'), type: 'jpeg', quality: 90 });
   await ctx.close();
 }
 
