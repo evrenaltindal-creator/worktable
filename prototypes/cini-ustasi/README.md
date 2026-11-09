@@ -37,6 +37,18 @@ Arka plan ve efektler iki ayrı tam ekran canvas'ta çizilir: `#bg` içeriğin a
 
 Efekt şiddeti tek yerden ayarlanır: `Scene.onClear`, `Scene.onRecord` ve `shakeBoard`.
 
+## Diller
+
+Oyun 7 dilde: Türkçe, İngilizce, Portekizce (Brezilya), Almanca, Fransızca, Japonca, Korece.
+
+- **Seçim sırası:** Oyuncunun kaydettiği seçim, yoksa cihaz dili, o da listede yoksa İngilizce. Üst bardaki küre düğmesiyle değiştirilir.
+- **Tablo:** Bütün oyuncu metinleri `STR` içinde. Yeni dil için `LANGS` ve `LOCALES`'e birer satır, `STR`'ye bir blok eklenir. Eksik anahtar İngilizceye düşer.
+- **Sayı, tarih, fiyat:** Dile göre biçimlenir (1,264 / 1.264 / 1 264; $2.99 / 2,99 $). Canlıda fiyatlar StoreKit'ten oyuncunun para birimiyle gelir.
+- **Yazı tipleri:** Japonca ve Korece için Noto Sans JP/KR ve Shippori Mincho / Gowun Batang yüklenir. Latin harfler ve rakamlar markanın yazı tipinde kalır.
+- **Oyun adı:** Plakadaki ad dile göre çevrildi (Tile Master, Mestre do Azulejo, Fliesenmeister, Maître Céramiste, タイル職人, 타일 장인). Bunlar çalışma çevirileri. Mağaza adı için her dilde ayrıca ad ve marka kontrolü gerekir.
+- Geliştirici paneli (Reklam akışı) oyuncuya gösterilmediği için Türkçe kaldı.
+- Çeviriler yayından önce ana dili konuşan biri tarafından gözden geçirilmeli. Özellikle övgü sözleri ("Harika!" karşılıkları) ve mağaza metinleri.
+
 ## Parça üretme algoritması (`genTray`)
 
 1. **Zorluk eğrisi:** Her parça ailesinin bir "erken" ve bir "geç" ağırlığı var. Skor 0'dan 6.000'e çıkarken ağırlık erkenden geçe kayar, büyük parçalar sıklaşır.

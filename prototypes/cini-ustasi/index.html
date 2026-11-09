@@ -4,7 +4,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Yeseva+One&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Yeseva+One&family=Noto+Sans+JP:wght@400;600;700;800&family=Noto+Sans+KR:wght@400;600;700;800&family=Shippori+Mincho:wght@700;800&family=Gowun+Batang:wght@700&display=swap">
 <style>
 /* Düzen: tek ekranlık oyun sütunu (skor, tahta + tepsi, güçlendiriciler, banner); geniş ekranda sağda "Reklam akışı" paneli */
 :root{
@@ -68,6 +68,9 @@
   color-scheme:dark;
 }
 
+/* Japonca ve Korece: Latin harfler ve rakamlar markanın yazı tipinde kalır, diğer karakterler yerel yazı tipine düşer */
+:root:lang(ja){--font-display:"Yeseva One", "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;--font-ui:"Manrope", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif}
+:root:lang(ko){--font-display:"Yeseva One", "Gowun Batang", "AppleMyungjo", "Nanum Myeongjo", serif;--font-ui:"Manrope", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif}
 [hidden]{display:none !important}
 html{height:100%;box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
@@ -221,6 +224,14 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 .records li.me{background:var(--primary);color:var(--on-primary)}
 .records li.me::before,.records li.me .d{color:inherit}
 
+/* Japonca ve Korece başlıkta harf aralığı daralır; Japonca satırlar kelime ortasından bölünmez */
+:lang(ja) .plate-title,:lang(ko) .plate-title{letter-spacing:.12em}
+:lang(ja) .toast,:lang(ja) .dialog{word-break:auto-phrase}
+
+/* Geliştirici paneli Türkçe kalır; oyun dili ne olursa olsun Latin yazı tipini kullanır */
+.panel{font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif}
+.panel h2{font-family:"Yeseva One", Georgia, serif}
+
 @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
 </style>
 
@@ -228,10 +239,11 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 <div class="app" lang="tr">
   <main class="game" aria-label="Çini Ustası">
     <header class="hud">
-      <span class="coin-pill" id="coinPill" title="Altın"><span class="coin-dot" aria-hidden="true"></span><span id="coins">0</span><span class="sr"> altın</span></span>
+      <span class="coin-pill" id="coinPill" title="Altın"><span class="coin-dot" aria-hidden="true"></span><span id="coins">0</span><span class="sr" id="coinsSr"> altın</span></span>
       <div class="hud-actions">
+        <button class="icon-btn" id="langBtn" data-i18n-aria="language" aria-label="Dil"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></button>
         <button class="icon-btn" id="soundBtn" aria-pressed="true" aria-label="Sesi kapat"></button>
-        <button class="icon-btn" id="shopBtn" aria-label="Mağaza"><svg class="ico" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg></button>
+        <button class="icon-btn" id="shopBtn" data-i18n-aria="shop" aria-label="Mağaza"><svg class="ico" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg></button>
         <button class="icon-btn only-narrow" id="panelBtn" aria-label="Reklam akışı paneli"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20v-8M12 20V4M19 20v-5"/></svg></button>
       </div>
     </header>
@@ -239,37 +251,37 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
     <div class="scoreboard">
       <div class="plate" id="plate">
         <i class="gem tl"></i><i class="gem tr"></i><i class="gem bl"></i><i class="gem br"></i>
-        <div class="plate-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg>ÇİNİ USTASI<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg></div>
-        <div class="score" id="score" aria-label="Skor">0</div>
+        <div class="plate-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg><span data-i18n="title">ÇİNİ USTASI</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l2.6 4.2 4.8-1.1-1.1 4.8 4.2 2.6-4.2 2.6 1.1 4.8-4.8-1.1-2.6 4.2-2.6-4.2-4.8 1.1 1.1-4.8L1.5 12l4.2-2.6-1.1-4.8 4.8 1.1z"/></svg></div>
+        <div class="score" id="score" data-i18n-aria="score" aria-label="Skor">0</div>
         <div class="rec" id="rec"><span class="rec-track"><span id="recFill"></span></span><span id="recLabel">İlk rekorunu kur</span></div>
         <div class="streak" id="streak"></div>
       </div>
     </div>
 
     <div class="stage" id="stage">
-      <canvas id="board" tabindex="0" aria-label="Oyun tahtası. Klavye: 1, 2 ya da 3 ile parça seç, ok tuşlarıyla taşı, Enter ile yerleştir, Esc ile vazgeç."></canvas>
+      <canvas id="board" tabindex="0" data-i18n-aria="board_aria" aria-label="Oyun tahtası. Klavye: 1, 2 ya da 3 ile parça seç, ok tuşlarıyla taşı, Enter ile yerleştir, Esc ile vazgeç."></canvas>
       <div class="toast" id="toast" role="status" hidden><span id="toastText"></span><button class="toast-btn" id="toastBtn" hidden></button></div>
     </div>
 
-    <div class="boosters" role="group" aria-label="Güçlendiriciler">
+    <div class="boosters" role="group" data-i18n-aria="boosters_group" aria-label="Güçlendiriciler">
       <button class="booster" id="b-rotate" data-kind="rotate" aria-pressed="false">
         <svg class="ico" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg>
-        <span>Döndür</span><span class="count" id="c-rotate"></span>
+        <span data-i18n="rotate">Döndür</span><span class="count" id="c-rotate"></span>
       </button>
       <button class="booster" id="b-refresh" data-kind="refresh" aria-pressed="false">
         <svg class="ico" viewBox="0 0 24 24"><path d="M4 8h13M14 4l4 4-4 4"/><path d="M20 16H7M10 12l-4 4 4 4"/></svg>
-        <span>Yenile</span><span class="count" id="c-refresh"></span>
+        <span data-i18n="refresh">Yenile</span><span class="count" id="c-refresh"></span>
       </button>
       <button class="booster" id="b-hammer" data-kind="hammer" aria-pressed="false">
         <svg class="ico" viewBox="0 0 24 24"><path d="M13.5 4.5l6 6-2.5 2.5-6-6z"/><path d="M12.2 9.8L4.5 17.5a1.8 1.8 0 0 0 2.5 2.5l7.7-7.7"/></svg>
-        <span>Çekiç</span><span class="count" id="c-hammer"></span>
+        <span data-i18n="hammer">Çekiç</span><span class="count" id="c-hammer"></span>
       </button>
     </div>
 
-    <div class="banner" id="banner"><span class="ad-chip">REKLAM</span><span>Banner alanı · 320×50 · 30 sn'de bir yenilenir</span></div>
+    <div class="banner" id="banner"><span class="ad-chip" data-i18n="ad">REKLAM</span><span data-i18n="banner_text">Banner alanı · 320×50 · 30 sn'de bir yenilenir</span></div>
   </main>
 
-  <aside class="panel" id="panel" aria-labelledby="panelTitle">
+  <aside class="panel" id="panel" lang="tr" aria-labelledby="panelTitle">
     <div class="panel-head">
       <div>
         <h2 id="panelTitle">Reklam akışı</h2>
@@ -348,10 +360,10 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 
 <div class="adsim" id="adsim" hidden>
   <div class="adsim-card" role="dialog" aria-modal="true" aria-labelledby="adTag">
-    <div class="adsim-top"><span class="ad-chip" id="adTag">ÖDÜLLÜ REKLAM</span><span>yer: <code id="adPlace"></code></span></div>
+    <div class="adsim-top"><span class="ad-chip" id="adTag">ÖDÜLLÜ REKLAM</span><span><span data-i18n="ad_place">yer</span>: <code id="adPlace"></code></span></div>
     <div class="adsim-creative">
       <span class="adsim-count" id="adCount">5</span>
-      <span class="adsim-label">Reklam videosu burada oynar</span>
+      <span class="adsim-label" data-i18n="ad_video">Reklam videosu burada oynar</span>
     </div>
     <div class="adsim-bar"><span id="adBar"></span></div>
     <p class="adsim-note" id="adNote"></p>
@@ -384,7 +396,10 @@ const store = {
 };
 
 /* ---------- Yardımcılar ---------- */
-const fmt = n => Math.round(n).toLocaleString('tr-TR');
+let LANG = 'tr', LOCALE = 'tr-TR';
+const fmt = n => Math.round(n).toLocaleString(LOCALE);
+// Canlıda fiyatlar mağazadan (StoreKit) yerel para birimiyle gelir; burada USD yerel biçimde gösterilir
+const money = v => new Intl.NumberFormat(LOCALE, { style: 'currency', currency: 'USD' }).format(v);
 const usd = v => '$' + v.toFixed(3).replace('.', ',');
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const bits = x => { let n = 0; while (x) { x &= x - 1; n++; } return n; };
@@ -551,6 +566,265 @@ const saveCfg = () => store.set('cfg', CFG);
 let G = null;
 const saveGame = () => { if (G) store.set('game', G); };
 
+/* ---------- Diller ----------
+   Oyuncunun gördüğü bütün metinler burada. Geliştirici paneli (Reklam akışı) Türkçe kalır.
+   Yeni dil eklemek için LANGS ve LOCALES'e birer satır, STR'ye bir blok eklemek yeterli.
+   Eksik bir anahtar önce İngilizceye, o da yoksa anahtarın adına düşer. */
+const LANGS = { tr: 'Türkçe', en: 'English', pt: 'Português', de: 'Deutsch', fr: 'Français', ja: '日本語', ko: '한국어' };
+const LOCALES = { tr: 'tr-TR', en: 'en-US', pt: 'pt-BR', de: 'de-DE', fr: 'fr-FR', ja: 'ja-JP', ko: 'ko-KR' };
+const STR = {
+  tr: {
+    title: "ÇİNİ USTASI", coins: "altın", score: "Skor", sound_off: "Sesi kapat", sound_on: "Sesi aç", shop: "Mağaza", language: "Dil",
+    rec_first: "İlk rekorunu kur", rec_best: "Rekor {n}", rec_new: "YENİ REKOR!",
+    board_aria: "Oyun tahtası. Klavye: 1, 2 ya da 3 ile parça seç, ok tuşlarıyla taşı, Enter ile yerleştir, Esc ile vazgeç.",
+    boosters_group: "Güçlendiriciler", rotate: "Döndür", refresh: "Yenile", hammer: "Çekiç",
+    rotate_desc: "Alttaki bir parçayı 90° çevirir.", refresh_desc: "Alttaki parçaların yerine sığan üç yeni parça getirir.", hammer_desc: "Tahtada dokunduğun yerdeki 3×3 alanı kırar.",
+    booster_aria_n: "{name}, {n} hak", booster_aria_0: "{name}, hak yok, reklam izleyerek kazan",
+    ad: "REKLAM", banner_text: "Banner alanı · 320×50 · 30 sn'de bir yenilenir",
+    ad_rewarded: "ÖDÜLLÜ REKLAM", ad_inter: "GEÇİŞ REKLAMI", ad_place: "yer", ad_video: "Reklam videosu burada oynar",
+    ad_note_rew: "Canlıda 15–30 sn video. Oyuncu sonuna kadar izlerse ödülü alır, erken kapatırsa almaz.",
+    ad_note_int: "Canlıda 5–15 sn. Kapatma düğmesi birkaç saniye sonra çıkar.",
+    ad_claim: "Ödülü al", ad_close_norew: "Kapat (ödül yok)", ad_close: "Kapat ✕", ad_sr: "(reklam)",
+    combo: "Seri ×{n}", moves_left: "{n} hamle kaldı",
+    tutorial: "Parçayı sürükleyip tahtaya bırak. Dolan satır ve sütun kırılır.",
+    no_moves_title: "Hamle kalmadı", no_moves_body: "Alttaki parçaların hiçbiri tahtaya sığmıyor.",
+    no_moves_revive: "Reklam izlersen en dolu 4×4 alan temizlenir ve sığan üç yeni parça gelir.",
+    btn_revive: "Reklam izle, devam et", btn_use_booster: "Güçlendirici kullan", btn_end: "Oyunu bitir",
+    stuck_bar: "Hamle yok. Güçlendirici kullan ya da bitir.", btn_finish: "Bitir",
+    result_record: "Yeni rekor!", result_over: "Duvar doldu", result_sub: "{lines} çizgi · +{coins} altın", records_title: "REKOR TABLOSU",
+    btn_double: "Altını 2 katına çıkar (+{n})", doubled: "Altın 2 katına çıktı ✓", btn_new: "Yeni oyun",
+    booster_out: "{name} hakkın bitti", your_coins: "Altının: {n}", btn_ad_plus1: "Reklam izle, +1 hak", btn_buy_coins: "{price} altınla al", btn_cancel: "Vazgeç", plus_one: "{name} +1",
+    mode_rotate: "Döndürmek için alttaki bir parçaya dokun", mode_hammer: "Kırmak için tahtada bir yere dokun (3×3)",
+    hammer_empty: "Burada kırılacak çini yok", no_fit: "Bu parça buraya sığmıyor",
+    shop_title: "Mağaza", shop_body: "Test modu, gerçek ödeme alınmaz. Reklamsız sürüm banner ve geçiş reklamlarını kaldırır. Ödüllü reklamlar oyuncunun isteğine bağlı olduğu için kalır.",
+    remove_ads_on: "Reklamsız sürüm etkin ✓", btn_remove_ads: "Reklamları kaldır · {price}", btn_coin_pack: "250 altın · {price}", btn_restore: "Satın alımları geri yükle", btn_close: "Kapat",
+    toast_noads: "Reklamsız sürüm etkin. Ödüllü reklamlar isteğe bağlı kaldı.", toast_coins: "+250 altın", toast_restored: "Satın alımlar geri yüklendi.", toast_none: "Geri yüklenecek satın alım yok.",
+    pattern_done: "Desen tamam!", praise2: "Harika!", praise3: "Muhteşem!", praise4: "Efsane!", praise_clean: "Duvar tertemiz!", praise_record: "Yeni rekor!", praise_continue: "Devam!",
+    lang_title: "Dil"
+  },
+  en: {
+    title: "TILE MASTER", coins: "coins", score: "Score", sound_off: "Mute sound", sound_on: "Turn sound on", shop: "Shop", language: "Language",
+    rec_first: "Set your first record", rec_best: "Best {n}", rec_new: "NEW RECORD!",
+    board_aria: "Game board. Keyboard: press 1, 2 or 3 to pick a piece, arrow keys to move it, Enter to place it, Esc to cancel.",
+    boosters_group: "Boosters", rotate: "Rotate", refresh: "Refresh", hammer: "Hammer",
+    rotate_desc: "Turns one of your pieces 90°.", refresh_desc: "Swaps your pieces for three new ones that fit.", hammer_desc: "Smashes a 3×3 area where you tap.",
+    booster_aria_n: "{name}, {n} left", booster_aria_0: "{name}, none left, watch an ad to get one",
+    ad: "AD", banner_text: "Banner slot · 320×50 · refreshes every 30 s",
+    ad_rewarded: "REWARDED AD", ad_inter: "INTERSTITIAL AD", ad_place: "placement", ad_video: "The ad video plays here",
+    ad_note_rew: "In the live game this is a 15–30 s video. Watch to the end to get the reward; closing early gives nothing.",
+    ad_note_int: "In the live game this lasts 5–15 s. The close button appears after a few seconds.",
+    ad_claim: "Claim reward", ad_close_norew: "Close (no reward)", ad_close: "Close ✕", ad_sr: "(ad)",
+    combo: "Combo ×{n}", moves_left: "{n} moves left",
+    tutorial: "Drag a piece onto the board. Full rows and columns break.",
+    no_moves_title: "No moves left", no_moves_body: "None of your pieces fit on the board.",
+    no_moves_revive: "Watch an ad to clear the fullest 4×4 area and get three new pieces that fit.",
+    btn_revive: "Watch ad to continue", btn_use_booster: "Use a booster", btn_end: "End game",
+    stuck_bar: "No moves. Use a booster or end the game.", btn_finish: "End",
+    result_record: "New record!", result_over: "The wall is full", result_sub: "{lines} lines · +{coins} coins", records_title: "HIGH SCORES",
+    btn_double: "Double your coins (+{n})", doubled: "Coins doubled ✓", btn_new: "New game",
+    booster_out: "{name}: none left", your_coins: "Your coins: {n}", btn_ad_plus1: "Watch ad, +1", btn_buy_coins: "Buy for {price} coins", btn_cancel: "Cancel", plus_one: "{name} +1",
+    mode_rotate: "Tap a piece to rotate it", mode_hammer: "Tap the board to smash a 3×3 area",
+    hammer_empty: "Nothing to smash here", no_fit: "This piece doesn't fit here",
+    shop_title: "Shop", shop_body: "Test mode: no real payment is taken. Remove Ads hides banner and interstitial ads. Rewarded ads stay because players choose to watch them.",
+    remove_ads_on: "Ad-free version active ✓", btn_remove_ads: "Remove ads · {price}", btn_coin_pack: "250 coins · {price}", btn_restore: "Restore purchases", btn_close: "Close",
+    toast_noads: "Ads removed. Rewarded ads are still there if you want them.", toast_coins: "+250 coins", toast_restored: "Purchases restored.", toast_none: "No purchases to restore.",
+    pattern_done: "Pattern complete!", praise2: "Great!", praise3: "Amazing!", praise4: "Legendary!", praise_clean: "Wall cleared!", praise_record: "New record!", praise_continue: "Keep going!",
+    lang_title: "Language"
+  },
+  pt: {
+    title: "MESTRE DO AZULEJO", coins: "moedas", score: "Pontuação", sound_off: "Desativar som", sound_on: "Ativar som", shop: "Loja", language: "Idioma",
+    rec_first: "Faça seu primeiro recorde", rec_best: "Recorde {n}", rec_new: "NOVO RECORDE!",
+    board_aria: "Tabuleiro. Teclado: 1, 2 ou 3 escolhe uma peça, as setas movem, Enter posiciona, Esc cancela.",
+    boosters_group: "Power-ups", rotate: "Girar", refresh: "Trocar", hammer: "Martelo",
+    rotate_desc: "Gira uma das suas peças em 90°.", refresh_desc: "Troca suas peças por três novas que cabem no tabuleiro.", hammer_desc: "Quebra uma área de 3×3 onde você tocar.",
+    booster_aria_n: "{name}, {n} restantes", booster_aria_0: "{name}, acabou, assista a um anúncio para ganhar mais",
+    ad: "ANÚNCIO", banner_text: "Espaço de banner · 320×50 · atualiza a cada 30 s",
+    ad_rewarded: "ANÚNCIO PREMIADO", ad_inter: "ANÚNCIO INTERSTICIAL", ad_place: "posição", ad_video: "O vídeo do anúncio passa aqui",
+    ad_note_rew: "No jogo publicado, é um vídeo de 15–30 s. Assista até o fim para ganhar a recompensa; se fechar antes, não ganha nada.",
+    ad_note_int: "No jogo publicado, dura 5–15 s. O botão de fechar aparece depois de alguns segundos.",
+    ad_claim: "Pegar recompensa", ad_close_norew: "Fechar (sem recompensa)", ad_close: "Fechar ✕", ad_sr: "(anúncio)",
+    combo: "Combo ×{n}", moves_left: "faltam {n} jogadas",
+    tutorial: "Arraste uma peça para o tabuleiro. Linhas e colunas completas se quebram.",
+    no_moves_title: "Sem jogadas", no_moves_body: "Nenhuma das suas peças cabe no tabuleiro.",
+    no_moves_revive: "Assista a um anúncio para limpar a área 4×4 mais cheia e ganhar três peças novas que cabem.",
+    btn_revive: "Assistir e continuar", btn_use_booster: "Usar power-up", btn_end: "Encerrar jogo",
+    stuck_bar: "Sem jogadas. Use um power-up ou encerre o jogo.", btn_finish: "Encerrar",
+    result_record: "Novo recorde!", result_over: "A parede encheu", result_sub: "{lines} linhas · +{coins} moedas", records_title: "RECORDES",
+    btn_double: "Dobrar moedas (+{n})", doubled: "Moedas dobradas ✓", btn_new: "Novo jogo",
+    booster_out: "{name}: acabou", your_coins: "Suas moedas: {n}", btn_ad_plus1: "Assistir anúncio, +1", btn_buy_coins: "Comprar por {price} moedas", btn_cancel: "Cancelar", plus_one: "{name} +1",
+    mode_rotate: "Toque em uma peça para girá-la", mode_hammer: "Toque no tabuleiro para quebrar uma área 3×3",
+    hammer_empty: "Nada para quebrar aqui", no_fit: "Esta peça não cabe aqui",
+    shop_title: "Loja", shop_body: "Modo de teste: nenhum pagamento real é feito. Remover anúncios tira os banners e os anúncios intersticiais. Os anúncios premiados continuam porque são opcionais.",
+    remove_ads_on: "Versão sem anúncios ativa ✓", btn_remove_ads: "Remover anúncios · {price}", btn_coin_pack: "250 moedas · {price}", btn_restore: "Restaurar compras", btn_close: "Fechar",
+    toast_noads: "Anúncios removidos. Os anúncios premiados continuam opcionais.", toast_coins: "+250 moedas", toast_restored: "Compras restauradas.", toast_none: "Nenhuma compra para restaurar.",
+    pattern_done: "Padrão completo!", praise2: "Ótimo!", praise3: "Incrível!", praise4: "Lendário!", praise_clean: "Parede limpa!", praise_record: "Novo recorde!", praise_continue: "Continue!",
+    lang_title: "Idioma"
+  },
+  de: {
+    title: "FLIESENMEISTER", coins: "Münzen", score: "Punkte", sound_off: "Ton aus", sound_on: "Ton an", shop: "Shop", language: "Sprache",
+    rec_first: "Setz deinen ersten Rekord", rec_best: "Rekord {n}", rec_new: "NEUER REKORD!",
+    board_aria: "Spielfeld. Tastatur: Mit 1, 2 oder 3 ein Teil wählen, mit den Pfeiltasten bewegen, mit Enter ablegen, mit Esc abbrechen.",
+    boosters_group: "Booster", rotate: "Drehen", refresh: "Tauschen", hammer: "Hammer",
+    rotate_desc: "Dreht eines deiner Teile um 90°.", refresh_desc: "Tauscht deine Teile gegen drei neue, die passen.", hammer_desc: "Zerschlägt einen 3×3-Bereich, wo du tippst.",
+    booster_aria_n: "{name}, noch {n}", booster_aria_0: "{name}, aufgebraucht, sieh dir eine Werbung an, um mehr zu bekommen",
+    ad: "WERBUNG", banner_text: "Bannerfläche · 320×50 · alle 30 s neu",
+    ad_rewarded: "BELOHNTE WERBUNG", ad_inter: "ZWISCHENWERBUNG", ad_place: "Platzierung", ad_video: "Hier läuft das Werbevideo",
+    ad_note_rew: "Im fertigen Spiel ist das ein Video von 15–30 s. Wer bis zum Ende schaut, bekommt die Belohnung; wer früher schließt, nicht.",
+    ad_note_int: "Im fertigen Spiel dauert das 5–15 s. Die Schließen-Taste erscheint nach ein paar Sekunden.",
+    ad_claim: "Belohnung holen", ad_close_norew: "Schließen (keine Belohnung)", ad_close: "Schließen ✕", ad_sr: "(Werbung)",
+    combo: "Combo ×{n}", moves_left: "noch {n} Züge",
+    tutorial: "Zieh ein Teil aufs Spielfeld. Volle Reihen und Spalten zerbrechen.",
+    no_moves_title: "Keine Züge mehr", no_moves_body: "Keines deiner Teile passt noch aufs Spielfeld.",
+    no_moves_revive: "Sieh dir eine Werbung an: Der vollste 4×4-Bereich wird geleert und du bekommst drei neue Teile, die passen.",
+    btn_revive: "Werbung ansehen & weiter", btn_use_booster: "Booster einsetzen", btn_end: "Spiel beenden",
+    stuck_bar: "Keine Züge. Setz einen Booster ein oder beende das Spiel.", btn_finish: "Beenden",
+    result_record: "Neuer Rekord!", result_over: "Die Wand ist voll", result_sub: "{lines} Linien · +{coins} Münzen", records_title: "BESTENLISTE",
+    btn_double: "Münzen verdoppeln (+{n})", doubled: "Münzen verdoppelt ✓", btn_new: "Neues Spiel",
+    booster_out: "{name}: aufgebraucht", your_coins: "Deine Münzen: {n}", btn_ad_plus1: "Werbung ansehen, +1", btn_buy_coins: "Für {price} Münzen kaufen", btn_cancel: "Abbrechen", plus_one: "{name} +1",
+    mode_rotate: "Tippe auf ein Teil, um es zu drehen", mode_hammer: "Tippe aufs Spielfeld, um 3×3 zu zerschlagen",
+    hammer_empty: "Hier gibt es nichts zu zerschlagen", no_fit: "Dieses Teil passt hier nicht",
+    shop_title: "Shop", shop_body: "Testmodus: Es wird nichts bezahlt. „Werbung entfernen“ blendet Banner und Zwischenwerbung aus. Belohnte Werbung bleibt, weil sie freiwillig ist.",
+    remove_ads_on: "Werbefreie Version aktiv ✓", btn_remove_ads: "Werbung entfernen · {price}", btn_coin_pack: "250 Münzen · {price}", btn_restore: "Käufe wiederherstellen", btn_close: "Schließen",
+    toast_noads: "Werbung entfernt. Belohnte Werbung bleibt freiwillig verfügbar.", toast_coins: "+250 Münzen", toast_restored: "Käufe wiederhergestellt.", toast_none: "Keine Käufe zum Wiederherstellen.",
+    pattern_done: "Muster komplett!", praise2: "Super!", praise3: "Fantastisch!", praise4: "Legendär!", praise_clean: "Wand blitzblank!", praise_record: "Neuer Rekord!", praise_continue: "Weiter geht's!",
+    lang_title: "Sprache"
+  },
+  fr: {
+    title: "MAÎTRE CÉRAMISTE", coins: "pièces", score: "Score", sound_off: "Couper le son", sound_on: "Activer le son", shop: "Boutique", language: "Langue",
+    rec_first: "Établis ton premier record", rec_best: "Record {n}", rec_new: "NOUVEAU RECORD !",
+    board_aria: "Plateau de jeu. Clavier : 1, 2 ou 3 pour choisir une pièce, flèches pour la déplacer, Entrée pour la poser, Échap pour annuler.",
+    boosters_group: "Bonus", rotate: "Pivoter", refresh: "Changer", hammer: "Marteau",
+    rotate_desc: "Fait pivoter une de tes pièces de 90°.", refresh_desc: "Remplace tes pièces par trois nouvelles qui rentrent.", hammer_desc: "Brise une zone de 3×3 là où tu touches.",
+    booster_aria_n: "{name}, {n} disponible(s)", booster_aria_0: "{name}, épuisé, regarde une pub pour en obtenir",
+    ad: "PUB", banner_text: "Emplacement bannière · 320×50 · actualisé toutes les 30 s",
+    ad_rewarded: "PUB RÉCOMPENSÉE", ad_inter: "PUB INTERSTITIELLE", ad_place: "emplacement", ad_video: "La vidéo publicitaire s'affiche ici",
+    ad_note_rew: "Dans le jeu publié, c'est une vidéo de 15 à 30 s. Regarde-la jusqu'au bout pour la récompense ; si tu fermes avant, tu n'obtiens rien.",
+    ad_note_int: "Dans le jeu publié, elle dure 5 à 15 s. Le bouton de fermeture apparaît après quelques secondes.",
+    ad_claim: "Récupérer la récompense", ad_close_norew: "Fermer (sans récompense)", ad_close: "Fermer ✕", ad_sr: "(pub)",
+    combo: "Combo ×{n}", moves_left: "encore {n} coups",
+    tutorial: "Fais glisser une pièce sur le plateau. Les lignes et colonnes pleines se brisent.",
+    no_moves_title: "Plus de coups", no_moves_body: "Aucune de tes pièces ne rentre sur le plateau.",
+    no_moves_revive: "Regarde une pub pour vider la zone 4×4 la plus remplie et recevoir trois nouvelles pièces qui rentrent.",
+    btn_revive: "Regarder une pub et continuer", btn_use_booster: "Utiliser un bonus", btn_end: "Terminer la partie",
+    stuck_bar: "Plus de coups. Utilise un bonus ou termine la partie.", btn_finish: "Terminer",
+    result_record: "Nouveau record !", result_over: "Le mur est plein", result_sub: "{lines} lignes · +{coins} pièces", records_title: "MEILLEURS SCORES",
+    btn_double: "Doubler les pièces (+{n})", doubled: "Pièces doublées ✓", btn_new: "Nouvelle partie",
+    booster_out: "{name} : épuisé", your_coins: "Tes pièces : {n}", btn_ad_plus1: "Regarder une pub, +1", btn_buy_coins: "Acheter pour {price} pièces", btn_cancel: "Annuler", plus_one: "{name} +1",
+    mode_rotate: "Touche une pièce pour la faire pivoter", mode_hammer: "Touche le plateau pour briser une zone 3×3",
+    hammer_empty: "Rien à briser ici", no_fit: "Cette pièce ne rentre pas ici",
+    shop_title: "Boutique", shop_body: "Mode test : aucun paiement réel. « Supprimer les pubs » retire les bannières et les pubs interstitielles. Les pubs récompensées restent, car elles sont facultatives.",
+    remove_ads_on: "Version sans pub active ✓", btn_remove_ads: "Supprimer les pubs · {price}", btn_coin_pack: "250 pièces · {price}", btn_restore: "Restaurer les achats", btn_close: "Fermer",
+    toast_noads: "Pubs supprimées. Les pubs récompensées restent disponibles si tu le souhaites.", toast_coins: "+250 pièces", toast_restored: "Achats restaurés.", toast_none: "Aucun achat à restaurer.",
+    pattern_done: "Motif complet !", praise2: "Génial !", praise3: "Magnifique !", praise4: "Légendaire !", praise_clean: "Mur nettoyé !", praise_record: "Nouveau record !", praise_continue: "On continue !",
+    lang_title: "Langue"
+  },
+  ja: {
+    title: "タイル職人", coins: "コイン", score: "スコア", sound_off: "サウンドをオフ", sound_on: "サウンドをオン", shop: "ショップ", language: "言語",
+    rec_first: "最初の記録を作ろう", rec_best: "ベスト {n}", rec_new: "新記録！",
+    board_aria: "ゲーム盤。キーボード：1・2・3でピースを選び、矢印キーで動かし、Enterで置き、Escで取り消します。",
+    boosters_group: "ブースター", rotate: "回転", refresh: "入れ替え", hammer: "ハンマー",
+    rotate_desc: "手持ちのピースを1つ90°回転します。", refresh_desc: "手持ちのピースを、置ける新しいピース3つと入れ替えます。", hammer_desc: "タップした場所の3×3を壊します。",
+    booster_aria_n: "{name}、残り{n}", booster_aria_0: "{name}、残りなし。広告を見ると獲得できます",
+    ad: "広告", banner_text: "バナー枠 · 320×50 · 30秒ごとに更新",
+    ad_rewarded: "リワード広告", ad_inter: "インタースティシャル広告", ad_place: "配置", ad_video: "ここで広告動画が再生されます",
+    ad_note_rew: "本番では15〜30秒の動画です。最後まで見ると報酬がもらえ、途中で閉じるともらえません。",
+    ad_note_int: "本番では5〜15秒です。数秒後に閉じるボタンが表示されます。",
+    ad_claim: "報酬を受け取る", ad_close_norew: "閉じる（報酬なし）", ad_close: "閉じる ✕", ad_sr: "（広告）",
+    combo: "コンボ ×{n}", moves_left: "残り{n}手",
+    tutorial: "ピースを盤にドラッグしよう。縦か横の一列がそろうと割れます。",
+    no_moves_title: "もう置けません", no_moves_body: "手持ちのピースはどれも盤に置けません。",
+    no_moves_revive: "広告を見ると、いちばん埋まっている4×4が消えて、置けるピースが3つ届きます。",
+    btn_revive: "広告を見て続ける", btn_use_booster: "ブースターを使う", btn_end: "ゲームを終える",
+    stuck_bar: "置けません。ブースターを使うか、ゲームを終えてください。", btn_finish: "終了",
+    result_record: "新記録！", result_over: "壁がいっぱい", result_sub: "{lines}ライン · +{coins}コイン", records_title: "ハイスコア",
+    btn_double: "コインを2倍にする（+{n}）", doubled: "コイン2倍 ✓", btn_new: "新しいゲーム",
+    booster_out: "{name}：残りなし", your_coins: "所持コイン：{n}", btn_ad_plus1: "広告を見て +1", btn_buy_coins: "{price}コインで買う", btn_cancel: "キャンセル", plus_one: "{name} +1",
+    mode_rotate: "回転させるピースをタップ", mode_hammer: "壊したい場所をタップ（3×3）",
+    hammer_empty: "ここには壊せるタイルがありません", no_fit: "このピースはここに置けません",
+    shop_title: "ショップ", shop_body: "テストモードのため、実際の支払いは発生しません。広告削除を買うとバナーとインタースティシャル広告が消えます。リワード広告は任意なので残ります。",
+    remove_ads_on: "広告なし版が有効 ✓", btn_remove_ads: "広告を削除 · {price}", btn_coin_pack: "250コイン · {price}", btn_restore: "購入を復元", btn_close: "閉じる",
+    toast_noads: "広告を削除しました。リワード広告は見たいときに使えます。", toast_coins: "+250コイン", toast_restored: "購入を復元しました。", toast_none: "復元できる購入はありません。",
+    pattern_done: "模様がそろった！", praise2: "すごい！", praise3: "見事！", praise4: "伝説級！", praise_clean: "壁がまっさら！", praise_record: "新記録！", praise_continue: "続行！",
+    lang_title: "言語"
+  },
+  ko: {
+    title: "타일 장인", coins: "코인", score: "점수", sound_off: "소리 끄기", sound_on: "소리 켜기", shop: "상점", language: "언어",
+    rec_first: "첫 기록을 세워 보세요", rec_best: "최고 {n}", rec_new: "신기록!",
+    board_aria: "게임 보드. 키보드: 1, 2, 3으로 조각을 고르고 방향키로 옮긴 뒤 Enter로 놓고 Esc로 취소합니다.",
+    boosters_group: "부스터", rotate: "회전", refresh: "교체", hammer: "망치",
+    rotate_desc: "아래 조각 하나를 90° 돌립니다.", refresh_desc: "아래 조각들을 놓을 수 있는 새 조각 세 개로 바꿉니다.", hammer_desc: "누른 곳의 3×3 영역을 부숩니다.",
+    booster_aria_n: "{name}, {n}개 남음", booster_aria_0: "{name}, 남은 횟수 없음. 광고를 보면 받을 수 있습니다",
+    ad: "광고", banner_text: "배너 영역 · 320×50 · 30초마다 새로고침",
+    ad_rewarded: "보상형 광고", ad_inter: "전면 광고", ad_place: "위치", ad_video: "여기에서 광고 영상이 재생됩니다",
+    ad_note_rew: "실제 게임에서는 15~30초 영상입니다. 끝까지 보면 보상을 받고, 중간에 닫으면 받지 못합니다.",
+    ad_note_int: "실제 게임에서는 5~15초입니다. 몇 초 후에 닫기 버튼이 나타납니다.",
+    ad_claim: "보상 받기", ad_close_norew: "닫기 (보상 없음)", ad_close: "닫기 ✕", ad_sr: "(광고)",
+    combo: "콤보 ×{n}", moves_left: "{n}수 남음",
+    tutorial: "조각을 보드로 끌어다 놓으세요. 가로나 세로 한 줄이 꽉 차면 깨집니다.",
+    no_moves_title: "놓을 곳이 없어요", no_moves_body: "아래 조각 중 보드에 들어가는 것이 없습니다.",
+    no_moves_revive: "광고를 보면 가장 꽉 찬 4×4 영역이 비워지고 놓을 수 있는 새 조각 세 개를 받습니다.",
+    btn_revive: "광고 보고 계속하기", btn_use_booster: "부스터 사용", btn_end: "게임 끝내기",
+    stuck_bar: "놓을 곳이 없어요. 부스터를 쓰거나 게임을 끝내세요.", btn_finish: "끝내기",
+    result_record: "신기록!", result_over: "벽이 가득 찼어요", result_sub: "{lines}줄 · 코인 +{coins}", records_title: "최고 기록",
+    btn_double: "코인 2배 받기 (+{n})", doubled: "코인 2배 완료 ✓", btn_new: "새 게임",
+    booster_out: "{name}: 남은 횟수 없음", your_coins: "보유 코인: {n}", btn_ad_plus1: "광고 보고 +1", btn_buy_coins: "{price}코인으로 구매", btn_cancel: "취소", plus_one: "{name} +1",
+    mode_rotate: "돌릴 조각을 누르세요", mode_hammer: "부술 곳을 누르세요 (3×3)",
+    hammer_empty: "여기에는 부술 타일이 없어요", no_fit: "이 조각은 여기에 들어가지 않아요",
+    shop_title: "상점", shop_body: "테스트 모드라 실제 결제는 되지 않습니다. 광고 제거를 구매하면 배너와 전면 광고가 사라집니다. 보상형 광고는 선택 사항이라 남습니다.",
+    remove_ads_on: "광고 제거 적용됨 ✓", btn_remove_ads: "광고 제거 · {price}", btn_coin_pack: "코인 250개 · {price}", btn_restore: "구매 복원", btn_close: "닫기",
+    toast_noads: "광고가 제거되었습니다. 보상형 광고는 원할 때 계속 볼 수 있어요.", toast_coins: "코인 +250", toast_restored: "구매를 복원했습니다.", toast_none: "복원할 구매 내역이 없습니다.",
+    pattern_done: "무늬 완성!", praise2: "멋져요!", praise3: "대단해요!", praise4: "전설급!", praise_clean: "벽 클리어!", praise_record: "신기록!", praise_continue: "계속!",
+    lang_title: "언어"
+  }
+};
+let FONTS = { display: '"Yeseva One", Georgia, serif', ui: 'Manrope, system-ui, sans-serif' };
+
+function t(key, vars) {
+  let s = (STR[LANG] && STR[LANG][key]) ?? STR.en[key] ?? key;
+  if (vars) s = s.replace(/\{(\w+)\}/g, (m, k) => (k in vars ? vars[k] : m));
+  return s;
+}
+// Kayıtlı seçim > cihaz dili > İngilizce
+function detectLang() {
+  if (M.lang && STR[M.lang]) return M.lang;
+  for (const l of navigator.languages || [navigator.language || '']) {
+    const k = String(l).slice(0, 2).toLowerCase();
+    if (STR[k]) return k;
+  }
+  return 'en';
+}
+function readFonts() {
+  const st = getComputedStyle(document.documentElement);
+  FONTS = { display: st.getPropertyValue('--font-display').trim() || FONTS.display, ui: st.getPropertyValue('--font-ui').trim() || FONTS.ui };
+}
+function applyLang() {
+  document.documentElement.lang = LANG;
+  document.querySelector('.app').setAttribute('lang', LANG);
+  for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
+  for (const el of document.querySelectorAll('[data-i18n-aria]')) el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  $('coinsSr').textContent = ' ' + t('coins');
+  readFonts();
+  renderSoundBtn(); updateHud();
+  if (mode) setModeUI(); else if (G && G.stuck && !G.over) showStuckBar();
+  dirty = true;
+}
+function setLang(code) {
+  if (!STR[code]) return;
+  LANG = code; LOCALE = LOCALES[code]; M.lang = code; saveMeta();
+  applyLang();
+  track('language_change', { dil: code });
+}
+function openLang() {
+  openModal({
+    title: t('lang_title'), body: '',
+    actions: Object.entries(LANGS).map(([code, name]) => ({
+      label: name + (code === LANG ? ' ✓' : ''), kind: code === LANG ? 'primary' : 'ghost', lang: code,
+      onClick: () => { closeModal(); setLang(code); }
+    }))
+  });
+}
+
+
 /* ---------- Olay günlüğü (canlıda analitik SDK'sına gider) ---------- */
 let LOG = [];
 function track(name, params = {}) {
@@ -610,14 +884,13 @@ function simAd(type, placement) {
     const el = $('adsim'), close = $('adClose'), claim = $('adClaim');
     const rewarded = type === 'rewarded';
     const dur = (CFG.fastAds ? 1 : rewarded ? 5 : 3) * 1000;
-    $('adTag').textContent = rewarded ? 'ÖDÜLLÜ REKLAM' : 'GEÇİŞ REKLAMI';
+    $('adTag').textContent = t(rewarded ? 'ad_rewarded' : 'ad_inter');
     $('adPlace').textContent = placement;
-    $('adNote').textContent = rewarded
-      ? 'Canlıda 15–30 sn video. Oyuncu sonuna kadar izlerse ödülü alır, erken kapatırsa almaz.'
-      : 'Canlıda 5–15 sn. Kapatma düğmesi birkaç saniye sonra çıkar.';
+    $('adNote').textContent = t(rewarded ? 'ad_note_rew' : 'ad_note_int');
     claim.hidden = true;
     close.hidden = !rewarded;
-    close.textContent = 'Kapat (ödül yok)';
+    close.textContent = t('ad_close_norew');
+    claim.textContent = t('ad_claim');
     el.hidden = false;
     (rewarded ? close : el).focus?.();
     const t0 = performance.now();
@@ -628,7 +901,7 @@ function simAd(type, placement) {
       if (left <= 0) {
         clearInterval(timer);
         if (rewarded) { close.hidden = true; claim.hidden = false; claim.focus(); }
-        else { close.hidden = false; close.textContent = 'Kapat ✕'; close.focus(); }
+        else { close.hidden = false; close.textContent = t('ad_close'); close.focus(); }
       }
     };
     const timer = setInterval(tick, 100); tick();
@@ -660,7 +933,7 @@ function newGame() {
   updateHud(); saveGame(); dirty = true;
   if (!M.seenTutorial) {
     M.seenTutorial = true; saveMeta();
-    flashToast('Parçayı sürükleyip tahtaya bırak. Dolan satır ve sütun kırılır.', 5000);
+    flashToast(t('tutorial'), 5000);
   }
 }
 
@@ -704,7 +977,7 @@ function place(i, r, c) {
     if (boardClear) gain += 500;
     let o = 0;
     popup('+' + fmt(pts), pc, pr, 'score', o++);
-    if (mono) popup('Desen tamam!', pc, pr, 'info', o++);
+    if (mono) popup(t('pattern_done'), pc, pr, 'info', o++);
     if (boardClear) popup('+500', 4, 4, 'streak', o++);
     Scene.onClear({ items, lines: L, streak: G.streak, goldCells, monoLines, boardClear, pr, pc });
     track('line_clear', { cizgi: L, seri: G.streak, puan: pts, desen: mono, altin: coins });
@@ -750,14 +1023,14 @@ function offerContinue() {
   const hasBooster = M.boosters.rotate > 0 || M.boosters.refresh > 0 || M.boosters.hammer > 0;
   const actions = [];
   if (!G.reviveUsed) actions.push({
-    label: 'Reklam izle, devam et', kind: 'ad',
+    label: t('btn_revive'), kind: 'ad',
     onClick: async () => { closeModal(); const ok = await Ads.showRewarded('devam_et'); if (ok) revive(); else offerContinue(); }
   });
-  if (hasBooster) actions.push({ label: 'Güçlendirici kullan', kind: G.reviveUsed ? 'primary' : 'ghost', onClick: () => { closeModal(); showStuckBar(); } });
-  actions.push({ label: 'Oyunu bitir', kind: 'ghost', onClick: () => { closeModal(); endGame(); } });
+  if (hasBooster) actions.push({ label: t('btn_use_booster'), kind: G.reviveUsed ? 'primary' : 'ghost', onClick: () => { closeModal(); showStuckBar(); } });
+  actions.push({ label: t('btn_end'), kind: 'ghost', onClick: () => { closeModal(); endGame(); } });
   openModal({
-    title: 'Hamle kalmadı',
-    body: `<p class="big">${fmt(G.score)}</p><p class="sub">Alttaki parçaların hiçbiri tahtaya sığmıyor.${G.reviveUsed ? '' : ' Reklam izlersen en dolu 4×4 alan temizlenir ve sığan üç yeni parça gelir.'}</p>`,
+    title: t('no_moves_title'),
+    body: `<p class="big">${fmt(G.score)}</p><p class="sub">${t('no_moves_body')}${G.reviveUsed ? '' : ' ' + t('no_moves_revive')}</p>`,
     actions, dismissible: false
   });
 }
@@ -801,37 +1074,38 @@ function endGame() {
 }
 
 function recordsHtml() {
-  const list = (M.records || []).map(r => `<li class="${r.t === G.endT ? 'me' : ''}"><span class="d">${new Date(r.t).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}</span><b>${fmt(r.s)}</b></li>`).join('');
-  return list ? `<p class="rec-title">REKOR TABLOSU</p><ol class="records">${list}</ol>` : '';
+  const list = (M.records || []).map(r => `<li class="${r.t === G.endT ? 'me' : ''}"><span class="d">${new Date(r.t).toLocaleDateString(LOCALE, { day: 'numeric', month: 'short' })}</span><b>${fmt(r.s)}</b></li>`).join('');
+  return list ? `<p class="rec-title">${t('records_title')}</p><ol class="records">${list}</ol>` : '';
 }
 
 function showResult(total, isBest, doubled) {
   const actions = [];
   if (total > 0) actions.push(doubled
-    ? { label: 'Altın 2 katına çıktı ✓', kind: 'ghost', disabled: true }
-    : { label: `Altını 2 katına çıkar (+${total})`, kind: 'ad', onClick: async () => {
+    ? { label: t('doubled'), kind: 'ghost', disabled: true }
+    : { label: t('btn_double', { n: total }), kind: 'ad', onClick: async () => {
         closeModal();
         const ok = await Ads.showRewarded('altin_2x');
         if (ok) { M.coins += total; saveMeta(); updateHud(); track('reward_granted', { tur: 'altin_2x', miktar: total }); }
         showResult(total, isBest, ok);
       } });
-  actions.push({ label: 'Yeni oyun', kind: 'primary', onClick: async () => {
+  actions.push({ label: t('btn_new'), kind: 'primary', onClick: async () => {
     closeModal();
     await Ads.maybeInterstitial('oyun_arasi');
     newGame();
   } });
   openModal({
-    title: isBest ? 'Yeni rekor!' : 'Duvar doldu',
-    body: `<p class="big">${fmt(G.score)}</p><p class="sub">${G.lines} çizgi · +${total} altın</p>${recordsHtml()}`,
+    title: t(isBest ? 'result_record' : 'result_over'),
+    body: `<p class="big">${fmt(G.score)}</p><p class="sub">${t('result_sub', { lines: G.lines, coins: total })}</p>${recordsHtml()}`,
     actions, dismissible: false
   });
 }
 
 /* ---------- Güçlendiriciler ---------- */
 const BOOSTERS = {
-  rotate: { name: 'Döndür', price: 20, desc: 'Alttaki bir parçayı 90° çevirir.' },
-  refresh: { name: 'Yenile', price: 30, desc: 'Alttaki parçaların yerine sığan üç yeni parça getirir.' },
-  hammer: { name: 'Çekiç', price: 40, desc: 'Tahtada dokunduğun yerdeki 3×3 alanı kırar.' }
+  // adlar ve açıklamalar dil tablosunda: t('rotate'), t('rotate_desc') ...
+  rotate: { price: 20 },
+  refresh: { price: 30 },
+  hammer: { price: 40 }
 };
 let mode = null; // 'rotate' | 'hammer' | null
 
@@ -853,8 +1127,8 @@ function useBooster(kind) {
 
 function setModeUI() {
   for (const k of Object.keys(BOOSTERS)) $('b-' + k).setAttribute('aria-pressed', String(mode === k));
-  if (mode === 'rotate') showToast('Döndürmek için alttaki bir parçaya dokun');
-  else if (mode === 'hammer') showToast('Kırmak için tahtada bir yere dokun (3×3)');
+  if (mode === 'rotate') showToast(t('mode_rotate'));
+  else if (mode === 'hammer') showToast(t('mode_hammer'));
   else if (G && G.stuck) showStuckBar();
   else if (!toastTimer) hideToast();
   dirty = true;
@@ -863,20 +1137,20 @@ function setModeUI() {
 function offerBooster(kind) {
   const b = BOOSTERS[kind];
   openModal({
-    title: `${b.name} hakkın bitti`,
-    body: `<p>${b.desc}</p><p class="sub">Altının: ${fmt(M.coins)}</p>`,
+    title: t('booster_out', { name: t(kind) }),
+    body: `<p>${t(kind + '_desc')}</p><p class="sub">${t('your_coins', { n: fmt(M.coins) })}</p>`,
     actions: [
-      { label: 'Reklam izle, +1 hak', kind: 'ad', onClick: async () => {
+      { label: t('btn_ad_plus1'), kind: 'ad', onClick: async () => {
           closeModal();
           const ok = await Ads.showRewarded('guclendirici_' + kind);
-          if (ok) { M.boosters[kind]++; saveMeta(); updateHud(); track('reward_granted', { tur: kind, miktar: 1 }); flashToast(`${b.name} +1`); }
+          if (ok) { M.boosters[kind]++; saveMeta(); updateHud(); track('reward_granted', { tur: kind, miktar: 1 }); flashToast(t('plus_one', { name: t(kind) })); }
         } },
-      { label: `${b.price} altınla al`, kind: 'primary', disabled: M.coins < b.price, onClick: () => {
+      { label: t('btn_buy_coins', { price: b.price }), kind: 'primary', disabled: M.coins < b.price, onClick: () => {
           M.coins -= b.price; M.boosters[kind]++; saveMeta(); updateHud();
           track('booster_buy_coins', { tur: kind, fiyat: b.price });
-          closeModal(); flashToast(`${b.name} +1`);
+          closeModal(); flashToast(t('plus_one', { name: t(kind) }));
         } },
-      { label: 'Vazgeç', kind: 'ghost', onClick: closeModal }
+      { label: t('btn_cancel'), kind: 'ghost', onClick: closeModal }
     ]
   });
 }
@@ -899,7 +1173,7 @@ function doHammer(r, c) {
     const ix = rr * N + cc;
     if (G.cells[ix]) list.push({ idx: ix, color: G.cells[ix].c, g: G.cells[ix].g });
   }
-  if (!list.length) { flashToast('Burada kırılacak çini yok'); return; }
+  if (!list.length) { flashToast(t('hammer_empty')); return; }
   const gold = list.filter(x => x.g).length * 5;
   list.forEach(x => { G.cells[x.idx] = null; popIn.delete(x.idx); });
   startClear(list, r + 0.5, c + 0.5);
@@ -1199,7 +1473,7 @@ function draw(now) {
     if (t < 0) continue;
     if (t > 1) { pops.splice(i, 1); continue; }
     const big = p.kind === 'score';
-    ctx.font = big ? `${Math.round(cs * 0.62)}px "Yeseva One", Georgia, serif` : `800 ${Math.round(cs * 0.36)}px Manrope, system-ui, sans-serif`;
+    ctx.font = big ? `${Math.round(cs * 0.62)}px ${FONTS.display}` : `800 ${Math.round(cs * 0.36)}px ${FONTS.ui}`;
     const tw = ctx.measureText(p.text).width;
     const x = clamp(bx + p.x * cs, tw / 2 + 6, W - tw / 2 - 6);
     const y = clamp(by + p.y * cs - cs * 0.9 * easeOut(t), cs * 0.5, H - cs * 0.3);
@@ -1321,16 +1595,16 @@ const Scene = {
     let k = 0;
     for (const ix of o.goldCells) this.flyCoin(cellScreen(ix >> 3, ix & 7), 5, k++);
     for (const line of o.monoLines) { const mid = line[3]; this.flyCoin(cellScreen(mid >> 3, mid & 7), 3, k++); }
-    const words = [null, null, 'Harika!', 'Muhteşem!', 'Efsane!'];
+    const words = [null, null, t('praise2'), t('praise3'), t('praise4')];
     const wcol = [null, null, colors.tiles[1], colors.tiles[2], colors.gold];
     if (o.lines >= 2) {
       const L = Math.min(o.lines, 4);
       this.praise(words[L], wcol[L], 1 + 0.12 * (L - 2));
-      if (o.streak >= 2) this.praise('Seri ×' + o.streak, colors.primary, 0.6, 170, 0.24);
+      if (o.streak >= 2) this.praise(t('combo', { n: o.streak }), colors.primary, 0.6, 170, 0.24);
     } else if (o.streak >= 2) {
-      this.praise('Seri ×' + o.streak, o.streak >= 4 ? colors.tiles[2] : colors.primary, 0.75 + Math.min(0.3, o.streak * 0.04));
+      this.praise(t('combo', { n: o.streak }), o.streak >= 4 ? colors.tiles[2] : colors.primary, 0.75 + Math.min(0.3, o.streak * 0.04));
     }
-    if (o.boardClear) { this.praise('Duvar tertemiz!', colors.gold, 0.85, 450, -0.5); Sfx.record(); }
+    if (o.boardClear) { this.praise(t('praise_clean'), colors.gold, 0.85, 450, -0.5); Sfx.record(); }
     if (REDUCED) return;
 
     const now = performance.now(), b = boardScreen();
@@ -1362,7 +1636,7 @@ const Scene = {
     Sfx.record(); buzz([30, 50, 30, 50, 60]);
     bump($('plate'));
     this.pulse = 1.3;
-    if (withPraise) this.praise('Yeni rekor!', colors.gold, 1.05, 380, -0.45);
+    if (withPraise) this.praise(t('praise_record'), colors.gold, 1.05, 380, -0.45);
     if (REDUCED) return;
     const p = this.plate;
     for (let i = 0; i < 70; i++) spark(p.x + (Math.random() - 0.5) * p.w * 0.6, p.y, colors.tiles[i % 5], {
@@ -1374,7 +1648,7 @@ const Scene = {
 
   onRevive() {
     Sfx.clear(3, 1); buzz([20, 30, 20]);
-    this.praise('Devam!', colors.tiles[1], 0.9);
+    this.praise(t('praise_continue'), colors.tiles[1], 0.9);
     if (REDUCED) return;
     const b = boardScreen();
     this.waves.push({ x: b.x, y: b.y, r0: b.r * 0.4, r1: Math.hypot(this.w, this.h) * 0.6, t0: performance.now(), dur: 900, color: colors.tiles[1] });
@@ -1685,7 +1959,7 @@ function drawFx(now, dt) {
     if (p >= 1) { Scene.praises.splice(i, 1); continue; }
     let sc = p < 0.16 ? 0.3 + (p / 0.16) * 0.9 : p < 0.28 ? 1.2 - ((p - 0.16) / 0.12) * 0.2 : 1;
     if (REDUCED) sc = 1;
-    x.font = `${Math.round(pr.size)}px "Yeseva One", Georgia, serif`;
+    x.font = `${Math.round(pr.size)}px ${FONTS.display}`;
     const tw = x.measureText(pr.text).width * sc;
     const X = clamp(pr.x, tw / 2 + 8, Scene.w - tw / 2 - 8);
     x.save();
@@ -1782,7 +2056,7 @@ canvas.addEventListener('keydown', e => {
     const { i, r, c } = kb;
     if (mode === 'hammer') { kb = null; doHammer(r, c); }
     else if (fits(masksOf(G.cells), p, r, c)) { kb = null; place(i, r, c); }
-    else flashToast('Bu parça buraya sığmıyor');
+    else flashToast(t('no_fit'));
   } else return;
   e.preventDefault(); dirty = true;
 });
@@ -1808,7 +2082,7 @@ function flashToast(text, ms = 2200) {
   }, ms);
 }
 function showStuckBar() {
-  showToast('Hamle yok. Güçlendirici kullan ya da bitir.', { label: 'Bitir', onClick: () => { hideToast(); endGame(); } });
+  showToast(t('stuck_bar'), { label: t('btn_finish'), onClick: () => { hideToast(); endGame(); } });
 }
 
 let modalDismissible = true;
@@ -1821,7 +2095,8 @@ function openModal({ title, body, actions, dismissible = true }) {
     b.className = 'btn btn-' + (a.kind || 'primary');
     if (a.kind === 'ad') b.innerHTML = PLAY;
     b.append(document.createTextNode(a.label));
-    if (a.kind === 'ad') { const chip = document.createElement('span'); chip.className = 'sr'; chip.textContent = ' (reklam)'; b.append(chip); }
+    if (a.kind === 'ad') { const chip = document.createElement('span'); chip.className = 'sr'; chip.textContent = ' ' + t('ad_sr'); b.append(chip); }
+    if (a.lang) b.lang = a.lang;
     b.disabled = !!a.disabled;
     if (a.onClick) b.addEventListener('click', a.onClick);
     return b;
@@ -1842,13 +2117,13 @@ function updateHud() {
   const sEl = $('streak');
   if (G.streak >= 2 && !G.over) {
     const left = 3 - G.sinceClear;
-    sEl.innerHTML = `Seri ×${G.streak} <span class="dots" aria-label="${left} hamle kaldı">${[0, 1, 2].map(k => `<i class="${k < left ? 'on' : ''}"></i>`).join('')}</span>`;
+    sEl.innerHTML = `${t('combo', { n: G.streak })} <span class="dots" aria-label="${t('moves_left', { n: left })}">${[0, 1, 2].map(k => `<i class="${k < left ? 'on' : ''}"></i>`).join('')}</span>`;
     sEl.classList.add('show'); sEl.classList.toggle('hot', G.streak >= 4);
   } else { sEl.textContent = ''; sEl.classList.remove('show', 'hot'); }
   for (const k of Object.keys(BOOSTERS)) {
     const n = M.boosters[k], el = $('c-' + k);
-    if (n > 0) { el.textContent = n; el.classList.remove('ad'); $('b-' + k).setAttribute('aria-label', `${BOOSTERS[k].name}, ${n} hak`); }
-    else { el.innerHTML = PLAY; el.classList.add('ad'); $('b-' + k).setAttribute('aria-label', `${BOOSTERS[k].name}, hak yok, reklam izleyerek kazan`); }
+    if (n > 0) { el.textContent = n; el.classList.remove('ad'); $('b-' + k).setAttribute('aria-label', t('booster_aria_n', { name: t(k), n })); }
+    else { el.innerHTML = PLAY; el.classList.add('ad'); $('b-' + k).setAttribute('aria-label', t('booster_aria_0', { name: t(k) })); }
   }
   $('banner').hidden = M.removeAds;
 }
@@ -1858,11 +2133,11 @@ function renderScore() {
   if (!G) return;
   $('score').textContent = fmt(scoreShown);
   const rec = $('rec'), fill = $('recFill'), lab = $('recLabel'), base = G.bestAtStart || 0;
-  if (G.recordHit) { rec.classList.add('record'); fill.style.width = '100%'; lab.textContent = 'YENİ REKOR!'; }
+  if (G.recordHit) { rec.classList.add('record'); fill.style.width = '100%'; lab.textContent = t('rec_new'); }
   else {
     rec.classList.remove('record');
     fill.style.width = base > 0 ? Math.min(100, scoreShown / base * 100) + '%' : '0%';
-    lab.textContent = base > 0 ? 'Rekor ' + fmt(base) : 'İlk rekorunu kur';
+    lab.textContent = base > 0 ? t('rec_best', { n: fmt(base) }) : t('rec_first');
   }
 }
 function syncCoins() { $('coins').textContent = fmt(M.coins - Scene.pendingCoins); }
@@ -1873,32 +2148,32 @@ const SPK_OFF = '<svg class="ico" viewBox="0 0 24 24"><path d="M4 9.5h3.5L12 5.5
 function renderSoundBtn() {
   const b = $('soundBtn');
   b.setAttribute('aria-pressed', String(!!M.sound));
-  b.setAttribute('aria-label', M.sound ? 'Sesi kapat' : 'Sesi aç');
+  b.setAttribute('aria-label', t(M.sound ? 'sound_off' : 'sound_on'));
   b.innerHTML = M.sound ? SPK_ON : SPK_OFF;
 }
 
 function openShop() {
   const actions = [];
-  if (M.removeAds) actions.push({ label: 'Reklamsız sürüm etkin ✓', kind: 'ghost', disabled: true });
-  else actions.push({ label: 'Reklamları kaldır · $2,99', kind: 'primary', onClick: () => {
+  if (M.removeAds) actions.push({ label: t('remove_ads_on'), kind: 'ghost', disabled: true });
+  else actions.push({ label: t('btn_remove_ads', { price: money(2.99) }), kind: 'primary', onClick: () => {
     // GERÇEK: StoreKit / Unity IAP ile "remove_ads" (tüketilmeyen ürün) satın alımı
     M.removeAds = true; saveMeta(); updateHud();
     track('iap_purchase', { urun: 'remove_ads', fiyat: 2.99 });
-    closeModal(); flashToast('Reklamsız sürüm etkin. Ödüllü reklamlar isteğe bağlı kaldı.', 3200);
+    closeModal(); flashToast(t('toast_noads'), 3200);
   } });
-  actions.push({ label: '250 altın · $0,99', kind: 'ghost', onClick: () => {
+  actions.push({ label: t('btn_coin_pack', { price: money(0.99) }), kind: 'ghost', onClick: () => {
     M.coins += 250; saveMeta(); updateHud();
     track('iap_purchase', { urun: 'coins_250', fiyat: 0.99 });
-    closeModal(); flashToast('+250 altın');
+    closeModal(); flashToast(t('toast_coins'));
   } });
-  actions.push({ label: 'Satın alımları geri yükle', kind: 'ghost', onClick: () => {
+  actions.push({ label: t('btn_restore'), kind: 'ghost', onClick: () => {
     track('iap_restore');
-    closeModal(); flashToast(M.removeAds ? 'Satın alımlar geri yüklendi.' : 'Geri yüklenecek satın alım yok.');
+    closeModal(); flashToast(t(M.removeAds ? 'toast_restored' : 'toast_none'));
   } });
-  actions.push({ label: 'Kapat', kind: 'ghost', onClick: closeModal });
+  actions.push({ label: t('btn_close'), kind: 'ghost', onClick: closeModal });
   openModal({
-    title: 'Mağaza',
-    body: '<p class="sub">Test modu, gerçek ödeme alınmaz. Reklamsız sürüm banner ve geçiş reklamlarını kaldırır. Ödüllü reklamlar oyuncunun isteğine bağlı olduğu için kalır.</p>',
+    title: t('shop_title'),
+    body: `<p class="sub">${t('shop_body')}</p>`,
     actions
   });
 }
@@ -1984,6 +2259,7 @@ $('panelBtn').addEventListener('click', () => openPanel(true));
 $('panelClose').addEventListener('click', () => openPanel(false));
 $('sheetScrim').addEventListener('click', () => openPanel(false));
 $('shopBtn').addEventListener('click', () => { if (!Ads.showing) openShop(); });
+$('langBtn').addEventListener('click', () => { if (!Ads.showing) openLang(); });
 $('soundBtn').addEventListener('click', () => {
   M.sound = !M.sound; saveMeta(); renderSoundBtn();
   if (M.sound) { Sfx.init(); setTimeout(() => Sfx.pick(), 40); }
@@ -2010,6 +2286,8 @@ setInterval(() => {
 
 new ResizeObserver(layout).observe($('stage'));
 window.addEventListener('resize', resizeScene);
+// Japonca/Korece yazı tipi sonradan yüklenince tahtadaki yazılar yeniden çizilsin
+document.fonts?.addEventListener?.('loadingdone', () => { dirty = true; });
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', readColors);
 new MutationObserver(readColors).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
@@ -2018,6 +2296,7 @@ window.claude?.hot?.snapshot?.(() => ({ G, LOG, impr: Ads.impr, sessionStart: Ad
 
 function boot(data) {
   data = data || {};
+  LANG = detectLang(); LOCALE = LOCALES[LANG]; applyLang();
   readColors(); resizeScene(); layout();
   if (Array.isArray(data.LOG)) LOG = data.LOG;
   if (data.impr) Ads.impr = data.impr;
