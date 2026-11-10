@@ -1,4 +1,4 @@
-build
+check
 # Bu dosyanın ilk satırı, GitHub Actions'ta çalışacak App Store işini seçer.
 # Dosya değişip claude/pensive-curie-vvewve dalına gönderilince iş başlar.
 #   status    durum raporu
@@ -8,4 +8,4 @@ build
 #   metadata  7 dilde metinleri ve ekran görüntülerini yükle
 #   text      yalnızca metinleri ve adresleri güncelle
 #   submit    incelemeye gönder (yalnızca onaydan sonra)
-# son istek: 2026-11-10T15:06:36Z build
+# son istek: 2026-11-10T15:11:58Z check
