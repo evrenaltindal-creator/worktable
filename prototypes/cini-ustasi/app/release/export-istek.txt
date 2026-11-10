@@ -1,2 +1,2 @@
-1
+2
 # Bu dosyanın değişmesi, Apple'a yükleme yapmadan imzalı IPA dışa aktarmayı dener.
