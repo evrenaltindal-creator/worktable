@@ -1,0 +1,212 @@
+# Ok Kaçış: App Store işleri
+#
+# GitHub Actions'ta çalışır (.github/workflows/ok-kacis-ios.yml). Gizli bilgiler GitHub
+# secret'larından ortam değişkeni olarak gelir; hiçbiri depoda durmaz:
+#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8      App Store Connect API anahtarı
+#   APPLE_TEAM_ID                              Apple Developer ekip kimliği
+#   IOS_DISTRIBUTION_P12, IOS_P12_PASSWORD     Dağıtım sertifikası (base64 .p12) ve şifresi
+#   REVIEW_FIRST_NAME, REVIEW_LAST_NAME,       (isteğe bağlı) App Review iletişim bilgileri
+#   REVIEW_PHONE, REVIEW_EMAIL
+#
+# İşler:
+#   status    Paket kimliği ve uygulama kaydı var mı, son derleme numarası kaç
+#   register  Paket kimliğini (Bundle ID) Apple hesabına kaydeder
+#   build     Derler, dağıtım sertifikasıyla imzalar, App Store Connect'e yükler
+#   metadata  7 dilde metinleri, tanıtım görsellerini ve kategoriyi yükler
+#   submit    Son derlemeyi incelemeye gönderir (onaylanınca kendiliğinden yayınlanır)
+
+require 'json'
+require 'fileutils'
+require 'tmpdir'
+require 'base64'
+require 'openssl'
+require 'shellwords'
+
+default_platform(:ios)
+
+APP_DIR = File.expand_path('..', __dir__)
+STORE   = File.join(APP_DIR, 'store')
+
+def settings
+  JSON.parse(File.read(File.join(STORE, 'ayarlar.json')))
+end
+
+def placeholder?(value)
+  value.to_s.strip.empty? || value.to_s.include?('[')
+end
+
+def app_id
+  JSON.parse(File.read(File.join(APP_DIR, 'capacitor.config.json')))['appId']
+end
+
+def version
+  settings['version'] || '1.0'
+end
+
+def need_env(*names)
+  missing = names.select { |k| ENV[k].to_s.strip.empty? }
+  UI.user_error!("GitHub secret eksik: #{missing.join(', ')}") unless missing.empty?
+end
+
+def api_key
+  need_env('ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_KEY_P8')
+  app_store_connect_api_key(
+    key_id: ENV['ASC_KEY_ID'].strip,
+    issuer_id: ENV['ASC_ISSUER_ID'].strip,
+    key_content: ENV['ASC_KEY_P8'],
+    duration: 1200,
+    in_house: false
+  )
+end
+
+def find_app!
+  app = Spaceship::ConnectAPI::App.find(app_id)
+  return app if app
+  UI.user_error!("App Store Connect'te #{app_id} için uygulama kaydı yok. " \
+                 "appstoreconnect.apple.com > Apps > + > New App ile oluştur (ok-kacis/store/APP-STORE-REHBERI.md).")
+end
+
+def review_info
+  keys = { first_name: 'REVIEW_FIRST_NAME', last_name: 'REVIEW_LAST_NAME', phone_number: 'REVIEW_PHONE', email_address: 'REVIEW_EMAIL' }
+  vals = keys.transform_values { |k| ENV[k].to_s.strip }
+  return nil if vals.values.any?(&:empty?)
+  vals.merge(demo_user: '', demo_password: '',
+             notes: 'Offline puzzle game, no account or login needed. Ads are served by Google AdMob. ' \
+                    'Time attack mode and the leaderboard are in the main menu.')
+end
+
+# .p12 içindeki sertifikanın App Store Connect'teki karşılığını seri numarasından bulur
+def distribution_certificate
+  need_env('IOS_DISTRIBUTION_P12', 'IOS_P12_PASSWORD')
+  p12 = OpenSSL::PKCS12.new(Base64.decode64(ENV['IOS_DISTRIBUTION_P12']), ENV['IOS_P12_PASSWORD'])
+  serial = p12.certificate.serial.to_s(16).upcase.sub(/\A0+/, '')
+  certs = %w[DISTRIBUTION IOS_DISTRIBUTION].flat_map do |type|
+    Spaceship::ConnectAPI::Certificate.all(filter: { certificateType: type })
+  end
+  cert = certs.find { |c| c.serial_number.to_s.upcase.sub(/\A0+/, '') == serial }
+  UI.user_error!("Dağıtım sertifikası (seri #{serial}) Apple hesabında bulunamadı ya da süresi dolmuş.") unless cert
+  UI.message("Dağıtım sertifikası: #{cert.name} (#{cert.certificate_type}, son kullanma #{cert.expiration_date})")
+  cert
+end
+
+# Bu uygulama için App Store imzalama profilini bulur, yoksa oluşturur ve kurar; UUID döndürür
+def app_store_profile(cert)
+  bundle = Spaceship::ConnectAPI::BundleId.find(app_id)
+  UI.user_error!("Paket kimliği #{app_id} kayıtlı değil. Önce 'register' işini çalıştır.") unless bundle
+  profiles = Spaceship::ConnectAPI::Profile.all(filter: { profileType: 'IOS_APP_STORE', profileState: 'ACTIVE' },
+                                                includes: 'bundleId,certificates')
+  profile = profiles.find do |p|
+    p.bundle_id && p.bundle_id.identifier == app_id && (p.certificates || []).any? { |c| c.id == cert.id }
+  end
+  if profile
+    UI.message("İmzalama profili bulundu: #{profile.name}")
+  else
+    name = "Ok Kacis App Store #{Time.now.utc.strftime('%Y%m%d%H%M')}"
+    profile = Spaceship::ConnectAPI::Profile.create(name: name, profile_type: 'IOS_APP_STORE',
+                                                    bundle_id_id: bundle.id, certificate_ids: [cert.id])
+    UI.success("İmzalama profili oluşturuldu: #{name}")
+  end
+  dir = File.expand_path('~/Library/MobileDevice/Provisioning Profiles')
+  FileUtils.mkdir_p(dir)
+  File.binwrite(File.join(dir, "#{profile.uuid}.mobileprovision"), Base64.decode64(profile.profile_content))
+  profile.uuid
+end
+
+platform :ios do
+  desc 'Paket kimliği ve uygulama kaydının durumunu yazar'
+  lane :status do
+    api_key
+    id = app_id
+    UI.message("Paket kimliği #{id}: #{Spaceship::ConnectAPI::BundleId.find(id) ? 'kayıtlı' : 'kayıtlı değil (register işi)'}")
+    app = Spaceship::ConnectAPI::App.find(id)
+    if app
+      UI.success("Uygulama kaydı var: #{app.name} (Apple ID #{app.id}, ana dil #{app.primary_locale})")
+      begin
+        v = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+        UI.message(v ? "Düzenlenebilir sürüm: #{v.version_string} (#{v.app_store_state})" : 'Düzenlenebilir sürüm yok')
+        live = app.get_live_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+        UI.success("Yayındaki sürüm: #{live.version_string}") if live
+      rescue StandardError => e
+        UI.message("Sürüm bilgisi okunamadı (#{e.message})")
+      end
+      begin
+        UI.message("TestFlight'taki son derleme: #{latest_testflight_build_number(app_identifier: id)}")
+      rescue StandardError => e
+        UI.message("Henüz derleme yok (#{e.message})")
+      end
+    else
+      UI.important("App Store Connect'te #{id} için uygulama kaydı yok. Web arayüzünden oluşturulmalı (Apps > + > New App).")
+    end
+  end
+
+  desc 'Paket kimliğini (Bundle ID) Apple hesabına kaydeder'
+  lane :register do
+    api_key
+    id = app_id
+    if Spaceship::ConnectAPI::BundleId.find(id)
+      UI.success("Paket kimliği zaten kayıtlı: #{id}")
+    else
+      Spaceship::ConnectAPI::BundleId.create(name: 'Ok Kacis', platform: Spaceship::ConnectAPI::BundleIdPlatform::IOS, identifier: id)
+      UI.success("Paket kimliği kaydedildi: #{id}")
+    end
+    status
+  end
+
+  desc 'Derler, dağıtım sertifikasıyla imzalar ve App Store Connect\'e yükler'
+  lane :build do
+    api_key
+    need_env('APPLE_TEAM_ID')
+    id = app_id
+    find_app!
+    latest = begin
+      latest_testflight_build_number(app_identifier: id, initial_build_number: 0)
+    rescue StandardError => e
+      UI.important("Son derleme numarası okunamadı (#{e.message}); 1 ile başlıyorum.")
+      0
+    end
+    build_number = latest.to_i + 1
+    uuid = app_store_profile(distribution_certificate)
+    UI.message("Sürüm #{version}, derleme #{build_number}, profil #{uuid}")
+    sh(File.join(APP_DIR, 'tools', 'ios-build.sh'), id, version, build_number.to_s, uuid)
+  end
+
+  desc '7 dilde metinleri, tanıtım görsellerini ve kategoriyi yükler'
+  lane :metadata do
+    key = api_key
+    find_app!
+    s = settings
+    site = placeholder?(s['site_url']) ? '' : s['site_url'].strip.sub(%r{/\z}, '')
+    args = site.empty? ? '' : " --site #{site.shellescape}"
+    sh("node #{File.join(APP_DIR, 'tools', 'store-metadata.js').shellescape}#{args}")
+    UI.important('store/ayarlar.json içinde site_url yok; gizlilik ve destek adresleri yüklenmedi (incelemeye göndermek için gerekli).') if site.empty?
+    opts = {
+      api_key: key, app_identifier: app_id, app_version: version, platform: 'ios',
+      metadata_path: File.join(STORE, 'fastlane', 'metadata'),
+      screenshots_path: File.join(STORE, 'fastlane', 'screenshots'),
+      skip_binary_upload: true, overwrite_screenshots: true, force: true, submit_for_review: false,
+      run_precheck_before_submit: false, precheck_include_in_app_purchases: false,
+      ignore_language_directory_validation: true,
+      primary_category: 'GAMES', primary_first_sub_category: 'GAMES_PUZZLE', primary_second_sub_category: 'GAMES_CASUAL'
+    }
+    opts[:copyright] = s['copyright'] unless placeholder?(s['copyright'])
+    review = review_info
+    opts[:app_review_information] = review if review
+    UI.important('REVIEW_* secret\'ları yok; App Review iletişim bilgilerini App Store Connect\'te elle gir.') unless review
+    deliver(opts)
+  end
+
+  desc 'Son derlemeyi incelemeye gönderir; onaylanınca kendiliğinden yayınlanır'
+  lane :submit do
+    key = api_key
+    find_app!
+    deliver(
+      api_key: key, app_identifier: app_id, app_version: version, platform: 'ios',
+      skip_metadata: true, skip_screenshots: true, skip_binary_upload: true,
+      submit_for_review: true, automatic_release: true, force: true, run_precheck_before_submit: false,
+      submission_information: {
+        export_compliance_uses_encryption: false,
+        content_rights_contains_third_party_content: false
+      }
+    )
+  end
+end

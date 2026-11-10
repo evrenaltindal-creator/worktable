@@ -23,10 +23,22 @@
       "soon": "iPhone uygulaması çok yakında",
       "featuresTitle": "Neden Ok Kaçış?",
       "features": [
-        ["Sonsuz seviye", "Tahtalar büyür, oklar birbirine kenetlenir. Her seviye çözülebilir."],
-        ["Zamana karşı", "60 saniyeyle başla, her temiz tahta +8 saniye. Rekorunu kır."],
-        ["Kombo ve patlamalar", "Hızlı ve doğru hamlelerle çarpanı x5'e kadar yükselt."],
-        ["7 dil, internetsiz", "Türkçe, İngilizce, Portekizce, Almanca, Fransızca, Japonca, Korece."]
+        [
+          "Sonsuz seviye",
+          "Tahtalar büyür, oklar birbirine kenetlenir. Her seviye çözülebilir."
+        ],
+        [
+          "Zamana karşı",
+          "60 saniyeyle başla, her temiz tahta +8 saniye. Rekorunu kır."
+        ],
+        [
+          "Kombo ve patlamalar",
+          "Hızlı ve doğru hamlelerle çarpanı x5'e kadar yükselt."
+        ],
+        [
+          "7 dil, internetsiz",
+          "Türkçe, İngilizce, Portekizce, Almanca, Fransızca, Japonca, Korece."
+        ]
       ],
       "howTitle": "Nasıl oynanır?",
       "how": [
@@ -38,7 +50,25 @@
       "contact": "İletişim",
       "promoTitle": "Yeni oyunumuz: Ok Kaçış",
       "promoText": "Okları doğru sırayla tahtadan kaçır. Ücretsiz bulmaca oyunu."
-    }
+    },
+    "shots": [
+      [
+        "Kombo yap, puanı katla!",
+        "Hızlı ve doğru hamleler çarpanı x5'e çıkarır"
+      ],
+      [
+        "Zamana karşı yarış",
+        "Temizlediğin her tahta +8 saniye"
+      ],
+      [
+        "Tahtayı kusursuz temizle",
+        "Sonsuz seviye, hepsi çözülebilir"
+      ],
+      [
+        "Rekorunu kır",
+        "Skor tablosunda zirveye çık"
+      ]
+    ]
   },
   "en": {
     "name": "Ok Kaçış: Arrow Puzzle",
@@ -54,10 +84,22 @@
       "soon": "iPhone app coming soon",
       "featuresTitle": "Why Ok Kaçış?",
       "features": [
-        ["Endless levels", "Boards grow and arrows lock together. Every level is solvable."],
-        ["Time attack", "Start with 60 seconds, +8 for every clear board. Beat your record."],
-        ["Combos and bursts", "Quick, correct moves push your multiplier up to x5."],
-        ["7 languages, offline", "Turkish, English, Portuguese, German, French, Japanese, Korean."]
+        [
+          "Endless levels",
+          "Boards grow and arrows lock together. Every level is solvable."
+        ],
+        [
+          "Time attack",
+          "Start with 60 seconds, +8 for every clear board. Beat your record."
+        ],
+        [
+          "Combos and bursts",
+          "Quick, correct moves push your multiplier up to x5."
+        ],
+        [
+          "7 languages, offline",
+          "Turkish, English, Portuguese, German, French, Japanese, Korean."
+        ]
       ],
       "howTitle": "How to play",
       "how": [
@@ -69,7 +111,25 @@
       "contact": "Contact",
       "promoTitle": "Our new game: Ok Kaçış",
       "promoText": "Slide every arrow off the board in the right order. A free puzzle game."
-    }
+    },
+    "shots": [
+      [
+        "Chain epic combos",
+        "Quick, correct moves push you up to x5"
+      ],
+      [
+        "Race against the clock",
+        "+8 seconds for every board you clear"
+      ],
+      [
+        "Clear the board perfectly",
+        "Endless levels, every one solvable"
+      ],
+      [
+        "Beat your best",
+        "Climb to the top of the leaderboard"
+      ]
+    ]
   },
   "pt": {
     "name": "Ok Kaçış: Puzzle de Setas",
@@ -85,10 +145,22 @@
       "soon": "App para iPhone em breve",
       "featuresTitle": "Por que Ok Kaçış?",
       "features": [
-        ["Níveis infinitos", "Os tabuleiros crescem e as setas se encaixam. Todo nível tem solução."],
-        ["Contra o tempo", "Comece com 60 segundos, +8 a cada tabuleiro limpo. Bata seu recorde."],
-        ["Combos e explosões", "Jogadas rápidas e certas levam o multiplicador até x5."],
-        ["7 idiomas, offline", "Turco, inglês, português, alemão, francês, japonês e coreano."]
+        [
+          "Níveis infinitos",
+          "Os tabuleiros crescem e as setas se encaixam. Todo nível tem solução."
+        ],
+        [
+          "Contra o tempo",
+          "Comece com 60 segundos, +8 a cada tabuleiro limpo. Bata seu recorde."
+        ],
+        [
+          "Combos e explosões",
+          "Jogadas rápidas e certas levam o multiplicador até x5."
+        ],
+        [
+          "7 idiomas, offline",
+          "Turco, inglês, português, alemão, francês, japonês e coreano."
+        ]
       ],
       "howTitle": "Como jogar",
       "how": [
@@ -100,7 +172,25 @@
       "contact": "Contato",
       "promoTitle": "Nosso novo jogo: Ok Kaçış",
       "promoText": "Tire todas as setas do tabuleiro na ordem certa. Um quebra-cabeça grátis."
-    }
+    },
+    "shots": [
+      [
+        "Faça combos incríveis",
+        "Jogadas rápidas e certas levam até x5"
+      ],
+      [
+        "Corra contra o tempo",
+        "+8 segundos a cada tabuleiro limpo"
+      ],
+      [
+        "Limpe o tabuleiro sem erros",
+        "Níveis infinitos, todos com solução"
+      ],
+      [
+        "Bata seu recorde",
+        "Chegue ao topo do placar"
+      ]
+    ]
   },
   "de": {
     "name": "Ok Kaçış: Pfeil-Rätsel",
@@ -116,10 +206,22 @@
       "soon": "iPhone-App bald verfügbar",
       "featuresTitle": "Warum Ok Kaçış?",
       "features": [
-        ["Endlos viele Level", "Die Bretter wachsen, die Pfeile verhaken sich. Jedes Level ist lösbar."],
-        ["Gegen die Zeit", "Starte mit 60 Sekunden, +8 für jedes geräumte Brett. Knack deinen Rekord."],
-        ["Kombos und Effekte", "Schnelle, richtige Züge treiben den Multiplikator bis x5."],
-        ["7 Sprachen, offline", "Türkisch, Englisch, Portugiesisch, Deutsch, Französisch, Japanisch, Koreanisch."]
+        [
+          "Endlos viele Level",
+          "Die Bretter wachsen, die Pfeile verhaken sich. Jedes Level ist lösbar."
+        ],
+        [
+          "Gegen die Zeit",
+          "Starte mit 60 Sekunden, +8 für jedes geräumte Brett. Knack deinen Rekord."
+        ],
+        [
+          "Kombos und Effekte",
+          "Schnelle, richtige Züge treiben den Multiplikator bis x5."
+        ],
+        [
+          "7 Sprachen, offline",
+          "Türkisch, Englisch, Portugiesisch, Deutsch, Französisch, Japanisch, Koreanisch."
+        ]
       ],
       "howTitle": "So wird gespielt",
       "how": [
@@ -131,7 +233,25 @@
       "contact": "Kontakt",
       "promoTitle": "Unser neues Spiel: Ok Kaçış",
       "promoText": "Schieb alle Pfeile in der richtigen Reihenfolge vom Brett. Ein kostenloses Rätselspiel."
-    }
+    },
+    "shots": [
+      [
+        "Kombos ohne Ende",
+        "Schnelle, richtige Züge bringen bis x5"
+      ],
+      [
+        "Rennen gegen die Zeit",
+        "+8 Sekunden für jedes geräumte Brett"
+      ],
+      [
+        "Räum das Brett perfekt ab",
+        "Endlos viele Level, alle lösbar"
+      ],
+      [
+        "Knack deinen Rekord",
+        "Ab an die Spitze der Bestenliste"
+      ]
+    ]
   },
   "fr": {
     "name": "Ok Kaçış : Puzzle de flèches",
@@ -147,10 +267,22 @@
       "soon": "Appli iPhone bientôt disponible",
       "featuresTitle": "Pourquoi Ok Kaçış ?",
       "features": [
-        ["Niveaux infinis", "Les plateaux grandissent, les flèches s’imbriquent. Chaque niveau a une solution."],
-        ["Contre la montre", "Commence avec 60 secondes, +8 par plateau vidé. Bats ton record."],
-        ["Combos et explosions", "Des coups rapides et justes font grimper le multiplicateur jusqu’à x5."],
-        ["7 langues, hors ligne", "Turc, anglais, portugais, allemand, français, japonais, coréen."]
+        [
+          "Niveaux infinis",
+          "Les plateaux grandissent, les flèches s’imbriquent. Chaque niveau a une solution."
+        ],
+        [
+          "Contre la montre",
+          "Commence avec 60 secondes, +8 par plateau vidé. Bats ton record."
+        ],
+        [
+          "Combos et explosions",
+          "Des coups rapides et justes font grimper le multiplicateur jusqu’à x5."
+        ],
+        [
+          "7 langues, hors ligne",
+          "Turc, anglais, portugais, allemand, français, japonais, coréen."
+        ]
       ],
       "howTitle": "Comment jouer",
       "how": [
@@ -162,7 +294,25 @@
       "contact": "Contact",
       "promoTitle": "Notre nouveau jeu : Ok Kaçış",
       "promoText": "Fais sortir chaque flèche du plateau dans le bon ordre. Un casse-tête gratuit."
-    }
+    },
+    "shots": [
+      [
+        "Enchaîne les combos",
+        "Des coups rapides et justes, jusqu’à x5"
+      ],
+      [
+        "Course contre la montre",
+        "+8 secondes par plateau vidé"
+      ],
+      [
+        "Vide le plateau sans faute",
+        "Niveaux infinis, tous résolubles"
+      ],
+      [
+        "Bats ton record",
+        "Grimpe en tête du classement"
+      ]
+    ]
   },
   "ja": {
     "name": "Ok Kaçış：矢印パズル",
@@ -178,10 +328,22 @@
       "soon": "iPhoneアプリは近日公開",
       "featuresTitle": "Ok Kaçışの特長",
       "features": [
-        ["レベル無限", "ボードは大きくなり、矢印がかみ合っていきます。どのレベルも必ず解けます。"],
-        ["タイムアタック", "60秒からスタート、クリアごとに+8秒。記録を更新しよう。"],
-        ["コンボと演出", "すばやく正確な手で倍率が最大x5に。"],
-        ["7言語・オフライン", "トルコ語、英語、ポルトガル語、ドイツ語、フランス語、日本語、韓国語。"]
+        [
+          "レベル無限",
+          "ボードは大きくなり、矢印がかみ合っていきます。どのレベルも必ず解けます。"
+        ],
+        [
+          "タイムアタック",
+          "60秒からスタート、クリアごとに+8秒。記録を更新しよう。"
+        ],
+        [
+          "コンボと演出",
+          "すばやく正確な手で倍率が最大x5に。"
+        ],
+        [
+          "7言語・オフライン",
+          "トルコ語、英語、ポルトガル語、ドイツ語、フランス語、日本語、韓国語。"
+        ]
       ],
       "howTitle": "遊び方",
       "how": [
@@ -193,7 +355,25 @@
       "contact": "お問い合わせ",
       "promoTitle": "新作ゲーム：Ok Kaçış",
       "promoText": "矢印を正しい順番でボードから脱出させよう。無料のパズルゲーム。"
-    }
+    },
+    "shots": [
+      [
+        "コンボをつなげ！",
+        "すばやく正確な手で倍率は最大x5"
+      ],
+      [
+        "タイムアタックに\n挑戦",
+        "ボードをクリアするたびに+8秒"
+      ],
+      [
+        "ノーミスでクリア",
+        "レベル無限、どれも必ず解ける"
+      ],
+      [
+        "自己ベストを更新",
+        "ランキングの頂点をめざそう"
+      ]
+    ]
   },
   "ko": {
     "name": "Ok Kaçış: 화살표 퍼즐",
@@ -209,10 +389,22 @@
       "soon": "iPhone 앱 곧 출시",
       "featuresTitle": "Ok Kaçış의 특징",
       "features": [
-        ["무한 레벨", "보드가 커지고 화살표가 얽혀요. 모든 레벨은 풀 수 있어요."],
-        ["타임 어택", "60초로 시작, 보드를 비울 때마다 +8초. 기록을 깨 보세요."],
-        ["콤보와 효과", "빠르고 정확한 수로 배율을 최대 x5까지."],
-        ["7개 언어, 오프라인", "터키어, 영어, 포르투갈어, 독일어, 프랑스어, 일본어, 한국어."]
+        [
+          "무한 레벨",
+          "보드가 커지고 화살표가 얽혀요. 모든 레벨은 풀 수 있어요."
+        ],
+        [
+          "타임 어택",
+          "60초로 시작, 보드를 비울 때마다 +8초. 기록을 깨 보세요."
+        ],
+        [
+          "콤보와 효과",
+          "빠르고 정확한 수로 배율을 최대 x5까지."
+        ],
+        [
+          "7개 언어, 오프라인",
+          "터키어, 영어, 포르투갈어, 독일어, 프랑스어, 일본어, 한국어."
+        ]
       ],
       "howTitle": "플레이 방법",
       "how": [
@@ -224,6 +416,24 @@
       "contact": "문의",
       "promoTitle": "새 게임: Ok Kaçış",
       "promoText": "화살표를 올바른 순서로 보드에서 빼내세요. 무료 퍼즐 게임."
-    }
+    },
+    "shots": [
+      [
+        "콤보를 이어가세요!",
+        "빠르고 정확한 수로 최대 x5"
+      ],
+      [
+        "시간과의 승부",
+        "보드를 비울 때마다 +8초"
+      ],
+      [
+        "보드를 완벽하게 클리어",
+        "무한 레벨, 모두 풀 수 있어요"
+      ],
+      [
+        "최고 기록에 도전",
+        "랭킹 1위를 노려 보세요"
+      ]
+    ]
   }
 }

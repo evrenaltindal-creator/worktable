@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /*
  * App Store ekran görüntülerini 7 dilde üretir (iPhone 6,9 inç: 1320×2868).
- * Çıktı: store/fastlane/screenshots/<dil>/  ve site için küçük kopyalar: site/img/screens/
+ * Çıktı: store/raw-screenshots/<dil>/ (ham)  ve site için küçük kopyalar: site/img/screens/
  *
  * Gerekenler: Playwright (Chromium ile). Küçük kopyalar için isteğe bağlı: sharp.
  *   node ok-kacis/tools/screenshots.js            # bütün diller
@@ -14,7 +14,7 @@ const { chromium } = require('playwright');
 
 const ROOT = path.join(__dirname, '..');
 const GAME = 'file://' + path.join(ROOT, 'www', 'index.html') + '?debug&ads=none';
-const OUT = path.join(ROOT, 'store', 'fastlane', 'screenshots');
+const OUT = path.join(ROOT, 'store', 'raw-screenshots'); // ham oyun görüntüleri; tanıtım görselleri: tools/marketing-shots.js
 const WEB = path.join(ROOT, 'site', 'img', 'screens');
 const listing = JSON.parse(fs.readFileSync(path.join(ROOT, 'store', 'listing.json'), 'utf8'));
 const BROWSER_LOCALE = { tr: 'tr-TR', en: 'en-US', pt: 'pt-BR', de: 'de-DE', fr: 'fr-FR', ja: 'ja-JP', ko: 'ko-KR' };

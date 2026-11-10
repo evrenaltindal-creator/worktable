@@ -63,9 +63,10 @@ ok-kacis/
   capacitor.config.json  uygulama adı ve paket kimliği (com.evrenaltindal.okkacis)
   ios/                 iOS projesi (GitHub'da bulut Mac'te derlenir)
   resources/           uygulama simgesi ve açılış ekranı (SVG kaynak + PNG)
-  store/               App Store: rehber, 7 dilde metinler (listing.json), ekran görüntüleri
+  store/               App Store: rehber, 7 dilde metinler (listing.json), tanıtım görselleri, istek.txt
   site/                sitene yükleyeceğin hazır paket (tanıtım, oyun, gizlilik)
-  tools/               store-metadata.js, build-site.js, screenshots.js
+  fastlane/Fastfile    App Store işleri (status, register, build, metadata, submit)
+  tools/               store-metadata.js, build-site.js, screenshots.js, marketing-shots.js, ios-build.sh
   www/                 oyunun kendisi (uygulamaya ya da siteye bu klasör girer)
     index.html
     style.css          görünüm (renkler en üstte)
