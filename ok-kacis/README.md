@@ -37,6 +37,22 @@ reklam altyapısı hazır, oynanabilir bir prototip var.
 - **Kendi sitende tanıtım + oynanabilir oyun + AdSense:** [SITEYE-YUKLE.md](SITEYE-YUKLE.md)
 - **Android / Google Play:** aşağıda "Yol 1"
 
+## Reklamlar şimdilik kapalı
+
+Uygulama şu an reklamsız ve ücretsiz yayınlanıyor: AdMob eklentisi iOS
+projesinden çıkarıldı, `www/config.js` içinde `adProvider: 'none'`. Can (seviye
+başına bir kez), ipucu ve +15 saniye ödülleri reklamsız veriliyor. Reklam kodu
+(`js/ads.js`) duruyor; açmak için:
+
+1. `www/config.js` > `adProvider: 'auto'`, `admob.ios` içine gerçek AdMob kimlikleri, `testing: false`
+2. `ok-kacis` klasöründe `npm install @capacitor-community/admob@8.2.1` ve `npx cap sync ios`
+3. `ios/App/App/Info.plist`: `GADApplicationIdentifier`, `NSUserTrackingUsageDescription`, `SKAdNetworkItems`
+4. `site/gizlilik.html`: reklam bölümünü geri ekle
+5. App Store Connect: App Privacy (Google reklam verileri) ve yaş derecesindeki reklam sorusu
+6. Yeni sürüm: `store/ayarlar.json` > `version`, sonra `build`, `metadata`, `submit`
+
+Claude'a "reklamları aç" demen yeterli; bu adımları o yapar.
+
 ## Hemen oyna
 
 `www/index.html` dosyasına çift tıkla. Kurulum gerekmez, internet de gerekmez

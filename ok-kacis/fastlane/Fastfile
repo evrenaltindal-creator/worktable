@@ -71,8 +71,8 @@ def review_info
   vals = keys.transform_values { |k| ENV[k].to_s.strip }
   return nil if vals.values.any?(&:empty?)
   vals.merge(demo_user: '', demo_password: '',
-             notes: 'Offline puzzle game, no account or login needed. Ads are served by Google AdMob. ' \
-                    'Time attack mode and the leaderboard are in the main menu.')
+             notes: 'Offline puzzle game with no ads, no in-app purchases and no data collection. ' \
+                    'No account or login needed. Time attack mode and the leaderboard are in the main menu.')
 end
 
 # .p12 içindeki sertifikanın App Store Connect'teki karşılığını seri numarasından bulur

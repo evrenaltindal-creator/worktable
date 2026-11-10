@@ -1,4 +1,4 @@
-metadata
+build
 # Bu dosyanın ilk satırı, GitHub Actions'ta çalışacak App Store işini seçer.
 # Dosya değişip claude/festive-wright-wotpi5 dalına gönderilince iş başlar.
 #   status    durum raporu (paket kimliği, uygulama kaydı, son derleme)
@@ -6,4 +6,4 @@ metadata
 #   build     derle, imzala, App Store Connect'e (TestFlight) yükle
 #   metadata  7 dilde metinleri, tanıtım görsellerini ve kategoriyi yükle
 #   submit    incelemeye gönder; onaylanınca kendiliğinden yayınlanır
-# son istek: 2026-11-10T19:41:03Z metadata
+# son istek: 2026-11-10T19:56:40Z build

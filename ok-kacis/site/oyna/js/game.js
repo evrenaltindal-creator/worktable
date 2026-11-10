@@ -209,6 +209,7 @@
   function loadLevel(n, phase) {
     S.mode = 'classic';
     S.level = n;
+    S.revivedThisLevel = false;
     S.hearts = CFG.hearts;
     resetScore();
     setupBoard(Levels.generate(n), phase);
@@ -296,8 +297,8 @@
     if (!r.revived) {
       actions.push({
         kind: 'primary',
-        icon: 'ad',
-        label: t('moreTime', { s: TA.reviveSeconds }),
+        icon: adsOff() ? 'play' : 'ad',
+        label: adsOff() ? t('moreTimeFree', { s: TA.reviveSeconds }) : t('moreTime', { s: TA.reviveSeconds }),
         onClick: async () => {
           dialogBusy = true;
           const res = await Ads.rewarded('more_time');
@@ -739,21 +740,20 @@
   }
 
   function showFail() {
-    showDialog({
-      variant: 'fail',
-      eyebrow: t('failEyebrow'),
-      title: t('failTitle'),
-      body: t('failBody'),
-      actions: [
-        {
+    const free = adsOff();
+    const canRevive = !(free && S.revivedThisLevel);
+    const actions = [];
+    if (canRevive) {
+      actions.push({
           kind: 'primary',
-          icon: 'ad',
-          label: t('revive'),
+          icon: free ? 'play' : 'ad',
+          label: free ? t('reviveFree') : t('revive'),
           onClick: async () => {
             dialogBusy = true;
             const r = await Ads.rewarded('revive');
             dialogBusy = false;
             if (r === true) {
+              S.revivedThisLevel = true;
               S.hearts = 1;
               hideDialog();
               S.phase = 'play';
@@ -763,20 +763,30 @@
               Ads.event('gameplayStart');
             } else toast(r === false ? t('noReward') : t('noAd'));
           },
-        },
-        {
-          kind: 'secondary',
-          icon: 'restart',
-          label: t('restart'),
-          onClick: () => {
-            hideDialog();
-            loadLevel(S.level, 'play');
-            Ads.event('gameplayStart');
-          },
-        },
-      ],
+      });
+    }
+    actions.push({
+      kind: canRevive ? 'secondary' : 'primary',
+      icon: 'restart',
+      label: t('restart'),
+      onClick: () => {
+        hideDialog();
+        loadLevel(S.level, 'play');
+        Ads.event('gameplayStart');
+      },
+    });
+    showDialog({
+      variant: 'fail',
+      eyebrow: t('failEyebrow'),
+      title: t('failTitle'),
+      body: canRevive ? (free ? t('failBodyFree') : t('failBody')) : null,
+      actions,
     });
   }
+
+  // Reklamlar kapalıyken (config.js > adProvider: 'none') ödüller ücretsiz verilir
+  // ve düğmelerde "reklam izle" yazmaz. Can, reklamsızken seviye başına bir kez verilir.
+  const adsOff = () => Ads.name === 'none';
 
   // ------------------------------------------------------------------ İpucu
   function onHint() {
@@ -804,12 +814,12 @@
     showDialog({
       eyebrow: t('hintsEyebrow'),
       title: t('hintsTitle'),
-      body: t('hintsBody', { n: CFG.hintsPerAd }),
+      body: adsOff() ? t('hintsBodyFree', { n: CFG.hintsPerAd }) : t('hintsBody', { n: CFG.hintsPerAd }),
       actions: [
         {
           kind: 'primary',
-          icon: 'ad',
-          label: t('getHints', { n: CFG.hintsPerAd }),
+          icon: adsOff() ? 'play' : 'ad',
+          label: adsOff() ? t('getHintsFree', { n: CFG.hintsPerAd }) : t('getHints', { n: CFG.hintsPerAd }),
           onClick: async () => {
             dialogBusy = true;
             const r = await Ads.rewarded('hints');

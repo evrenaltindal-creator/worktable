@@ -13,7 +13,9 @@ window.OK_KACIS_CONFIG = {
   //   'crazygames' : CrazyGames oyun portalı
   //   'none'       : reklamsız (ödüller reklamsız verilir)
   // Denemek için adres çubuğuna ?ads=mock yazarak da seçebilirsin.
-  adProvider: 'auto',
+  // ŞİMDİLİK REKLAMLAR KAPALI: uygulama reklamsız, ödüller (can, ipucu, süre) ücretsiz.
+  // Açmak için 'auto' yap ve AdMob eklentisini geri ekle (ok-kacis/README.md > Reklamları açmak).
+  adProvider: 'none',
 
   admob: {
     // Aşağıdakiler Google'ın herkese açık TEST kimlikleri. Para kazandırmazlar.
