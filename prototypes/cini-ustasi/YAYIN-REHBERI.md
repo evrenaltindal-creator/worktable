@@ -1,5 +1,7 @@
 # Çini Ustası yayın rehberi
 
+> **10 Kasım 2026 hazırlık durumu:** App Store Connect'te Çini Ustası için taslak kayıt ve `com.evrenaltindal.ciniustasi` paket kimliği oluşturuldu. Bu kaynak paketinde gizlilik metni ve destek sayfası taslaktır; genel kullanıma açılmış bir adres doğrulanmadı. iPhone ve simülatör için imzasız derleme önceki proje sürümünde başarılı oldu. İmzalı IPA ve Apple'a yükleme henüz doğrulanmadı. Aşağıdaki otomatik yayın yönergeleri kullanılmadan önce Apple erişimi ve mevcut iş akışı gözden geçirilmelidir; yeni bir yönetici anahtarı oluşturmak şart varsayılmamalıdır.
+
 Bu rehber iki işi anlatır: oyunu **App Store'a yüklemek** ve **sitenizde tanıtmak**. Hazır olan her şey bu klasörde. Sizin yapmanız gereken adımlar aşağıda sırayla.
 
 ## Klasörde neler var
