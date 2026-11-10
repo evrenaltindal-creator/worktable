@@ -1,0 +1,2 @@
+1
+# İmzalı 1.0 (1) IPA'sını App Store Connect'e yükler; incelemeye göndermez.

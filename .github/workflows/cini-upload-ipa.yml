@@ -1,0 +1,33 @@
+name: Cini Ustasi upload IPA to Apple
+on:
+  push:
+    branches: [codex/cini-ustasi-release-prep]
+    paths: ['prototypes/cini-ustasi/app/release/yukleme-istek.txt']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  upload:
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+    steps:
+      - name: Download the verified signed IPA
+        run: |
+          gh run download 42820165404 --repo "$GITHUB_REPOSITORY" --name cini-ustasi-ipa --dir "$RUNNER_TEMP/ipa"
+          test -f "$RUNNER_TEMP/ipa/App.ipa"
+      - name: Upload the IPA to App Store Connect
+        run: |
+          set -euo pipefail
+          : "${ASC_KEY_ID:?missing key ID}" "${ASC_ISSUER_ID:?missing issuer ID}" "${ASC_KEY_P8:?missing key}"
+          umask 077
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY_PATH"
+          trap 'rm -f "$KEY_PATH"' EXIT
+          xcrun altool --upload-app --type ios --file "$RUNNER_TEMP/ipa/App.ipa" \
+            --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"
