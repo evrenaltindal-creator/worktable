@@ -264,6 +264,7 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
       <div class="hud-actions">
         <button class="icon-btn" id="langBtn" data-i18n-aria="language" aria-label="Dil"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></button>
         <button class="icon-btn" id="soundBtn" aria-pressed="true" aria-label="Sesi kapat"></button>
+        <button class="icon-btn" id="privacyBtn" hidden aria-label="Gizlilik politikası"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 10v6M12 7h.01"/></svg></button>
         <button class="icon-btn" id="shopBtn" data-i18n-aria="shop" aria-label="Mağaza"><svg class="ico" viewBox="0 0 24 24"><path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg></button>
         <button class="icon-btn only-narrow" id="panelBtn" aria-label="Reklam akışı paneli"><svg class="ico" viewBox="0 0 24 24"><path d="M5 20v-8M12 20V4M19 20v-5"/></svg></button>
       </div>
@@ -633,6 +634,7 @@ const saveGame = () => { if (G) store.set('game', G); };
    Eksik bir anahtar önce İngilizceye, o da yoksa anahtarın adına düşer. */
 const LANGS = { tr: 'Türkçe', en: 'English', pt: 'Português', de: 'Deutsch', fr: 'Français', ja: '日本語', ko: '한국어' };
 const LOCALES = { tr: 'tr-TR', en: 'en-US', pt: 'pt-BR', de: 'de-DE', fr: 'fr-FR', ja: 'ja-JP', ko: 'ko-KR' };
+const PRIVACY_TITLES = { tr: 'Gizlilik politikası', en: 'Privacy policy', pt: 'Política de privacidade', de: 'Datenschutzerklärung', fr: 'Politique de confidentialité', ja: 'プライバシーポリシー', ko: '개인정보 처리방침' };
 const STR = {
   tr: {
     title: "ÇİNİ USTASI", coins: "altın", score: "Skor", sound_off: "Sesi kapat", sound_on: "Sesi aç", shop: "Mağaza", language: "Dil",
@@ -877,6 +879,7 @@ function applyLang() {
   document.querySelector('.app').setAttribute('lang', LANG);
   for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n);
   for (const el of document.querySelectorAll('[data-i18n-aria]')) el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  $('privacyBtn').setAttribute('aria-label', PRIVACY_TITLES[LANG] || PRIVACY_TITLES.en);
   $('coinsSr').textContent = ' ' + t('coins');
   readFonts();
   renderSoundBtn(); updateHud();
@@ -897,6 +900,13 @@ function openLang() {
       onClick: () => { closeModal(); setLang(code); }
     }))
   });
+}
+
+function openPrivacy() {
+  const title = PRIVACY_TITLES[LANG] || PRIVACY_TITLES.en;
+  const page = LANG === 'tr' ? 'privacy.html' : 'privacy.html#en';
+  openModal({ title, body: `<iframe src="${page}" title="${title}" style="width:100%;height:48vh;border:0;border-radius:12px;background:#fff"></iframe>`,
+    actions: [{ label: t('btn_close'), kind: 'primary', onClick: closeModal }] });
 }
 
 
@@ -2401,6 +2411,7 @@ $('panelClose').addEventListener('click', () => openPanel(false));
 $('sheetScrim').addEventListener('click', () => openPanel(false));
 $('shopBtn').addEventListener('click', () => { if (!Ads.showing && CFG.iapEnabled) openShop(); });
 $('langBtn').addEventListener('click', () => { if (!Ads.showing) openLang(); });
+$('privacyBtn').addEventListener('click', () => { if (!Ads.showing) openPrivacy(); });
 $('soundBtn').addEventListener('click', () => {
   M.sound = !M.sound; saveMeta(); renderSoundBtn();
   if (M.sound) { Sfx.init(); setTimeout(() => Sfx.pick(), 40); }
@@ -2439,6 +2450,7 @@ function boot(data) {
   data = data || {};
   if (PROD) {
     $('panel').hidden = true; $('panelBtn').hidden = true;
+    $('privacyBtn').hidden = false;
     for (const k of ['adsEnabled', 'iapEnabled', 'expertScore', 'fastAds']) CFG[k] = DEFAULT_CFG[k];
   }
   LANG = detectLang(); LOCALE = LOCALES[LANG]; applyLang();

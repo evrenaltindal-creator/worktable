@@ -86,6 +86,7 @@ for (const out of OUTPUTS) {
   writeFileSync(join(out, 'fonts', 'fonts.css'), faces.map(f => f.css).join('\n\n') + '\n');
   for (const f of faces) copyFileSync(join(APP, 'node_modules', '@fontsource', f.pkg, 'files', f.file), join(out, 'fonts', 'files', f.file));
   if (existsSync(ICON)) copyFileSync(ICON, join(out, 'icon.png'));
+  copyFileSync(join(APP, '..', 'site', 'gizlilik.html'), join(out, 'privacy.html'));
   console.log('yazıldı:', out);
 }
 console.log(`index.html ${(html.length / 1024).toFixed(0)} KB, ${faces.length} yazı tipi dosyası`);
