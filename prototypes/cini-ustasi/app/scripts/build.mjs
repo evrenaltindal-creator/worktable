@@ -12,7 +12,8 @@ const ICON = join(APP, 'resources', 'icon-1024.png');
 const OUTPUTS = [join(APP, 'www'), join(APP, '..', 'site', 'oyna')];
 
 // 1) Kaynak sayfa: yayın platformuna özel satırları ve Google Fonts bağlantısını çıkar
-let page = readFileSync(SOURCE, 'utf8');
+// Git on Windows may check out the source with CRLF line endings.
+let page = readFileSync(SOURCE, 'utf8').replace(/\r\n/g, '\n');
 const drop = [
   /<meta charset="utf-8">\n/,
   /<meta name="viewport"[^>]*>\n/,
