@@ -9,7 +9,7 @@ name: Sirada Ne Var iOS
 # Secret'lar depodaki diğer iOS uygulamalarıyla ortaktır.
 on:
   push:
-    branches: [claude/sleepy-franklin-vc73f0]
+    branches: [claude/sleepy-franklin-vc73f0, codex/sirada-testflight-20261110]
     paths: ['sirada-ne-var/store/istek.txt']
   workflow_dispatch:
     inputs:

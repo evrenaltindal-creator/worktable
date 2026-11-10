@@ -1,3 +1,4 @@
 build
+# TestFlight upload after creating the Apple app record.
 
 # Ilk satira yapilacak isi yazip bu dala gonderin: status, register, build, testers, metadata
