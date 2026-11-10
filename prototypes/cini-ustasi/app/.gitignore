@@ -4,3 +4,4 @@ ios/App/Pods/
 ios/DerivedData/
 *.xcuserstate
 xcuserdata/
+build/

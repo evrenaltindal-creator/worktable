@@ -1,0 +1,91 @@
+name: Cini Ustasi iOS
+
+# App Store işleri: paket kimliği kaydı, derleme ve yükleme, mağaza metinleri, incelemeye gönderme.
+# Tetikleme: prototypes/cini-ustasi/app/release/istek.txt dosyasının ilk satırına iş adı
+# (status, register, build, metadata, submit) yazılıp bu dala gönderilir.
+# Workflow varsayılan dala alındığında Actions sekmesinden elle de başlatılabilir.
+on:
+  push:
+    branches: [claude/pensive-curie-vvewve]
+    paths: ['prototypes/cini-ustasi/app/release/istek.txt']
+  workflow_dispatch:
+    inputs:
+      lane:
+        description: 'Yapılacak iş'
+        type: choice
+        options: [status, register, build, metadata, submit]
+        default: status
+
+concurrency:
+  group: cini-ustasi-ios
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  app-store:
+    runs-on: macos-15
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: prototypes/cini-ustasi/app
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      REVIEW_FIRST_NAME: ${{ secrets.REVIEW_FIRST_NAME }}
+      REVIEW_LAST_NAME: ${{ secrets.REVIEW_LAST_NAME }}
+      REVIEW_PHONE: ${{ secrets.REVIEW_PHONE }}
+      REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
+      FASTLANE_SKIP_UPDATE_CHECK: '1'
+      FASTLANE_HIDE_CHANGELOG: '1'
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Isi sec
+        id: lane
+        run: |
+          LANE="${{ inputs.lane }}"
+          if [ -z "$LANE" ]; then LANE=$(head -n1 release/istek.txt | tr -d '[:space:]'); fi
+          case "$LANE" in status|register|build|metadata|submit) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
+          echo "lane=$LANE" >> "$GITHUB_OUTPUT"
+          echo "Is: $LANE"
+
+      - name: Secret'lar hazir mi
+        id: ready
+        run: |
+          missing=""
+          for k in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8 APPLE_TEAM_ID; do [ -n "${!k}" ] || missing="$missing $k"; done
+          if [ -n "$missing" ]; then
+            echo "::notice::GitHub secret'lari henuz eklenmemis:$missing. Is atlandi."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.ready.outputs.ok == 'true' && steps.lane.outputs.lane == 'build'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: prototypes/cini-ustasi/app/package-lock.json
+
+      - name: Oyunu derle ve Xcode projesine kopyala
+        if: steps.ready.outputs.ok == 'true' && steps.lane.outputs.lane == 'build'
+        run: |
+          npm ci
+          npm run build
+          npx cap sync ios
+          xcodebuild -version
+
+      - name: fastlane
+        if: steps.ready.outputs.ok == 'true'
+        run: |
+          command -v fastlane >/dev/null || sudo gem install fastlane --no-document
+          LANE="${{ steps.lane.outputs.lane }}"
+          [ "$LANE" = build ] && LANE=build_upload
+          fastlane ios "$LANE"

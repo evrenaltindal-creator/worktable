@@ -25,6 +25,51 @@ Yayından önce şu yer tutucuları kendi bilgilerinizle değiştirin:
 
 ---
 
+## Otomatik yol (önerilen): Mac gerekmez
+
+Derleme, imzalama, yükleme, metinler, ekran görüntüleri ve incelemeye gönderme GitHub Actions'ta, Apple'ın kendi API anahtarıyla yapılır. Sizin web arayüzünde birkaç kez tıklamanız yeterli. Şifreniz ve anahtarınız sohbete ya da depoya hiç girmez; yalnızca GitHub'ın şifreli "secret" kasasında durur.
+
+### Sizin yapacaklarınız (yaklaşık 10 dakika)
+
+1. **API anahtarı oluşturun.** App Store Connect → **Users and Access → Integrations → App Store Connect API → Team Keys → +**.
+   - Ad: `GitHub`
+   - Erişim: **Admin**. Bulut imzalama için gerekli.
+   - **Generate**'e basın, ardından **Download API Key** ile `.p8` dosyasını indirin. Bu dosya yalnızca bir kez indirilebilir.
+   - Sayfadaki **Issuer ID** ve anahtarın **Key ID** değerini not edin.
+2. **Team ID'yi bulun.** developer.apple.com → Account → **Membership details → Team ID**.
+3. **GitHub'a dört secret ekleyin.** github.com/evrenaltindal-creator/worktable → **Settings → Secrets and variables → Actions → New repository secret**:
+
+   | Ad | Değer |
+   |---|---|
+   | `ASC_KEY_ID` | Key ID |
+   | `ASC_ISSUER_ID` | Issuer ID |
+   | `ASC_KEY_P8` | `.p8` dosyasının tüm içeriği (Not Defteri ile açıp kopyalayın, BEGIN/END satırları dahil) |
+   | `APPLE_TEAM_ID` | Team ID |
+
+   İsteğe bağlı: `REVIEW_FIRST_NAME`, `REVIEW_LAST_NAME`, `REVIEW_PHONE`, `REVIEW_EMAIL`. App Review ekibinin size ulaşacağı bilgiler. Eklemezseniz bunları App Store Connect'te bir kez elle yazarsınız.
+4. **Paket kimliğini (Bundle ID) seçin** ve Claude'a söyleyin. Örneğin `com.sirketadi.ciniustasi`. Claude kaydeder.
+5. **Uygulama kaydını oluşturun.** Apple bunu API'ye açmıyor, yalnızca web arayüzünden yapılıyor. Adımlar aşağıda, 1. Bölüm Adım 5'te.
+6. **Web arayüzündeki üç kısa ayarı yapın:**
+   - **App Privacy → "Data Not Collected"**
+   - **Age Rating** anketi: hepsine "None/No"
+   - **Pricing → Free**
+
+### Claude'un yaptıkları
+
+`app/release/istek.txt` dosyasının ilk satırı değiştirilip gönderilince GitHub Actions o işi çalıştırır. Sonuç Actions sekmesinde görünür, Claude da kayıtları okuyup size bildirir.
+
+| İş | Ne yapar |
+|---|---|
+| `status` | Paket kimliği ve uygulama kaydı var mı, son derleme numarası kaç |
+| `register` | Paket kimliğini Apple hesabınıza kaydeder |
+| `build` | Apple'ın Mac sunucusunda derler, imzalar, App Store Connect'e yükler |
+| `metadata` | 7 dilde metinleri ve ekran görüntülerini yükler, kategoriyi ayarlar |
+| `submit` | İncelemeye gönderir. Yalnızca sizin onayınızdan sonra çalıştırılır. |
+
+Mac'iniz varsa aşağıdaki elle yol da aynı sonuca götürür.
+
+---
+
 ## 1. Bölüm: App Store
 
 ### Gerekenler

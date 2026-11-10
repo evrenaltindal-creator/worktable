@@ -1,0 +1,174 @@
+# Çini Ustası: App Store işleri
+#
+# GitHub Actions'ta çalışır (.github/workflows/cini-ustasi-ios.yml). Gizli bilgiler GitHub
+# secret'larından ortam değişkeni olarak gelir; hiçbiri depoda durmaz:
+#   ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8   App Store Connect API anahtarı (Admin rolü)
+#   APPLE_TEAM_ID                           Apple Developer ekip kimliği
+#   REVIEW_FIRST_NAME, REVIEW_LAST_NAME,    (isteğe bağlı) App Review iletişim bilgileri
+#   REVIEW_PHONE, REVIEW_EMAIL
+#
+# İşler:
+#   status    Paket kimliği ve uygulama kaydı var mı, son derleme numarası kaç
+#   register  Paket kimliğini (Bundle ID) Apple hesabına kaydeder
+#   build_upload  Uygulamayı derler, imzalar ve App Store Connect'e yükler
+#   metadata  7 dilde metinleri ve ekran görüntülerini yükler
+#   submit    Son derlemeyi incelemeye gönderir
+
+require 'json'
+require 'fileutils'
+require 'tmpdir'
+
+default_platform(:ios)
+
+APP_DIR  = File.expand_path('..', __dir__)
+ROOT_DIR = File.expand_path('..', APP_DIR)
+MAGAZA   = File.join(ROOT_DIR, 'magaza')
+STORE    = File.join(APP_DIR, 'build', 'store')
+LOCALES  = { 'tr' => 'tr', 'en' => 'en-US', 'pt' => 'pt-BR', 'de' => 'de-DE', 'fr' => 'fr-FR', 'ja' => 'ja', 'ko' => 'ko' }.freeze
+
+def settings
+  JSON.parse(File.read(File.join(MAGAZA, 'ayarlar.json')))
+end
+
+def app_id
+  id = JSON.parse(File.read(File.join(APP_DIR, 'capacitor.config.json')))['appId']
+  UI.user_error!("capacitor.config.json içindeki appId hâlâ yer tutucu (#{id}). Kendi paket kimliğinizi yazın.") if id.include?('yourcompany')
+  id
+end
+
+def placeholder?(value)
+  value.to_s.strip.empty? || value.to_s.include?('[')
+end
+
+def api_key
+  %w[ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8].each do |k|
+    UI.user_error!("GitHub secret eksik: #{k}") if ENV[k].to_s.strip.empty?
+  end
+  app_store_connect_api_key(
+    key_id: ENV['ASC_KEY_ID'].strip,
+    issuer_id: ENV['ASC_ISSUER_ID'].strip,
+    key_content: ENV['ASC_KEY_P8'],
+    duration: 1200,
+    in_house: false
+  )
+end
+
+def review_info
+  keys = { first_name: 'REVIEW_FIRST_NAME', last_name: 'REVIEW_LAST_NAME', phone_number: 'REVIEW_PHONE', email_address: 'REVIEW_EMAIL' }
+  vals = keys.transform_values { |k| ENV[k].to_s.strip }
+  return nil if vals.values.any?(&:empty?)
+  vals.merge(demo_user: '', demo_password: '', notes: 'No account or login is needed. The game works fully offline.')
+end
+
+# magaza/ klasöründen fastlane'in beklediği metin ve ekran görüntüsü klasörlerini üretir
+def prepare_store
+  FileUtils.rm_rf(STORE)
+  texts = JSON.parse(File.read(File.join(MAGAZA, 'metinler.json')))
+  s = settings
+  site = placeholder?(s['site_url']) ? '' : s['site_url'].strip.sub(%r{/\z}, '')
+  first_version = (s['version'] || '1.0') == '1.0'
+  LOCALES.each do |code, locale|
+    t = texts.fetch(code)
+    dir = File.join(STORE, 'metadata', locale)
+    FileUtils.mkdir_p(dir)
+    { 'name' => t['name'], 'subtitle' => t['subtitle'], 'promotional_text' => t['promo'],
+      'keywords' => t['keywords'], 'description' => t['description'] }.each do |file, value|
+      File.write(File.join(dir, "#{file}.txt"), value)
+    end
+    File.write(File.join(dir, 'release_notes.txt'), t['whatsNew']) unless first_version
+    unless site.empty?
+      File.write(File.join(dir, 'support_url.txt'), "#{site}/cini-ustasi/")
+      File.write(File.join(dir, 'marketing_url.txt'), "#{site}/cini-ustasi/")
+      File.write(File.join(dir, 'privacy_url.txt'), "#{site}/cini-ustasi/gizlilik.html")
+    end
+    shots = File.join(STORE, 'screenshots', locale)
+    FileUtils.mkdir_p(shots)
+    Dir[File.join(MAGAZA, 'ekran-goruntuleri', code, '*.png')].sort.each { |f| FileUtils.cp(f, shots) }
+  end
+  UI.important('magaza/ayarlar.json içinde site_url yok; destek ve gizlilik adresleri yüklenmedi.') if site.empty?
+end
+
+platform :ios do
+  desc 'Paket kimliği ve uygulama kaydının durumunu yazar'
+  lane :status do
+    api_key
+    id = app_id
+    UI.message("Paket kimliği #{id}: #{Spaceship::ConnectAPI::BundleId.find(id) ? 'kayıtlı' : 'kayıtlı değil'}")
+    app = Spaceship::ConnectAPI::App.find(id)
+    if app
+      UI.success("Uygulama kaydı var: #{app.name} (Apple ID #{app.id})")
+      begin
+        UI.message("TestFlight'taki son derleme: #{latest_testflight_build_number(app_identifier: id)}")
+      rescue StandardError => e
+        UI.message("Henüz derleme yok (#{e.message})")
+      end
+    else
+      UI.important("App Store Connect'te bu kimlikle uygulama kaydı yok. Yeni uygulama web arayüzünden oluşturulmalı.")
+    end
+  end
+
+  desc 'Paket kimliğini (Bundle ID) Apple hesabına kaydeder'
+  lane :register do
+    api_key
+    id = app_id
+    if Spaceship::ConnectAPI::BundleId.find(id)
+      UI.success("Paket kimliği zaten kayıtlı: #{id}")
+    else
+      Spaceship::ConnectAPI::BundleId.create(name: 'Cini Ustasi', platform: Spaceship::ConnectAPI::BundleIdPlatform::IOS, identifier: id)
+      UI.success("Paket kimliği kaydedildi: #{id}")
+    end
+    status
+  end
+
+  desc 'Uygulamayı derler, imzalar ve App Store Connect\'e yükler'
+  lane :build_upload do
+    api_key
+    id = app_id
+    UI.user_error!('GitHub secret eksik: APPLE_TEAM_ID') if ENV['APPLE_TEAM_ID'].to_s.strip.empty?
+    latest = begin
+      latest_testflight_build_number(app_identifier: id, initial_build_number: 0)
+    rescue StandardError => e
+      UI.important("Son derleme numarası okunamadı (#{e.message}); 1 ile başlıyorum.")
+      0
+    end
+    build = latest.to_i + 1
+    UI.message("Derleme numarası: #{build}")
+    key_path = File.join(Dir.tmpdir, "AuthKey_#{ENV['ASC_KEY_ID'].strip}.p8")
+    File.write(key_path, ENV['ASC_KEY_P8'])
+    sh(File.join(APP_DIR, 'scripts', 'ios-release.sh'), id, build.to_s, key_path)
+  end
+
+  desc '7 dilde metinleri ve ekran görüntülerini yükler'
+  lane :metadata do
+    key = api_key
+    id = app_id
+    prepare_store
+    s = settings
+    opts = {
+      api_key: key, app_identifier: id, app_version: s['version'] || '1.0',
+      metadata_path: File.join(STORE, 'metadata'), screenshots_path: File.join(STORE, 'screenshots'),
+      skip_binary_upload: true, overwrite_screenshots: true, force: true, submit_for_review: false,
+      run_precheck_before_submit: false, precheck_include_in_app_purchases: false,
+      primary_category: 'GAMES', primary_first_sub_category: 'GAMES_PUZZLE', primary_second_sub_category: 'GAMES_CASUAL'
+    }
+    opts[:copyright] = s['copyright'] unless placeholder?(s['copyright'])
+    review = review_info
+    opts[:app_review_information] = review if review
+    deliver(opts)
+  end
+
+  desc 'Son derlemeyi incelemeye gönderir'
+  lane :submit do
+    key = api_key
+    deliver(
+      api_key: key, app_identifier: app_id, app_version: settings['version'] || '1.0',
+      skip_metadata: true, skip_screenshots: true, skip_binary_upload: true,
+      submit_for_review: true, automatic_release: false, force: true, run_precheck_before_submit: false,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: false,
+        content_rights_contains_third_party_content: false
+      }
+    )
+  end
+end
