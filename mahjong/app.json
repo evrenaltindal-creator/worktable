@@ -12,6 +12,17 @@
       "bundleIdentifier": "com.evrenaltindal.huzurmahjong",
       "config": {
         "usesNonExemptEncryption": false
+      },
+      "infoPlist": {
+        "CFBundleLocalizations": [
+          "tr",
+          "en",
+          "pt",
+          "de",
+          "fr",
+          "ja",
+          "ko"
+        ]
       }
     },
     "android": {
@@ -72,6 +83,12 @@
       ],
       "expo-asset"
     ],
-    "backgroundColor": "#0D3B3E"
+    "backgroundColor": "#0D3B3E",
+    "extra": {
+      "eas": {
+        "projectId": "df6ab5c1-6308-4999-8ffc-54978f2f0935"
+      }
+    },
+    "owner": "evrenaltindal"
   }
 }

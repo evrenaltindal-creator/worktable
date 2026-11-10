@@ -1,0 +1,41 @@
+name: Huzur Mahjong TestFlight upload
+on:
+  push:
+    branches: [codex/huzur-testflight-20261110]
+    paths: [mahjong/testflight-upload-request.txt]
+permissions:
+  contents: read
+jobs:
+  upload:
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      IPA_URL: ${{ secrets.MAHJONG_IPA_URL }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+    steps:
+      - name: Download and verify the signed Expo package
+        run: |
+          set -euo pipefail
+          : "${IPA_URL:?Missing signed download URL}"
+          curl --silent --show-error --fail --location "$IPA_URL" -o "$RUNNER_TEMP/mahjong.ipa"
+          unzip -q "$RUNNER_TEMP/mahjong.ipa" -d "$RUNNER_TEMP/mahjong-check"
+          APP="$(find "$RUNNER_TEMP/mahjong-check/Payload" -maxdepth 1 -name '*.app' -print -quit)"
+          test -n "$APP"
+          test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$APP/Info.plist")" = 'com.evrenaltindal.huzurmahjong'
+          test -f "$APP/embedded.mobileprovision"
+          codesign --verify --deep --strict "$APP"
+          security cms -D -i "$APP/embedded.mobileprovision" > "$RUNNER_TEMP/profile.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$RUNNER_TEMP/profile.plist")" = "$APPLE_TEAM_ID.com.evrenaltindal.huzurmahjong"
+      - name: Upload to App Store Connect
+        run: |
+          set -euo pipefail
+          : "${ASC_KEY_ID:?Missing key ID}" "${ASC_ISSUER_ID:?Missing issuer}" "${ASC_KEY_P8:?Missing Apple key}"
+          umask 077
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY_PATH"
+          trap 'rm -f "$KEY_PATH"' EXIT
+          xcrun altool --upload-app --type ios --file "$RUNNER_TEMP/mahjong.ipa" --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"
