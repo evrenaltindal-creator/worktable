@@ -7,4 +7,4 @@ testflight
 #   metadata  7 dilde metinleri, tanıtım görsellerini ve kategoriyi yükle
 #   testflight  TestFlight iç test grubu kur, hesap kullanıcılarını test kullanıcısı yap
 #   submit    incelemeye gönder; onaylanınca kendiliğinden yayınlanır
-# son istek: 2026-11-10T20:29:14Z testflight (kontrol)
+# son istek: 2026-11-10T20:30:31Z testflight (hata ayıklama)

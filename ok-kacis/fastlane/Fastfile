@@ -67,6 +67,11 @@ def find_app!
                  "appstoreconnect.apple.com > Apps > + > New App ile oluştur (ok-kacis/store/APP-STORE-REHBERI.md).")
 end
 
+# Herkese açık günlüklere e-posta adresi düşmesin
+def scrub(text)
+  text.to_s.gsub(/[\w.+-]+@[\w-]+(\.[\w-]+)+/, '<e-posta>')
+end
+
 def review_info
   keys = { first_name: 'REVIEW_FIRST_NAME', last_name: 'REVIEW_LAST_NAME', phone_number: 'REVIEW_PHONE', email_address: 'REVIEW_EMAIL' }
   vals = keys.transform_values { |k| ENV[k].to_s.strip }
@@ -222,21 +227,25 @@ platform :ios do
     already = 0
     failed = 0
     Spaceship::ConnectAPI::User.all.each do |u|
+      UI.message("Kullanıcı rolleri: #{Array(u.roles).join(', ')}")
       begin
         Spaceship::ConnectAPI.post_beta_tester_assignment(
           beta_group_ids: [group.id],
           attributes: { email: u.email, firstName: u.first_name.to_s, lastName: u.last_name.to_s }
         )
         added += 1
-      rescue StandardError
+      rescue StandardError => e
+        UI.message("Yeni test kullanıcısı olarak eklenemedi: #{scrub(e.message)}")
         tester = Spaceship::ConnectAPI::BetaTester.find(email: u.email)
         if tester
+          UI.message("Var olan test kaydı: davet türü #{tester.invite_type}, durum #{tester.state}")
           begin
             group.add_beta_testers(beta_tester_ids: [tester.id])
-          rescue StandardError
-            nil
+            already += 1
+          rescue StandardError => e2
+            UI.important("Gruba eklenemedi: #{scrub(e2.message)}")
+            failed += 1
           end
-          already += 1
         else
           failed += 1
         end
