@@ -13,6 +13,7 @@
 #   register  Paket kimliğini (Bundle ID) Apple hesabına kaydeder
 #   build     Derler, dağıtım sertifikasıyla imzalar, App Store Connect'e yükler
 #   metadata  7 dilde metinleri, tanıtım görsellerini ve kategoriyi yükler
+#   testflight  İç test grubu kurar, hesap kullanıcılarını TestFlight'a test kullanıcısı ekler
 #   submit    Son derlemeyi incelemeye gönderir (onaylanınca kendiliğinden yayınlanır)
 
 require 'json'
@@ -194,6 +195,50 @@ platform :ios do
     opts[:app_review_information] = review if review
     UI.important('REVIEW_* secret\'ları yok; App Review iletişim bilgilerini App Store Connect\'te elle gir.') unless review
     deliver(opts)
+  end
+
+  desc 'TestFlight iç test grubu (Ekip) kurar ve App Store Connect kullanıcılarını test kullanıcısı yapar'
+  lane :testflight do
+    api_key
+    app = find_app!
+    group = app.get_beta_groups.find { |g| g.name == 'Ekip' }
+    if group
+      UI.message('İç test grubu var: Ekip')
+    else
+      group = app.create_beta_group(group_name: 'Ekip', is_internal_group: true, has_access_to_all_builds: true)
+      UI.success('İç test grubu oluşturuldu: Ekip (bütün derlemeler otomatik açılır)')
+    end
+    # Günlükler herkese açık depoda görünür: e-posta ya da ad yazdırma, yalnızca sayı.
+    added = 0
+    already = 0
+    failed = 0
+    Spaceship::ConnectAPI::User.all.each do |u|
+      begin
+        Spaceship::ConnectAPI.post_beta_tester_assignment(
+          beta_group_ids: [group.id],
+          attributes: { email: u.email, firstName: u.first_name.to_s, lastName: u.last_name.to_s }
+        )
+        added += 1
+      rescue StandardError
+        tester = Spaceship::ConnectAPI::BetaTester.find(email: u.email)
+        if tester
+          begin
+            group.add_beta_testers(beta_tester_ids: [tester.id])
+          rescue StandardError
+            nil
+          end
+          already += 1
+        else
+          failed += 1
+        end
+      end
+    end
+    UI.success("Test kullanıcıları: #{added} eklendi, #{already} zaten vardı, #{failed} eklenemedi")
+    builds = app.get_builds(sort: '-uploadedDate', limit: 10)
+    builds.first(5).each do |b|
+      UI.message("Derleme #{b.version}: #{b.processing_state}#{b.expired ? ' (süresi dolmuş)' : ''}")
+    end
+    UI.important('iPhone\'da TestFlight uygulamasını kur; davet e-postasındaki bağlantıyla oyunu indir.')
   end
 
   desc 'Son derlemeyi incelemeye gönderir; onaylanınca kendiliğinden yayınlanır'

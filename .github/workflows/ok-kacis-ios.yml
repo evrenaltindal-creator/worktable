@@ -3,7 +3,7 @@ name: Ok Kacis iOS
 # Ok Kaçış App Store işleri: durum, paket kimliği kaydı, derleme ve yükleme,
 # mağaza sayfası (7 dil), incelemeye gönderme.
 # Tetikleme: ok-kacis/store/istek.txt dosyasının ilk satırına iş adı
-# (status, register, build, metadata, submit) yazılıp bu dala gönderilir.
+# (status, register, build, metadata, testflight, submit) yazılıp bu dala gönderilir.
 # Varsayılan dala alınınca Actions sekmesinden elle de başlatılabilir.
 # Yalnızca derleme Mac sunucusunda (Xcode 26) çalışır; diğer işler Linux'ta.
 on:
@@ -15,7 +15,7 @@ on:
       lane:
         description: 'Yapılacak iş'
         type: choice
-        options: [status, register, build, metadata, submit]
+        options: [status, register, build, metadata, testflight, submit]
         default: status
 
 concurrency:
@@ -49,7 +49,7 @@ jobs:
         run: |
           LANE="$INPUT_LANE"
           if [ -z "$LANE" ]; then LANE=$(head -n1 ok-kacis/store/istek.txt | tr -d '[:space:]'); fi
-          case "$LANE" in status|register|build|metadata|submit) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
+          case "$LANE" in status|register|build|metadata|testflight|submit) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
           echo "lane=$LANE" >> "$GITHUB_OUTPUT"
           echo "Is: $LANE"
 
