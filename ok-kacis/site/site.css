@@ -1,0 +1,459 @@
+/* Ok Kaçış tanıtım sitesi. Oyunla aynı dil: açıkta milimetrik kağıt, koyuda mavi çizim kağıdı.
+   Yerleşim: üst şerit, solda metin + sağda telefon, altta özellik kartları, adımlar, iletişim. */
+:root {
+  --paper: #eaeff5;
+  --board: #fbfcfe;
+  --grid: #d6e0ea;
+  --grid-strong: #93a9bf;
+  --ink: #14243a;
+  --ink-soft: #586c83;
+  --accent: #1f5fd6;
+  --on-accent: #ffffff;
+  --gold: #f2a900;
+  --glass: rgba(251, 252, 254, 0.82);
+  --a1: #1f5fd6;
+  --a2: #dd3340;
+  --a3: #0d9b73;
+  --a4: #ee8600;
+  --a5: #8a3fd6;
+  --a6: #0592c0;
+  --a7: #14243a;
+  --font-display: "Bricolage Grotesque", "Hiragino Sans", "Yu Gothic", "Apple SD Gothic Neo", "Malgun Gothic",
+    "Noto Sans JP", "Noto Sans KR", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, "Hiragino Sans",
+    "Apple SD Gothic Neo", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0a1f3a;
+    --board: #0e2a4d;
+    --grid: #1d4170;
+    --grid-strong: #5283bd;
+    --ink: #eaf2ff;
+    --ink-soft: #9db6d6;
+    --accent: #ffd24a;
+    --on-accent: #0a1f3a;
+    --gold: #ffd24a;
+    --glass: rgba(14, 42, 77, 0.8);
+    --a1: #ffd24a;
+    --a2: #ff6f8e;
+    --a3: #3ee0b0;
+    --a4: #8cc6ff;
+    --a5: #d7a6ff;
+    --a6: #ffa05c;
+    --a7: #f1f6ff;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0a1f3a;
+  --board: #0e2a4d;
+  --grid: #1d4170;
+  --grid-strong: #5283bd;
+  --ink: #eaf2ff;
+  --ink-soft: #9db6d6;
+  --accent: #ffd24a;
+  --on-accent: #0a1f3a;
+  --gold: #ffd24a;
+  --glass: rgba(14, 42, 77, 0.8);
+  --a1: #ffd24a;
+  --a2: #ff6f8e;
+  --a3: #3ee0b0;
+  --a4: #8cc6ff;
+  --a5: #d7a6ff;
+  --a6: #ffa05c;
+  --a7: #f1f6ff;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.55;
+}
+img {
+  max-width: 100%;
+}
+a {
+  color: inherit;
+}
+[hidden] {
+  display: none !important;
+}
+
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+.wrap {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------------------------------------------------------------- üst şerit */
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 18px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 800;
+  font-size: 20px;
+  text-decoration: none;
+}
+.brand img {
+  border-radius: 10px;
+  border: 2px solid var(--ink);
+}
+.lang select {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 2px solid var(--ink);
+  border-radius: 10px;
+  background: var(--board);
+  color: var(--ink);
+  font: 700 14px var(--font-mono);
+  box-shadow: 0 3px 0 var(--ink);
+}
+.sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* ---------------------------------------------------------------- hero */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: 40px;
+  padding-block: 24px 56px;
+}
+.eyebrow {
+  margin: 0 0 10px;
+  font: 700 12px var(--font-mono);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+h1 {
+  margin: 0;
+  font-size: clamp(52px, 9vw, 96px);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+  text-wrap: balance;
+}
+.subtitle {
+  margin: 14px 0 0;
+  font-size: clamp(20px, 2.6vw, 26px);
+  font-weight: 700;
+  color: var(--accent);
+  text-wrap: balance;
+}
+.lead {
+  max-width: 34em;
+  margin: 14px 0 0;
+  color: var(--ink-soft);
+  text-wrap: pretty;
+}
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 8px 22px;
+  border: 2px solid var(--ink);
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 17px;
+  text-decoration: none;
+  box-shadow: 0 4px 0 var(--ink);
+  transition: transform 0.06s, box-shadow 0.06s;
+}
+.btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.btn svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+.btn-store {
+  background: var(--ink);
+  color: var(--board);
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1.5px dashed var(--grid-strong);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font: 700 13px var(--font-mono);
+}
+.btn:focus-visible,
+.lang select:focus-visible,
+a:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.hero-shot {
+  display: flex;
+  justify-content: center;
+}
+.phone {
+  width: min(320px, 78vw);
+  max-width: 100%;
+  padding: 10px;
+  border: 2px solid var(--ink);
+  border-radius: 44px;
+  background: var(--ink);
+  box-shadow: 0 8px 0 var(--ink), 0 30px 60px rgba(10, 31, 58, 0.25);
+  transform: rotate(2.5deg);
+}
+.phone img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 600 / 1304;
+  max-width: 100%;
+  border-radius: 34px;
+  background: var(--paper);
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------------------- bölümler */
+section h2 {
+  margin: 0 0 20px;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.features,
+.how,
+.contact {
+  padding-block: 40px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.card {
+  min-width: 0;
+  padding: 20px 22px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  background: var(--glass);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+.card h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 6px;
+  font-size: 20px;
+}
+.card h3::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--c, var(--accent));
+  flex: none;
+}
+.card:nth-child(1) {
+  --c: var(--a1);
+}
+.card:nth-child(2) {
+  --c: var(--a3);
+}
+.card:nth-child(3) {
+  --c: var(--a2);
+}
+.card:nth-child(4) {
+  --c: var(--a5);
+}
+.card p {
+  margin: 0;
+  color: var(--ink-soft);
+}
+.steps {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+.steps li {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border: 1.5px solid var(--grid-strong);
+  border-radius: 14px;
+  background: var(--glass);
+  counter-increment: step;
+}
+.steps li::before {
+  content: counter(step);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--ink);
+  border-radius: 12px;
+  background: var(--board);
+  font: 700 18px var(--font-mono);
+}
+.contact p {
+  margin: 0;
+  font-size: 18px;
+}
+.contact a {
+  font-weight: 700;
+  color: var(--accent);
+}
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 28px 40px;
+  border-top: 1px dashed var(--grid-strong);
+  color: var(--ink-soft);
+  font: 500 13px var(--font-mono);
+}
+.foot a {
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- yazı sayfaları (gizlilik, araç) */
+.doc {
+  max-width: 760px;
+  padding-block: 8px 48px;
+}
+.doc h1 {
+  font-size: clamp(36px, 6vw, 56px);
+}
+.doc h2 {
+  margin: 34px 0 8px;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.doc p,
+.doc li {
+  max-width: 65ch;
+  color: var(--ink);
+}
+.doc .meta {
+  margin-top: 10px;
+  color: var(--ink-soft);
+  font: 500 13px var(--font-mono);
+}
+.panel {
+  margin-top: 18px;
+  padding: 20px;
+  border: 2px solid var(--ink);
+  border-radius: 16px;
+  background: var(--glass);
+}
+.panel textarea {
+  width: 100%;
+  min-height: 180px;
+  padding: 12px;
+  border: 1.5px solid var(--grid-strong);
+  border-radius: 10px;
+  background: var(--board);
+  color: var(--ink);
+  font: 12px/1.5 var(--font-mono);
+  resize: vertical;
+}
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+.preview {
+  margin-top: 14px;
+  padding: 18px;
+  border: 1.5px dashed var(--grid-strong);
+  border-radius: 12px;
+  background: var(--board);
+  overflow-x: auto;
+}
+
+@media (max-width: 760px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding-top: 8px;
+  }
+  .hero-shot {
+    order: 2;
+  }
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .btn {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone {
+    transform: none;
+  }
+  .btn {
+    transition: none;
+  }
+}

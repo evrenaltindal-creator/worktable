@@ -1,0 +1,4 @@
+# Bu dosya sitenin KÖK dizinine gider: https://siten.com/ads.txt
+# Aşağıdaki pub-0000000000000000 yerine kendi AdSense yayıncı kimliğini yaz
+# (AdSense > Hesap > Hesap bilgileri: "ca-pub-..." içindeki "pub-..." kısmı).
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

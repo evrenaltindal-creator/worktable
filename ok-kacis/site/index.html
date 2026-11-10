@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ok Kaçış</title>
+<meta name="description" content="Okları doğru sırayla tahtadan kaçırdığın ücretsiz bulmaca oyunu. Sonsuz seviye, zamana karşı modu, 7 dil.">
+<meta property="og:title" content="Ok Kaçış">
+<meta property="og:description" content="Okları doğru sırayla tahtadan kaçır. Ücretsiz bulmaca oyunu.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="img/screens/tr.jpg">
+<meta name="theme-color" content="#eaeff5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a1f3a" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="img/icon-256.png" type="image/png">
+<link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+<link rel="stylesheet" href="oyna/fonts/fonts.css">
+<link rel="stylesheet" href="site.css">
+</head>
+<body data-page="home">
+<canvas class="bg" id="bg" aria-hidden="true"></canvas>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./"><img src="img/icon-256.png" alt="" width="40" height="40"><span>Ok Kaçış</span></a>
+    <label class="lang"><span class="sr">Language</span><select id="lang"></select></label>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <h1>Ok Kaçış</h1>
+        <p class="subtitle" data-t="subtitle">Okları sırayla tahtadan kaçır</p>
+        <p class="lead" data-t="web.lead"></p>
+        <div class="cta">
+          <a class="btn btn-primary" href="oyna/">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z" fill="currentColor"/></svg>
+            <span data-t="web.play">Tarayıcıda oyna</span>
+          </a>
+          <a class="btn btn-store" id="appStore" href="#" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-t="web.appStore">App Store'dan indir</span>
+          </a>
+          <a class="btn btn-store" id="googlePlay" href="#" hidden>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span data-t="web.googlePlay">Google Play'den indir</span>
+          </a>
+          <span class="chip" id="soon" data-t="web.soon">iPhone uygulaması çok yakında</span>
+        </div>
+      </div>
+      <div class="hero-shot">
+        <div class="phone"><img id="shot" src="img/screens/tr.jpg" alt="Ok Kaçış" width="600" height="1304"></div>
+      </div>
+    </section>
+
+    <section class="features">
+      <h2 data-t="web.featuresTitle">Neden Ok Kaçış?</h2>
+      <div class="cards" id="cards"></div>
+    </section>
+
+    <section class="how">
+      <h2 data-t="web.howTitle">Nasıl oynanır?</h2>
+      <ol class="steps" id="steps"></ol>
+    </section>
+
+    <section class="contact" id="iletisim">
+      <h2 data-t="web.contact">İletişim</h2>
+      <p><a class="js-email" href="#"></a></p>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>© <span class="js-year">2026</span> <span class="js-dev">Ok Kaçış</span></span>
+    <a href="gizlilik.html" data-t="web.privacy">Gizlilik politikası</a>
+  </footer>
+</div>
+<script src="site-ayarlari.js"></script>
+<script src="texts.js"></script>
+<script src="oyna/js/background.js"></script>
+<script src="site.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ok Kaçış</title>
+<meta name="description" content="Okları doğru sırayla tahtadan kaçırdığın bir bulmaca oyunu.">
+<meta name="theme-color" content="#eaeff5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a1f3a" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="style.css">
+<style>
+  /* Telefon çentiği / alt çubuk için güvenli alan */
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  html { box-sizing: border-box; }
+</style>
+</head>
+<body>
+<!-- GAME:BEGIN -->
+<canvas class="bg-canvas" id="bg" aria-hidden="true"></canvas>
+<div class="app">
+  <header class="hud">
+    <div class="titleblock">
+      <span class="tb-label" id="lvLabel">SEVİYE</span>
+      <span class="tb-num" id="lvNum">1</span>
+      <span class="tb-meta"><span id="lvSize"></span><span id="lvLeft"></span></span>
+    </div>
+    <div class="tools">
+      <button type="button" class="tool" id="btnHome" aria-label="Ana menü">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 4.5l8 7"/><path d="M6.5 10v9.5h11V10"/><path d="M10 19.5v-5h4v5"/></svg>
+      </button>
+      <button type="button" class="tool" id="btnHint" aria-label="İpucu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1 2V17h5.2v-1.2c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>
+        <span class="badge" id="hintBadge">3</span>
+      </button>
+      <button type="button" class="tool" id="btnRestart" aria-label="Baştan başla">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.8-6.3"/><path d="M3.5 4v5h5"/></svg>
+      </button>
+      <button type="button" class="tool" id="btnSound" aria-label="Ses" aria-pressed="true">
+        <svg class="ic-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.8L13 19V5L7.8 9.5H4z"/><path d="M16.5 8.8a4.6 4.6 0 0 1 0 6.4M19 6.3a8.2 8.2 0 0 1 0 11.4"/></svg>
+        <svg class="ic-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5v5h3.8L13 19V5L7.8 9.5H4z"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5"/></svg>
+      </button>
+    </div>
+  </header>
+  <section class="scorebar" id="scorebar" aria-label="Skor">
+    <div class="sb-score">
+      <span class="sb-label" id="sbScoreLabel">SKOR</span>
+      <span class="sb-value" id="sbScore">0</span>
+      <span class="sb-sub" id="sbSub"></span>
+    </div>
+    <div class="sb-mid">
+      <div class="hearts" id="hearts" role="img"></div>
+      <div class="timer" id="timer" role="timer" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 10v3.5l2.5 2M9.5 3h5"/></svg>
+        <span class="timer-num" id="timerNum">1:00</span>
+        <span class="timer-bar" aria-hidden="true"><i id="timerBar"></i></span>
+        <span class="timer-delta" id="timerDelta" aria-hidden="true"></span>
+      </div>
+    </div>
+    <div class="sb-combo" id="sbCombo" data-level="1">
+      <span class="sb-label" id="sbComboLabel">KOMBO</span>
+      <span class="sb-value" id="sbComboVal">x1</span>
+      <span class="sb-meter" aria-hidden="true"><i id="sbComboBar"></i></span>
+    </div>
+  </section>
+  <main class="stage" id="stage">
+    <canvas id="board" aria-label="Oyun tahtası"></canvas>
+    <p class="tip" id="tip"></p>
+  </main>
+  <aside class="banner-slot" id="bannerSlot" aria-label="Reklam" hidden></aside>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="overlay" id="overlay" hidden>
+  <div class="card" id="card" role="dialog" aria-modal="true" aria-labelledby="cardTitle"></div>
+</div>
+<!-- GAME:END -->
+<script src="config.js"></script>
+<script src="../site-ayarlari.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/levels.js"></script>
+<script src="js/sound.js"></script>
+<script src="js/fx.js"></script>
+<script src="js/background.js"></script>
+<script src="js/ads.js"></script>
+<script src="js/game.js"></script>
+</body>
+</html>

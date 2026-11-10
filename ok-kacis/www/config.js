@@ -16,13 +16,21 @@ window.OK_KACIS_CONFIG = {
   adProvider: 'auto',
 
   admob: {
-    // Bunlar Google'ın herkese açık TEST kimlikleri (Android). Para kazandırmazlar.
-    // Uygulamayı yayınlamadan önce AdMob panelindeki kendi kimliklerinle değiştir
-    // ve testing'i false yap.
-    bannerId: 'ca-app-pub-3940256099942544/6300978111',
-    interstitialId: 'ca-app-pub-3940256099942544/1033173712',
-    rewardedId: 'ca-app-pub-3940256099942544/5224354917',
+    // Aşağıdakiler Google'ın herkese açık TEST kimlikleri. Para kazandırmazlar.
+    // Yayınlamadan önce AdMob panelinde her platform için ayrı bir uygulama
+    // açıp kendi reklam birimi kimliklerini yaz ve testing'i false yap.
+    // iOS uygulama kimliği ayrıca ios/App/App/Info.plist > GADApplicationIdentifier içinde.
     testing: true,
+    android: {
+      bannerId: 'ca-app-pub-3940256099942544/6300978111',
+      interstitialId: 'ca-app-pub-3940256099942544/1033173712',
+      rewardedId: 'ca-app-pub-3940256099942544/5224354917',
+    },
+    ios: {
+      bannerId: 'ca-app-pub-3940256099942544/2934735716',
+      interstitialId: 'ca-app-pub-3940256099942544/4411468910',
+      rewardedId: 'ca-app-pub-3940256099942544/1712485313',
+    },
   },
 
   adsense: {
@@ -32,6 +40,10 @@ window.OK_KACIS_CONFIG = {
   },
 
   crazygames: {},
+
+  // Reklam yüklenemezse (ör. AdSense oyun reklamları henüz onaylanmadıysa)
+  // oyuncu ödülü yine alsın mı? Web sitesi için true önerilir.
+  rewardWhenNoAd: false,
 
   mock: {
     interstitialSeconds: 3,

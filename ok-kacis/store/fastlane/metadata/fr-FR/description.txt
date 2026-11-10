@@ -1,0 +1,13 @@
+Ok Kaçış est un casse-tête calme mais prenant, où chaque coup compte.
+
+Le plateau est rempli de flèches sinueuses. Touche-en une : si son chemin est libre, elle glisse hors du plateau. Si une autre flèche bloque le passage, elle la percute et tu perds une vie. Trouve le bon ordre et vide le plateau.
+
+FONCTIONNALITÉS
+• Niveaux infinis : les plateaux grandissent et les flèches s’imbriquent de plus en plus. Chaque niveau a une solution.
+• Contre la montre : commence avec 60 secondes, chaque plateau vidé rapporte +8 secondes. Bats ton record.
+• Combos : des coups rapides et justes font grimper le multiplicateur jusqu’à x5.
+• Classement : tes meilleurs scores restent sur ton appareil.
+• Indices : bloqué ? Un indice montre une flèche dont le chemin est libre.
+• Thème clair et sombre, 7 langues, jouable hors ligne.
+
+Idéal pour les petites pauses : la plupart des niveaux durent moins d’une minute.

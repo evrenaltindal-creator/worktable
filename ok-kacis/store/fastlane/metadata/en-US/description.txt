@@ -1,0 +1,13 @@
+Ok Kaçış is a calm but gripping puzzle game where every move counts.
+
+The board is full of bending arrows. Tap one: if its path is clear, it slides off the board. If another arrow is in the way, it crashes and you lose a heart. Find the right order and clear the board.
+
+FEATURES
+• Endless levels: boards grow and the arrows lock together tighter. Every level is solvable.
+• Time attack: start with 60 seconds and earn +8 seconds for every board you clear. Beat your record.
+• Combos: quick, correct moves push your multiplier up to x5.
+• Leaderboard: your best scores are kept on your device.
+• Hints: stuck? A hint shows an arrow with a clear path.
+• Light and dark themes, 7 languages, plays offline.
+
+Great for short breaks: most levels take less than a minute.

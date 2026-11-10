@@ -760,6 +760,9 @@
 
   function loadFont(lang) {
     if (!lang.font || !root || !root.document) return;
+    // iOS/Android uygulamasında telefonun kendi Japonca/Korece yazı tipi kullanılır (internet gerekmez)
+    const C = root.Capacitor;
+    if (C && typeof C.isNativePlatform === 'function' && C.isNativePlatform()) return;
     const id = 'font-' + lang.code;
     if (root.document.getElementById(id)) return;
     const link = root.document.createElement('link');

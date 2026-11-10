@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ok Kaçış – Tanıtım kutusu kodu</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="img/icon-256.png" type="image/png">
+<link rel="stylesheet" href="oyna/fonts/fonts.css">
+<link rel="stylesheet" href="site.css">
+</head>
+<body data-page="tool" data-ads="off">
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./"><img src="img/icon-256.png" alt="" width="40" height="40"><span>Ok Kaçış</span></a>
+  </header>
+  <main class="doc">
+    <h1>Sitene tanıtım kutusu ekle</h1>
+    <p>Bu sayfa, sitenin herhangi bir sayfasına yapıştıracağın hazır kodu üretir. Kodu kopyala ve sayfanın HTML'inde kutunun görünmesini istediğin yere yapıştır.</p>
+    <p class="meta" id="baseNote"></p>
+
+    <div class="panel">
+      <h2 style="margin-top:0">1. Oyunu tanıtan kutu</h2>
+      <p>Tıklayınca oyunun tanıtım sayfasına gider; orada "Tarayıcıda oyna" ve App Store düğmeleri var.</p>
+      <div class="row">
+        <label for="promoLang">Kutunun dili</label>
+        <select id="promoLang" class="btn" style="min-height:40px;padding:0 10px;box-shadow:none"></select>
+      </div>
+      <div class="preview" id="promoPreview"></div>
+      <textarea id="promoCode" readonly aria-label="Tanıtım kutusu kodu"></textarea>
+      <div class="row"><button type="button" class="btn btn-primary" data-copy="promoCode">Kodu kopyala</button><span class="meta" id="promoCopied" hidden>Kopyalandı</span></div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top:0">2. Oyunu sayfanın içine göm</h2>
+      <p>Ziyaretçi oyunu sayfadan çıkmadan oynar. Oyun içi reklamlar (AdSense) bu çerçevede de çalışır.</p>
+      <textarea id="embedCode" readonly aria-label="Oyun çerçevesi kodu"></textarea>
+      <div class="row"><button type="button" class="btn btn-primary" data-copy="embedCode">Kodu kopyala</button><span class="meta" id="embedCopied" hidden>Kopyalandı</span></div>
+    </div>
+
+    <div class="panel">
+      <h2 style="margin-top:0">Adres farklıysa</h2>
+      <p>Kodlar bu sayfanın bulunduğu klasöre göre yazılır. Oyunu başka bir adrese yüklediysen buraya yaz:</p>
+      <div class="row">
+        <input id="base" type="url" class="btn" style="flex:1 1 260px;min-height:44px;box-shadow:none;font:500 14px var(--font-mono)" placeholder="https://siten.com/ok-kacis">
+      </div>
+    </div>
+  </main>
+</div>
+<script src="site-ayarlari.js"></script>
+<script src="texts.js"></script>
+<script>
+(function () {
+  'use strict';
+  var T = window.OK_KACIS_TEXTS || {};
+  var NAMES = { tr: 'Türkçe', en: 'English', pt: 'Português', de: 'Deutsch', fr: 'Français', ja: '日本語', ko: '한국어' };
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); };
+  var here = location.href.replace(/[?#].*$/, '').replace(/[^/]*$/, '').replace(/\/$/, '');
+  if (location.protocol === 'file:') $('baseNote').textContent = 'Not: Bu sayfayı bilgisayarından açtın. Klasörü sitene yükledikten sonra sitenden açarsan adresler kendiliğinden doğru çıkar ya da aşağıya adresi yaz.';
+
+  Object.keys(T).forEach(function (code) {
+    var o = document.createElement('option');
+    o.value = code;
+    o.textContent = NAMES[code] || code;
+    $('promoLang').appendChild(o);
+  });
+  $('promoLang').value = T.tr ? 'tr' : Object.keys(T)[0];
+
+  function base() {
+    var v = $('base').value.trim().replace(/\/+$/, '');
+    return v || here;
+  }
+
+  function promo(lang) {
+    var t = T[lang] || T.en;
+    var url = base();
+    return [
+      '<!-- Ok Kaçış tanıtım kutusu -->',
+      '<div class="okk-promo">',
+      '<style>',
+      '.okk-promo{max-width:520px;margin:16px auto;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}',
+      '.okk-promo a.okk-card{display:flex;align-items:center;gap:14px;padding:14px 16px;border:2px solid #14243a;border-radius:16px;background:#0e2a4d;color:#fff;text-decoration:none;box-shadow:0 4px 0 #14243a}',
+      '.okk-promo a.okk-card:hover{background:#123a68}',
+      '.okk-promo img{width:64px;height:64px;border-radius:14px;flex:none}',
+      '.okk-promo .okk-t{display:flex;flex-direction:column;flex:1;min-width:0}',
+      '.okk-promo .okk-t strong{font-size:18px;line-height:1.25}',
+      '.okk-promo .okk-t span{font-size:14px;line-height:1.4;opacity:.85}',
+      '.okk-promo .okk-b{flex:none;padding:10px 16px;border-radius:12px;background:#ffd24a;color:#0a1f3a;font-weight:800;font-size:15px}',
+      '@media (max-width:420px){.okk-promo .okk-b{display:none}}',
+      '</style>',
+      '<a class="okk-card" href="' + esc(url) + '/">',
+      '<img src="' + esc(url) + '/img/icon-256.png" alt="" width="64" height="64">',
+      '<span class="okk-t"><strong>' + esc(t.web.promoTitle) + '</strong><span>' + esc(t.web.promoText) + '</span></span>',
+      '<span class="okk-b">' + esc(t.web.play) + '</span>',
+      '</a>',
+      '</div>',
+    ].join('\n');
+  }
+
+  function embed() {
+    return '<iframe src="' + esc(base()) + '/oyna/" title="Ok Kaçış" loading="lazy" allow="autoplay; fullscreen" style="display:block;width:100%;max-width:430px;height:780px;margin:16px auto;border:2px solid #14243a;border-radius:20px"></iframe>';
+  }
+
+  function render() {
+    var code = promo($('promoLang').value);
+    $('promoCode').value = code;
+    $('promoPreview').innerHTML = code;
+    $('embedCode').value = embed();
+  }
+
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var id = btn.getAttribute('data-copy');
+      var area = $(id);
+      var done = function () {
+        var note = $(id === 'promoCode' ? 'promoCopied' : 'embedCopied');
+        note.hidden = false;
+        setTimeout(function () { note.hidden = true; }, 1800);
+      };
+      var fallback = function () { area.focus(); area.select(); try { document.execCommand('copy'); done(); } catch (e) {} };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(area.value).then(done, fallback);
+      else fallback();
+    });
+  });
+  $('promoLang').addEventListener('change', render);
+  $('base').addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>

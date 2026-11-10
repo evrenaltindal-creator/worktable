@@ -31,6 +31,12 @@ reklam altyapısı hazır, oynanabilir bir prototip var.
   Japonca, Korece. Oyun cihazın diliyle açılır (desteklenmeyen dillerde
   İngilizce), menüdeki 🌐 düğmesinden değiştirilir ve seçim kaydedilir.
 
+## Yayına alma rehberleri
+
+- **iPhone / App Store (Mac gerekmez):** [store/APP-STORE-REHBERI.md](store/APP-STORE-REHBERI.md)
+- **Kendi sitende tanıtım + oynanabilir oyun + AdSense:** [SITEYE-YUKLE.md](SITEYE-YUKLE.md)
+- **Android / Google Play:** aşağıda "Yol 1"
+
 ## Hemen oyna
 
 `www/index.html` dosyasına çift tıkla. Kurulum gerekmez, internet de gerekmez
@@ -52,6 +58,14 @@ Faydalı adres eklentileri:
 ```
 ok-kacis/
   README.md            bu dosya
+  SITEYE-YUKLE.md      siteye koyma rehberi
+  package.json         Capacitor (iOS/Android) ve test komutları: npm install, npm test, npm run site
+  capacitor.config.json  uygulama adı ve paket kimliği (com.evrenaltindal.okkacis)
+  ios/                 iOS projesi (GitHub'da bulut Mac'te derlenir)
+  resources/           uygulama simgesi ve açılış ekranı (SVG kaynak + PNG)
+  store/               App Store: rehber, 7 dilde metinler (listing.json), ekran görüntüleri
+  site/                sitene yükleyeceğin hazır paket (tanıtım, oyun, gizlilik)
+  tools/               store-metadata.js, build-site.js, screenshots.js
   www/                 oyunun kendisi (uygulamaya ya da siteye bu klasör girer)
     index.html
     style.css          görünüm (renkler en üstte)
@@ -63,6 +77,7 @@ ok-kacis/
     js/ads.js          reklam katmanı (AdMob, AdSense, CrazyGames, test)
     js/sound.js        ses efektleri
     js/i18n.js         bütün diller ve metinler
+    fonts/             gömülü yazı tipleri (internetsiz çalışır, OFL lisanslı)
     manifest.webmanifest, icon.svg
   test/levels.test.js  300 seviye + 300 zamana karşı tahtası üretip çözer:
                        node ok-kacis/test/levels.test.js
@@ -122,13 +137,11 @@ Mobil bulmaca oyunlarında para çoğunlukla buradan gelir. Gerekenler: Node.js,
 [Google Play Console](https://play.google.com/console) hesabı (tek seferlik
 kayıt ücreti var) ve bir [AdMob](https://admob.google.com) hesabı.
 
-1. **Uygulamayı oluştur** (bu klasörde, komut satırında):
+1. **Android projesini oluştur** (Capacitor ayarları hazır, bu klasörde komut satırında):
 
    ```bash
    cd ok-kacis
-   npm init -y
-   npm install @capacitor/core @capacitor/cli @capacitor/android @capacitor-community/admob
-   npx cap init "Ok Kacis" com.SENINADIN.okkacis --web-dir www
+   npm install
    npx cap add android
    ```
 
@@ -145,14 +158,14 @@ kayıt ücreti var) ve bir [AdMob](https://admob.google.com) hesabı.
    kendi kimliğinle (`ca-app-pub-...~...`) değiştir.
 
 3. **Test et.** `npx cap sync android` ve `npx cap open android` ile Android
-   Studio'yu aç, telefonunda çalıştır. `config.js` içindeki test kimlikleriyle
+   Studio'yu aç, telefonunda çalıştır. `config.js` > `admob.android` içindeki test kimlikleriyle
    Google'ın "Test Ad" etiketli reklamlarını görmelisin. Oyun AdMob'u kendisi
    bulur, `adProvider` ayarını değiştirmen gerekmez. Reklam çıkmazsa Android
    Studio'nun Logcat penceresinde `[OkAds]` satırlarına bak.
 
 4. **Kendi kimliklerini gir.** AdMob panelinde 3 reklam birimi oluştur:
    Banner, Geçiş (Interstitial), Ödüllü (Rewarded). Kimlikleri
-   `config.js` → `admob` bölümüne yaz ve `testing: false` yap. Sonra tekrar
+   `config.js` → `admob.android` bölümüne yaz ve `testing: false` yap. Sonra tekrar
    `npx cap sync android`.
 
 5. **Yayınla.** Android Studio → Build → Generate Signed App Bundle ile `.aab`
@@ -250,13 +263,21 @@ Test edildi:
   sıralama, açık/koyu tema ve "hareketi azalt" ayarı. Efektler yoğunken
   bile tarayıcıda saniyede 60 kare.
 - AdMob katmanının mantığı, sahte bir Capacitor eklentisiyle (ödül alındı,
-  reklam yarıda kapatıldı, olay dinleyicisi yok durumları).
+  reklam yarıda kapatıldı, olay dinleyicisi yok durumları; iOS'ta iOS
+  kimlikleri ve izleme izni, Android'de Android kimlikleri).
+- iOS projesi Capacitor 8 ile oluşturuldu; App Store metinleri karakter
+  sınırlarına göre denetlendi (`node ok-kacis/tools/store-metadata.js`).
+- Site: tanıtım sayfası (telefon, bilgisayar, açık/koyu, Türkçe/İngilizce/Japonca),
+  gizlilik sayfası, tanıtım kutusu üreteci, sitedeki oyunun reklamsız ve
+  AdSense'li hâlleri; sitede hiçbir durumda test reklamı çıkmıyor.
 
 Test edilemedi (gerçek hesap ve cihaz gerekiyor):
 
 - Gerçek AdMob, AdSense ve CrazyGames reklamları. Bu katmanlar resmi
-  belgelerdeki arayüze göre yazıldı. Yayından önce 1. yoldaki 3. adımla
-  telefonda test reklamlarının çıktığını mutlaka gör.
+  belgelerdeki arayüze göre yazıldı. Yayından önce telefonda (iOS'ta
+  TestFlight ile) test reklamlarının çıktığını mutlaka gör.
+- iOS derlemesi ve App Store Connect'e yükleme iş akışları: Apple hesabı ve
+  macOS gerektiriyor, ilk kez senin anahtarlarınla GitHub'da çalışacaklar.
 
 ## Sonraki adımlar için fikirler
 

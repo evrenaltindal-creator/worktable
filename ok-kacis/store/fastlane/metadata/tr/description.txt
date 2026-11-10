@@ -1,0 +1,13 @@
+Ok Kaçış, her hamlenin önemli olduğu sakin ama sürükleyici bir bulmaca oyunu.
+
+Tahtada kıvrılan oklar var. Bir oka dokun: önü boşsa kayıp tahtadan kaçar. Önünde başka bir ok varsa çarpar ve bir can gider. Doğru sırayı bul ve tahtayı temizle.
+
+ÖZELLİKLER
+• Sonsuz seviye: tahtalar giderek büyür, oklar birbirine kenetlenir. Her seviye çözülebilir.
+• Zamana karşı: 60 saniyeyle başla, temizlediğin her tahta +8 saniye kazandırır. Rekorunu kır.
+• Kombo: hızlı ve doğru hamlelerle çarpanı x5'e kadar yükselt.
+• Skor tablosu: en iyi skorların cihazında saklanır.
+• İpucu: takıldığında önü açık bir oku gösterir.
+• Açık ve koyu tema, 7 dil, internetsiz oynanır.
+
+Kısa molalar için ideal: bir seviye çoğu zaman bir dakikadan kısa sürer.

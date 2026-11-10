@@ -1,0 +1,14 @@
+{
+  "appId": "com.evrenaltindal.okkacis",
+  "appName": "Ok Kaçış",
+  "webDir": "www",
+  "backgroundColor": "#0a1f3a",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#0a1f3a",
+    "scrollEnabled": false
+  },
+  "android": {
+    "backgroundColor": "#0a1f3a"
+  }
+}

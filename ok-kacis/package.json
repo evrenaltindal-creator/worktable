@@ -1,0 +1,21 @@
+{
+  "name": "ok-kacis",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Ok Kaçış bulmaca oyunu: web, iOS ve Android",
+  "scripts": {
+    "test": "node test/levels.test.js && node test/i18n.test.js",
+    "site": "node tools/build-site.js",
+    "ios": "cap sync ios",
+    "android": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor-community/admob": "8.2.1",
+    "@capacitor/android": "8.5.3",
+    "@capacitor/core": "8.5.3",
+    "@capacitor/ios": "8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3"
+  }
+}

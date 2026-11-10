@@ -1,0 +1,5 @@
+# Bu dosya sitenin KÖK dizinine gider: https://siten.com/app-ads.txt
+# App Store'da "geliştirici web sitesi" olarak bu siteyi yazmalısın.
+# pub-0000000000000000 yerine AdMob yayıncı kimliğini yaz
+# (AdMob > Ayarlar > Hesap bilgileri > Yayıncı kimliği). AdSense ile aynı hesapsa kimlik de aynıdır.
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

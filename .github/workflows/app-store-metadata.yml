@@ -1,0 +1,107 @@
+# App Store sayfasındaki metinleri (7 dil) ve ekran görüntülerini App Store Connect'e yükler.
+# Metinler: ok-kacis/store/listing.json  Ekran görüntüleri: ok-kacis/store/fastlane/screenshots
+# Uygulama App Store Connect'te oluşturulmuş olmalı. Ayrıntılar: ok-kacis/store/APP-STORE-REHBERI.md
+name: "iOS: App Store sayfasını güncelle"
+
+on:
+  workflow_dispatch:
+    inputs:
+      site_url:
+        description: "Sitendeki oyun adresi (ör. https://ornek.com/ok-kacis). Gizlilik ve destek bağlantıları buradan yazılır."
+        required: true
+      version:
+        description: "Düzenlenecek App Store sürümü"
+        required: true
+        default: "1.0.0"
+      screenshots:
+        description: "Ekran görüntülerini de yükle"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  metadata:
+    name: Metinleri ve görselleri yükle
+    runs-on: macos-15
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: ok-kacis
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      SITE_URL: ${{ inputs.site_url }}
+      APP_VERSION: ${{ inputs.version }}
+      WITH_SCREENSHOTS: ${{ inputs.screenshots }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gizli anahtarlar eklenmiş mi?
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          missing=""
+          for v in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8; do
+            if [ -z "${!v}" ]; then missing="$missing $v"; fi
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Eksik gizli anahtar(lar):$missing (ok-kacis/store/APP-STORE-REHBERI.md)"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Metinleri denetle ve hazırla
+        run: node tools/store-metadata.js --site "$SITE_URL"
+
+      - name: fastlane
+        run: |
+          if ! command -v fastlane >/dev/null 2>&1; then sudo gem install fastlane --no-document; fi
+          fastlane --version
+
+      - name: App Store Connect API anahtarını hazırla
+        env:
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          python3 - <<'PY'
+          import json, os
+          path = os.path.join(os.environ["RUNNER_TEMP"], "asc_api_key.json")
+          with open(path, "w") as f:
+              json.dump({
+                  "key_id": os.environ["ASC_KEY_ID"],
+                  "issuer_id": os.environ["ASC_ISSUER_ID"],
+                  "key": os.environ["ASC_KEY_P8"].strip() + "\n",
+                  "in_house": False,
+              }, f)
+          os.chmod(path, 0o600)
+          PY
+
+      - name: App Store Connect'e gönder
+        run: |
+          APP_ID=$(node -p "require('./capacitor.config.json').appId")
+          SKIP_SHOTS=true
+          if [ "$WITH_SCREENSHOTS" = "true" ]; then SKIP_SHOTS=false; fi
+          fastlane deliver \
+            --api_key_path "$RUNNER_TEMP/asc_api_key.json" \
+            --app_identifier "$APP_ID" \
+            --app_version "$APP_VERSION" \
+            --platform ios \
+            --metadata_path store/fastlane/metadata \
+            --screenshots_path store/fastlane/screenshots \
+            --skip_binary_upload true \
+            --skip_screenshots "$SKIP_SHOTS" \
+            --overwrite_screenshots true \
+            --force true \
+            --submit_for_review false \
+            --automatic_release false \
+            --run_precheck_before_submit false \
+            --ignore_language_directory_validation true
+          echo "### App Store sayfası güncellendi ($APP_VERSION)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Anahtarı sil
+        if: always()
+        run: rm -f "$RUNNER_TEMP/asc_api_key.json"

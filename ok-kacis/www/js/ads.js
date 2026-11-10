@@ -280,7 +280,11 @@
   class AdMobProvider {
     constructor(cfg) {
       this.name = 'admob';
-      this.cfg = cfg || {};
+      const C = root.Capacitor;
+      this.platform = C && typeof C.getPlatform === 'function' ? C.getPlatform() : 'android';
+      cfg = cfg || {};
+      // admob.ios / admob.android içindeki kimlikler, düz alanların üstüne yazılır
+      this.cfg = Object.assign({}, cfg, cfg[this.platform] || {});
       this.ad = capacitorAdMob();
       this.ready = { inter: false, reward: false };
       this.slot = null;
@@ -288,10 +292,22 @@
     async init() {
       if (!this.ad) throw new Error('AdMob eklentisi bulunamadı');
       await this.ad.initialize({ initializeForTesting: !!this.cfg.testing });
-      // Avrupa'daki oyuncular için Google'ın izin (GDPR) formu
+      // 1) Avrupa'daki oyuncular için Google'ın izin (GDPR) bilgisi
+      let consent = null;
       try {
-        const info = await this.ad.requestConsentInfo();
-        if (info && info.isConsentFormAvailable && info.status === 'REQUIRED') await this.ad.showConsentForm();
+        consent = await this.ad.requestConsentInfo();
+      } catch (e) {}
+      // 2) iOS: Apple'ın "uygulama izleme" izni (ATT). Oyuncu hayır derse reklamlar yine çıkar,
+      //    sadece kişiselleştirilmez.
+      if (this.platform === 'ios') {
+        try {
+          const st = await this.ad.trackingAuthorizationStatus();
+          if (st && st.status === 'notDetermined') await this.ad.requestTrackingAuthorization();
+        } catch (e) {}
+      }
+      // 3) Gerekiyorsa izin formu
+      try {
+        if (consent && consent.isConsentFormAvailable && consent.status === 'REQUIRED') await this.ad.showConsentForm();
       } catch (e) {}
       try {
         await this.ad.addListener('bannerAdSizeChanged', (size) => {
@@ -550,7 +566,8 @@
       } finally {
         this.busy = false;
       }
-      if (result !== null) this.lastAdAt = Date.now(); // ödüllü reklamdan hemen sonra geçiş reklamı çıkmasın
+      if (result !== null && result !== undefined) this.lastAdAt = Date.now(); // ödüllü reklamdan hemen sonra geçiş reklamı çıkmasın
+      else if (this.cfg.rewardWhenNoAd) return true; // reklam yoksa ödülü yine ver (config.js)
       return result === undefined ? null : result;
     },
 

@@ -215,7 +215,9 @@
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.lineJoin = 'round';
-      for (const tx of texts) {
+      // küçük puan yazıları önce, ortadaki büyük yazı en üstte
+      const ordered = texts.filter((x) => !x.center).concat(texts.filter((x) => x.center));
+      for (const tx of ordered) {
         const u = tx.t / tx.life;
         let scale;
         if (tx.center) {

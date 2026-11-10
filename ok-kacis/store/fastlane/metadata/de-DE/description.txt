@@ -1,0 +1,13 @@
+Ok Kaçış ist ein ruhiges, aber fesselndes Rätselspiel, in dem jeder Zug zählt.
+
+Auf dem Brett liegen verschlungene Pfeile. Tippe einen an: Ist sein Weg frei, gleitet er vom Brett. Steht ein anderer Pfeil im Weg, prallt er dagegen und du verlierst ein Leben. Finde die richtige Reihenfolge und räum das Brett ab.
+
+FUNKTIONEN
+• Endlos viele Level: Die Bretter wachsen, die Pfeile verhaken sich immer stärker. Jedes Level ist lösbar.
+• Gegen die Zeit: Starte mit 60 Sekunden, jedes geräumte Brett bringt +8 Sekunden. Knack deinen Rekord.
+• Kombos: Schnelle, richtige Züge treiben den Multiplikator bis x5.
+• Bestenliste: Deine besten Ergebnisse bleiben auf deinem Gerät.
+• Tipps: Festgefahren? Ein Tipp zeigt einen Pfeil mit freiem Weg.
+• Helles und dunkles Design, 7 Sprachen, offline spielbar.
+
+Ideal für kurze Pausen: Die meisten Level dauern weniger als eine Minute.

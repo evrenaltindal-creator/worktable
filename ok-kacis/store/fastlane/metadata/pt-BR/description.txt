@@ -1,0 +1,13 @@
+Ok Kaçış é um jogo de quebra-cabeça tranquilo, mas viciante, em que cada jogada conta.
+
+O tabuleiro está cheio de setas que fazem curvas. Toque em uma: se o caminho estiver livre, ela desliza para fora. Se outra seta estiver no caminho, ela bate e você perde uma vida. Encontre a ordem certa e limpe o tabuleiro.
+
+RECURSOS
+• Níveis infinitos: os tabuleiros crescem e as setas se encaixam cada vez mais. Todo nível tem solução.
+• Contra o tempo: comece com 60 segundos e ganhe +8 segundos a cada tabuleiro limpo. Bata seu recorde.
+• Combos: jogadas rápidas e certas levam o multiplicador até x5.
+• Placar: suas melhores pontuações ficam salvas no aparelho.
+• Dicas: travou? A dica mostra uma seta com o caminho livre.
+• Tema claro e escuro, 7 idiomas, funciona offline.
+
+Perfeito para pausas curtas: a maioria dos níveis leva menos de um minuto.
