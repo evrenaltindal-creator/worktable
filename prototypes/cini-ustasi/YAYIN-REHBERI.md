@@ -50,9 +50,9 @@ Derleme, imzalama, yükleme, metinler, ekran görüntüleri ve incelemeye gönde
 4. **Paket kimliğini (Bundle ID) seçin** ve Claude'a söyleyin. Örneğin `com.sirketadi.ciniustasi`. Claude kaydeder.
 5. **Uygulama kaydını oluşturun.** Apple bunu API'ye açmıyor, yalnızca web arayüzünden yapılıyor. Adımlar aşağıda, 1. Bölüm Adım 5'te.
 6. **Web arayüzündeki üç kısa ayarı yapın:**
-   - **App Privacy → "Data Not Collected"**
-   - **Age Rating** anketi: hepsine "None/No"
-   - **Pricing → Free**
+   - **App Privacy:** Uygulamanın ve kullanılan tüm SDK'ların veri işlemesini kontrol edip doğru cevapları girin; herkese açık gizlilik politikası adresini ekleyin.
+   - **Age Rating:** Soruları oyunun gerçek içeriğine göre cevaplayın.
+   - **Pricing:** Yayıncı tarafından seçilen fiyatı belirleyin.
 
 ### Claude'un yaptıkları
 

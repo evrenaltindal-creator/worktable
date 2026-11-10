@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   app-store:
-    runs-on: macos-15
+    runs-on: macos-26
     timeout-minutes: 60
     defaults:
       run:
@@ -61,8 +61,8 @@ jobs:
           missing=""
           for k in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8 APPLE_TEAM_ID; do [ -n "${!k}" ] || missing="$missing $k"; done
           if [ -n "$missing" ]; then
-            echo "::notice::GitHub secret'lari henuz eklenmemis:$missing. Is atlandi."
-            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "::error::GitHub secret'lari eksik:$missing. Is calistirilamadi."
+            exit 1
           else
             echo "ok=true" >> "$GITHUB_OUTPUT"
           fi
