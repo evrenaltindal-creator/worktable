@@ -1,0 +1,54 @@
+<!--
+  Çini Ustası tanıtım kutusu
+  ---------------------------------------------------------------
+  Sitenizin herhangi bir sayfasına olduğu gibi yapıştırın (WordPress'te "Özel HTML" bloğu).
+  Bağlantılar ve görseller, bu klasörün sitenizde /cini-ustasi/ adresine yüklendiğini varsayar.
+  Başka bir klasöre yüklediyseniz aşağıdaki "/cini-ustasi/" geçen yerleri değiştirin.
+  App Store onayından sonra "Çok yakında App Store'da" kutusunun yerine Apple'ın resmi rozetini
+  koyun (adımlar YAYIN-REHBERI.md içinde). Kutu her sitede aynı görünsün diye renkleri sabittir.
+  Yazı tipleri: Sitenizde Manrope ve Yeseva One yüklü değilse kutu sistem yazı tiplerine düşer.
+  Aynı görünüm için sayfanın <head> kısmına şu satırı ekleyebilirsiniz:
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&family=Yeseva+One&display=swap">
+-->
+<section class="cu-promo" lang="tr" aria-labelledby="cu-promo-title">
+  <style>
+    .cu-promo{--cu-cobalt:#1C3F7A;--cu-ink:#FFFFFF;--cu-soft:#F3E3B8;--cu-gold:#E2A532;--cu-gold-ink:#2B1C00;
+      position:relative;overflow:hidden;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr) minmax(0,240px);gap:24px;align-items:center;
+      max-width:960px;margin:32px auto;padding:28px 28px 28px 28px;border-radius:24px;background:var(--cu-cobalt);color:var(--cu-ink);
+      font-family:"Manrope",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5;box-shadow:0 18px 40px rgba(19,33,58,.25)}
+    .cu-promo *{box-sizing:border-box}
+    .cu-promo::before{content:"";position:absolute;inset:0;opacity:.12;pointer-events:none;
+      background-image:radial-gradient(circle,#DCE7F7 2px,transparent 3px);background-size:44px 44px}
+    .cu-promo>*{position:relative}
+    .cu-promo .cu-icon{width:96px;height:96px;border-radius:22px;box-shadow:0 8px 22px rgba(0,0,0,.3);display:block}
+    .cu-promo .cu-eyebrow{margin:0;font-size:12px;font-weight:800;letter-spacing:.18em;color:var(--cu-soft)}
+    .cu-promo h2{margin:4px 0 0;font-family:"Yeseva One",Georgia,serif;font-weight:400;font-size:34px;line-height:1.1;color:var(--cu-ink)}
+    .cu-promo p.cu-desc{margin:10px 0 0;font-size:16px;opacity:.92;max-width:34em;color:var(--cu-ink)}
+    .cu-promo .cu-actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:18px}
+    .cu-promo a.cu-btn{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px;border-radius:12px;background:var(--cu-gold);color:var(--cu-gold-ink);font-weight:800;font-size:15px;text-decoration:none}
+    .cu-promo a.cu-btn:hover{filter:brightness(1.06)}
+    .cu-promo a.cu-btn:focus-visible,.cu-promo a.cu-more:focus-visible{outline:2px solid var(--cu-soft);outline-offset:3px}
+    .cu-promo a.cu-btn svg{width:14px;height:14px;fill:currentColor}
+    .cu-promo a.cu-more{color:var(--cu-ink);font-weight:700;font-size:15px;text-underline-offset:3px}
+    .cu-promo .cu-soon{display:inline-flex;align-items:center;height:46px;padding:0 14px;border-radius:12px;border:1.5px solid rgba(255,255,255,.35);font-size:13px;font-weight:700}
+    .cu-promo .cu-shot{width:100%;height:auto;border-radius:16px;box-shadow:0 0 0 2px rgba(226,177,62,.75),0 14px 30px rgba(0,0,0,.35);display:block}
+    @media (max-width:720px){
+      .cu-promo{grid-template-columns:auto minmax(0,1fr);padding:22px}
+      .cu-promo .cu-shot{display:none}
+      .cu-promo .cu-icon{width:72px;height:72px;border-radius:17px;align-self:start}
+      .cu-promo h2{font-size:28px}
+    }
+  </style>
+  <img class="cu-icon" src="/cini-ustasi/gorseller/ikon.png" alt="" width="96" height="96">
+  <div>
+    <p class="cu-eyebrow">YENİ OYUNUMUZ</p>
+    <h2 id="cu-promo-title">Çini Ustası</h2>
+    <p class="cu-desc">İznik çinileriyle sakin ama bırakması zor bir blok bulmaca. Parçaları yerleştir, satırları patlat, seri yap.</p>
+    <div class="cu-actions">
+      <a class="cu-btn" href="/cini-ustasi/oyna/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg>Hemen oyna</a>
+      <a class="cu-more" href="/cini-ustasi/">Oyunu tanı</a>
+      <span class="cu-soon">Çok yakında App Store'da</span>
+    </div>
+  </div>
+  <img class="cu-shot" src="/cini-ustasi/gorseller/tahta.jpg" alt="Çini Ustası oyun tahtası" width="560" height="521" loading="lazy">
+</section>

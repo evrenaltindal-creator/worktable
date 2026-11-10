@@ -413,6 +413,9 @@ const N = 8;
 const TRAY_SCALE = 0.64; // tepsideki parçaların tahtaya göre ölçeği (5'lik parçalar sığmak için biraz küçülür)
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const $ = id => document.getElementById(id);
+// Uygulama (iOS) ve site sürümü window.CINI_PROD = true ile açılır: geliştirici paneli gizlenir,
+// reklam / satın alma / zorluk ayarları koddaki varsayılanlara döner.
+const PROD = !!window.CINI_PROD;
 
 /* ---------- Depolama: erişilemezse sessizce yok sayılır ---------- */
 const store = {
@@ -652,7 +655,7 @@ const STR = {
     booster_aria_0_coins: "{name}, hak yok, altınla alabilirsin", shop_body_noads: "Test modu, gerçek ödeme alınmaz."
   },
   en: {
-    title: "TILE MASTER", coins: "coins", score: "Score", sound_off: "Mute sound", sound_on: "Turn sound on", shop: "Shop", language: "Language",
+    title: "IZNIK TILES", coins: "coins", score: "Score", sound_off: "Mute sound", sound_on: "Turn sound on", shop: "Shop", language: "Language",
     rec_first: "Set your first record", rec_best: "Best {n}", rec_new: "NEW RECORD!",
     board_aria: "Game board. Keyboard: press 1, 2 or 3 to pick a piece, arrow keys to move it, Enter to place it, Esc to cancel.",
     boosters_group: "Boosters", rotate: "Rotate", refresh: "Refresh", hammer: "Hammer",
@@ -1639,7 +1642,14 @@ const Sfx = {
   pick() { this.tone(700, { dur: 0.05, vol: 0.06 }); }
 };
 // Titreşim Android'de çalışır; iOS Safari desteklemez (Unity'de iOS haptics kullanılır)
-const buzz = pat => { try { navigator.vibrate && navigator.vibrate(pat); } catch (e) { /* yok say */ } };
+// iOS uygulamasında Capacitor Haptics eklentisi gerçek titreşimi verir
+const buzz = pat => {
+  try {
+    const H = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.Haptics;
+    if (H) { H.impact({ style: Array.isArray(pat) ? 'HEAVY' : pat >= 15 ? 'MEDIUM' : 'LIGHT' }).catch(() => {}); return; }
+    if (navigator.vibrate) navigator.vibrate(pat);
+  } catch (e) { /* yok say */ }
+};
 
 /* ---------- Sahne: hareketli arka plan (#bg) ve ekran efektleri (#fx) ----------
    Arka plan: kayan yıldız-haç çini deseni, skor plakasının arkasında dönen şemse,
@@ -2048,7 +2058,9 @@ function drawFx(now, dt) {
     let sc = p < 0.16 ? 0.3 + (p / 0.16) * 0.9 : p < 0.28 ? 1.2 - ((p - 0.16) / 0.12) * 0.2 : 1;
     if (REDUCED) sc = 1;
     x.font = `${Math.round(pr.size)}px ${FONTS.display}`;
-    const tw = x.measureText(pr.text).width * sc;
+    const raw = x.measureText(pr.text).width;
+    sc *= Math.min(1, (Scene.w - 28) / raw); // dar ekranda yazı ekrana sığacak kadar küçülür
+    const tw = raw * sc;
     const X = clamp(pr.x, tw / 2 + 8, Scene.w - tw / 2 - 8);
     x.save();
     x.translate(X, pr.y - (p > 0.72 ? (p - 0.72) * 70 : 0)); x.rotate(pr.tilt); x.scale(sc, sc);
@@ -2414,6 +2426,10 @@ window.claude?.hot?.snapshot?.(() => ({ G, LOG, impr: Ads.impr, sessionStart: Ad
 
 function boot(data) {
   data = data || {};
+  if (PROD) {
+    $('panel').hidden = true; $('panelBtn').hidden = true;
+    for (const k of ['adsEnabled', 'iapEnabled', 'expertScore', 'fastAds']) CFG[k] = DEFAULT_CFG[k];
+  }
   LANG = detectLang(); LOCALE = LOCALES[LANG]; applyLang();
   readColors(); resizeScene(); layout();
   if (Array.isArray(data.LOG)) LOG = data.LOG;

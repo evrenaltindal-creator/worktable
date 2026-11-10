@@ -1,0 +1,66 @@
+{
+  "_aciklama": "App Store Connect metinleri. Her dil için ad (30), alt başlık (30), tanıtım metni (170), anahtar kelimeler (100), açıklama (4000) ve yenilikler. Sınırları magaza/kontrol.py denetler.",
+  "tr": {
+    "locale": "Türkçe (tr)",
+    "name": "Çini Ustası: Blok Bulmaca",
+    "subtitle": "İznik çinileriyle blok oyunu",
+    "promo": "Parçaları 8×8 çini panoya yerleştir, satır ve sütunları patlat. Seri yap, rekor kır, 10.000 puanda uzman şekillerin kilidini aç!",
+    "keywords": "blok,bulmaca,puzzle,iznik,yapboz,zeka,beyin,klasik,8x8,sakin,çevrimdışı,mozaik,karo,tahta",
+    "description": "Çini Ustası, İznik çinilerinden ilham alan sakin ama bırakması zor bir blok bulmaca oyunu.\n\nNASIL OYNANIR\n• Alttaki üç parçadan birini sürükleyip 8×8 tahtaya bırak.\n• Dolan satır ve sütunlar kırılır, puan kazanırsın.\n• Üç hamle içinde yeniden çizgi kırarsan seri büyür, puanın katlanır.\n• Hiçbir parça sığmayınca oyun biter. Rekorunu geçmeye çalış!\n\nNEDEN SEVECEKSİN\n• Her rengin kendi motifi var: lale, rozet, baklava, saz yaprağı ve yıldız.\n• Altın çinileri kır, altın topla.\n• Tek renk bir satır tamamlarsan \"Desen tamam!\" bonusu kazanırsın.\n• Döndür, Yenile ve Çekiç güçlendiricileriyle zor anlardan kurtul.\n• 10.000 puanda uzman seviyesi açılır: yeni şekiller gelir, oyun zorlaşır.\n• Patlamalar, havai fişekler ve seri büyüdükçe yükselen sesler.\n\nHER YERDE OYNA\n• İnternet gerekmez, çevrimdışı oynanır.\n• Hesap açmak gerekmez.\n• Türkçe, İngilizce, Portekizce, Almanca, Fransızca, Japonca ve Korece.",
+    "whatsNew": "İlk sürüm. İyi eğlenceler!"
+  },
+  "en": {
+    "locale": "English (U.S.)",
+    "name": "Iznik Tiles: Block Puzzle",
+    "subtitle": "Relaxing tile block game",
+    "promo": "Drop pieces onto an 8×8 tile panel and blast full rows and columns. Chain combos, beat your record and unlock expert shapes at 10,000 points!",
+    "keywords": "block,puzzle,tile,brain,classic,8x8,relaxing,offline,mosaic,grid,logic,casual,blocks,board",
+    "description": "Iznik Tiles is a calm but hard-to-put-down block puzzle inspired by the ceramic tiles of Iznik.\n\nHOW TO PLAY\n• Drag one of your three pieces onto the 8×8 board.\n• Full rows and columns break and score points.\n• Clear another line within three moves to grow your combo and multiply your score.\n• When no piece fits, the game ends. Try to beat your record!\n\nWHY YOU'LL LOVE IT\n• Every color has its own motif: tulip, rosette, diamond, leaf and star.\n• Break golden tiles to collect coins.\n• Complete a single-color line for a \"Pattern complete!\" bonus.\n• Rotate, Refresh and Hammer boosters get you out of tight spots.\n• At 10,000 points, expert level unlocks new shapes and a tougher game.\n• Explosions, fireworks and sounds that rise as your combo grows.\n\nPLAY ANYWHERE\n• No internet needed, plays offline.\n• No account needed.\n• Available in English, Turkish, Portuguese, German, French, Japanese and Korean.",
+    "whatsNew": "First release. Have fun!"
+  },
+  "pt": {
+    "locale": "Português (Brasil)",
+    "name": "Mestre do Azulejo: Blocos",
+    "subtitle": "Quebra-cabeça de blocos",
+    "promo": "Encaixe peças num painel de azulejos 8×8 e exploda linhas e colunas. Faça combos, bata seu recorde e desbloqueie formas especiais aos 10.000 pontos!",
+    "keywords": "blocos,quebra-cabeça,iznik,raciocínio,clássico,8x8,relaxante,offline,mosaico,lógica,tabuleiro",
+    "description": "Mestre do Azulejo é um quebra-cabeça de blocos tranquilo, mas difícil de largar, inspirado nos azulejos de Iznik.\n\nCOMO JOGAR\n• Arraste uma das três peças para o tabuleiro 8×8.\n• Linhas e colunas completas se quebram e dão pontos.\n• Complete outra linha em até três jogadas para aumentar o combo e multiplicar os pontos.\n• Quando nenhuma peça couber, o jogo acaba. Tente bater seu recorde!\n\nPOR QUE VOCÊ VAI GOSTAR\n• Cada cor tem seu próprio desenho: tulipa, roseta, losango, folha e estrela.\n• Quebre azulejos dourados para ganhar moedas.\n• Complete uma linha de uma só cor e ganhe o bônus \"Padrão completo!\".\n• Os power-ups Girar, Trocar e Martelo tiram você de apuros.\n• Aos 10.000 pontos, o nível especialista libera novas formas e um jogo mais difícil.\n• Explosões, fogos de artifício e sons que sobem conforme o combo cresce.\n\nJOGUE EM QUALQUER LUGAR\n• Não precisa de internet, funciona offline.\n• Não precisa criar conta.\n• Em português, inglês, turco, alemão, francês, japonês e coreano.",
+    "whatsNew": "Primeira versão. Divirta-se!"
+  },
+  "de": {
+    "locale": "Deutsch",
+    "name": "Fliesenmeister: Blockpuzzle",
+    "subtitle": "Entspanntes Blockrätsel",
+    "promo": "Lege Teile auf ein 8×8-Fliesenbrett und sprenge volle Reihen und Spalten. Verkette Combos, knacke deinen Rekord und schalte ab 10.000 Punkten neue Formen frei!",
+    "keywords": "block,puzzle,fliesen,iznik,denkspiel,klassisch,8x8,entspannend,offline,mosaik,logik,rätsel",
+    "description": "Fliesenmeister ist ein ruhiges, aber fesselndes Blockpuzzle, inspiriert von den Keramikfliesen aus Iznik.\n\nSO WIRD GESPIELT\n• Zieh eines deiner drei Teile auf das 8×8-Spielfeld.\n• Volle Reihen und Spalten zerbrechen und bringen Punkte.\n• Räumst du innerhalb von drei Zügen erneut eine Linie ab, wächst deine Combo und deine Punkte vervielfachen sich.\n• Passt kein Teil mehr, ist das Spiel vorbei. Knack deinen Rekord!\n\nDARUM WIRST DU ES LIEBEN\n• Jede Farbe hat ihr eigenes Motiv: Tulpe, Rosette, Raute, Blatt und Stern.\n• Zerbrich goldene Fliesen und sammle Münzen.\n• Eine einfarbige Linie bringt den Bonus „Muster komplett!“.\n• Die Booster Drehen, Tauschen und Hammer helfen in kniffligen Momenten.\n• Ab 10.000 Punkten schaltet die Expertenstufe neue Formen frei und das Spiel wird schwerer.\n• Explosionen, Feuerwerk und Töne, die mit deiner Combo steigen.\n\nÜBERALL SPIELEN\n• Kein Internet nötig, spielbar offline.\n• Kein Konto nötig.\n• Auf Deutsch, Englisch, Türkisch, Portugiesisch, Französisch, Japanisch und Koreanisch.",
+    "whatsNew": "Erste Version. Viel Spaß!"
+  },
+  "fr": {
+    "locale": "Français",
+    "name": "Maître Céramiste : Blocs",
+    "subtitle": "Puzzle de blocs relaxant",
+    "promo": "Place les pièces sur un plateau 8×8 et fais exploser lignes et colonnes. Enchaîne les combos, bats ton record et débloque des formes expertes dès 10 000 points !",
+    "keywords": "blocs,puzzle,carreaux,iznik,logique,classique,8x8,relaxant,hors ligne,mosaïque,réflexion",
+    "description": "Maître Céramiste est un puzzle de blocs apaisant mais captivant, inspiré des carreaux de céramique d'Iznik.\n\nCOMMENT JOUER\n• Fais glisser l'une de tes trois pièces sur le plateau 8×8.\n• Les lignes et colonnes pleines se brisent et rapportent des points.\n• Brise une autre ligne en moins de trois coups pour faire grimper ton combo et multiplier ton score.\n• Quand aucune pièce ne rentre, la partie se termine. Essaie de battre ton record !\n\nPOURQUOI TU VAS ADORER\n• Chaque couleur a son motif : tulipe, rosace, losange, feuille et étoile.\n• Brise les carreaux dorés pour gagner des pièces.\n• Complète une ligne d'une seule couleur pour le bonus « Motif complet ! ».\n• Les bonus Pivoter, Changer et Marteau te sortent des situations difficiles.\n• À 10 000 points, le niveau expert débloque de nouvelles formes et corse le jeu.\n• Explosions, feux d'artifice et sons qui montent avec ton combo.\n\nJOUE PARTOUT\n• Pas besoin d'internet, le jeu fonctionne hors ligne.\n• Pas besoin de compte.\n• En français, anglais, turc, portugais, allemand, japonais et coréen.",
+    "whatsNew": "Première version. Amuse-toi bien !"
+  },
+  "ja": {
+    "locale": "日本語",
+    "name": "タイル職人：ブロックパズル",
+    "subtitle": "イズニック風タイルのパズル",
+    "promo": "8×8のタイル盤にピースを置いて、縦横の列を消そう。コンボでスコアを伸ばして記録を更新。1万点で上級ピースが登場！",
+    "keywords": "ブロック,パズル,タイル,イズニック,脳トレ,定番,8x8,癒し,オフライン,モザイク,ロジック,暇つぶし",
+    "description": "タイル職人は、トルコ・イズニックの陶器タイルから生まれた、のんびり遊べてやめられないブロックパズルです。\n\n遊び方\n• 3つのピースから1つを選び、8×8の盤にドラッグします。\n• 縦か横の一列がそろうと割れて、得点になります。\n• 3手以内にまた列を消すとコンボが続き、スコアが何倍にもなります。\n• どのピースも置けなくなったらゲーム終了。記録更新を目指そう！\n\nここが楽しい\n• 色ごとに模様があります：チューリップ、ロゼット、ひし形、葉、星。\n• 金のタイルを割ってコインを集めよう。\n• 一色だけで列をそろえると「模様がそろった！」ボーナス。\n• 回転・入れ替え・ハンマーのブースターでピンチを切り抜けよう。\n• 1万点で上級レベルが解放され、新しい形が登場して難しくなります。\n• 爆発、花火、そしてコンボとともに高くなる効果音。\n\nどこでも遊べる\n• インターネット不要、オフラインで遊べます。\n• アカウント登録は不要です。\n• 日本語、英語、トルコ語、ポルトガル語、ドイツ語、フランス語、韓国語に対応。",
+    "whatsNew": "最初のリリースです。お楽しみください！"
+  },
+  "ko": {
+    "locale": "한국어",
+    "name": "타일 장인: 블록 퍼즐",
+    "subtitle": "이즈니크 타일 블록 게임",
+    "promo": "8×8 타일 보드에 조각을 놓고 가로세로 줄을 터뜨리세요. 콤보로 점수를 올리고 기록을 깨고, 1만 점에서 고수 모양을 열어 보세요!",
+    "keywords": "블록,퍼즐,타일,이즈니크,두뇌,클래식,8x8,힐링,오프라인,모자이크,논리,캐주얼",
+    "description": "타일 장인은 튀르키예 이즈니크의 도자기 타일에서 영감을 받은, 편안하지만 손을 놓기 어려운 블록 퍼즐입니다.\n\n플레이 방법\n• 아래 세 조각 중 하나를 8×8 보드로 끌어다 놓으세요.\n• 가로나 세로 한 줄이 꽉 차면 깨지고 점수를 얻습니다.\n• 세 번 안에 다시 줄을 깨면 콤보가 이어지고 점수가 몇 배로 늘어납니다.\n• 더 이상 놓을 조각이 없으면 게임이 끝납니다. 최고 기록에 도전하세요!\n\n이런 점이 좋아요\n• 색마다 고유한 무늬가 있어요: 튤립, 로제트, 마름모, 잎, 별.\n• 금색 타일을 깨서 코인을 모으세요.\n• 한 가지 색으로 줄을 채우면 \"무늬 완성!\" 보너스.\n• 회전, 교체, 망치 부스터로 위기를 벗어나세요.\n• 1만 점이 되면 고수 레벨이 열리고 새로운 모양이 나와 더 어려워집니다.\n• 폭발, 불꽃놀이, 콤보와 함께 높아지는 효과음.\n\n어디서나 플레이\n• 인터넷이 필요 없어요. 오프라인으로 즐길 수 있습니다.\n• 계정이 필요 없어요.\n• 한국어, 영어, 튀르키예어, 포르투갈어, 독일어, 프랑스어, 일본어 지원.",
+    "whatsNew": "첫 번째 버전입니다. 즐겁게 플레이하세요!"
+  }
+}

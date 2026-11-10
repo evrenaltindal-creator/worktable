@@ -1,0 +1,10 @@
+{
+  "appId": "com.yourcompany.ciniustasi",
+  "appName": "Çini Ustası",
+  "webDir": "www",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#EAF0F5",
+    "scrollEnabled": false
+  }
+}

@@ -2,7 +2,9 @@
 
 8×8 blok yerleştirme bulmacası. Amaç, iOS'a geçmeden önce türün temel döngüsünü ve reklam akışını (ödüllü, geçiş, banner) tarayıcıda denemek.
 
-Tek dosyadır: `index.html` dosyasını tarayıcıda açmak yeterli. Derleme ya da sunucu gerekmez. Yazı tipleri Google Fonts'tan gelir; internet yoksa sistem fontu kullanılır.
+**App Store'a ve sitenize yayın için: [YAYIN-REHBERI.md](YAYIN-REHBERI.md).** iOS projesi `app/`, mağaza metinleri ve ekran görüntüleri `magaza/`, siteye yüklenecek dosyalar `site/` klasöründe.
+
+Oyunun kaynağı tek dosyadır: `index.html` dosyasını tarayıcıda açmak yeterli. Derleme ya da sunucu gerekmez. Yazı tipleri Google Fonts'tan gelir; internet yoksa sistem fontu kullanılır.
 
 ## Oynanış
 
@@ -45,7 +47,7 @@ Oyun 7 dilde: Türkçe, İngilizce, Portekizce (Brezilya), Almanca, Fransızca, 
 - **Tablo:** Bütün oyuncu metinleri `STR` içinde. Yeni dil için `LANGS` ve `LOCALES`'e birer satır, `STR`'ye bir blok eklenir. Eksik anahtar İngilizceye düşer.
 - **Sayı, tarih, fiyat:** Dile göre biçimlenir (1,264 / 1.264 / 1 264; $2.99 / 2,99 $). Canlıda fiyatlar StoreKit'ten oyuncunun para birimiyle gelir.
 - **Yazı tipleri:** Japonca ve Korece için Noto Sans JP/KR ve Shippori Mincho / Gowun Batang yüklenir. Latin harfler ve rakamlar markanın yazı tipinde kalır.
-- **Oyun adı:** Plakadaki ad dile göre çevrildi (Tile Master, Mestre do Azulejo, Fliesenmeister, Maître Céramiste, タイル職人, 타일 장인). Bunlar çalışma çevirileri. Mağaza adı için her dilde ayrıca ad ve marka kontrolü gerekir.
+- **Oyun adı:** Plakadaki ad dile göre çevrildi (Iznik Tiles, Mestre do Azulejo, Fliesenmeister, Maître Céramiste, タイル職人, 타일 장인). İngilizcede "Tile Master" adlı başka oyunlar olduğu için "Iznik Tiles" seçildi. Mağaza adları `magaza/metinler.json` içinde.
 - Geliştirici paneli (Reklam akışı) oyuncuya gösterilmediği için Türkçe kaldı.
 - Çeviriler yayından önce ana dili konuşan biri tarafından gözden geçirilmeli. Özellikle övgü sözleri ("Harika!" karşılıkları) ve mağaza metinleri.
 
