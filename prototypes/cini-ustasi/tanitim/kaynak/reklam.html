@@ -1,0 +1,103 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;700;800&family=Yeseva+One&display=swap">
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:var(--w);height:var(--h);overflow:hidden}
+body{--cobalt:#1C3F7A;--deep:#0F2550;--gold:#E2A532;--gold-ink:#2B1C00;--soft:#F3E3B8;font-family:"Manrope",system-ui,sans-serif;color:#fff;
+  background:radial-gradient(120% 90% at 25% 15%,#2C5FB0 0%,#163470 55%,var(--deep) 100%);position:relative}
+.pat{position:absolute;inset:0;opacity:.1;background-image:radial-gradient(circle,#DCE7F7 calc(var(--u)*0.35),transparent calc(var(--u)*0.5));background-size:calc(var(--u)*8) calc(var(--u)*8)}
+.frame{position:absolute;inset:calc(var(--u)*2.2);border:calc(var(--u)*0.35) solid rgba(226,177,62,.85);border-radius:calc(var(--u)*3)}
+.gem{position:absolute;width:calc(var(--u)*2);height:calc(var(--u)*2);background:var(--gold);transform:translate(-50%,-50%) rotate(45deg)}
+.wrap{position:absolute;inset:0;display:flex}
+.icon{border-radius:22%;box-shadow:0 calc(var(--u)*.8) calc(var(--u)*2) rgba(0,0,0,.35)}
+.eyebrow{font-weight:800;letter-spacing:.18em;color:var(--soft)}
+h1{font-family:"Yeseva One",Georgia,serif;font-weight:400;line-height:1.08}
+.tag{opacity:.9;line-height:1.35}
+.cta{white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:.5em;background:var(--gold);color:var(--gold-ink);font-weight:800;border-radius:.6em;padding:.55em 1.1em;box-shadow:0 .3em .9em rgba(0,0,0,.3)}
+.cta::before{content:"";width:0;height:0;border-left:.62em solid currentColor;border-top:.38em solid transparent;border-bottom:.38em solid transparent}
+.soon{font-weight:700;opacity:.85}
+.chips{display:flex;gap:.6em;flex-wrap:wrap}
+.chips span{border:1.5px solid rgba(255,255,255,.35);border-radius:999px;padding:.2em .8em;font-weight:700}
+.phone{border-radius:calc(var(--u)*5);padding:calc(var(--u)*1);background:#0E1A30;box-shadow:0 calc(var(--u)*3) calc(var(--u)*7) rgba(0,0,0,.45),0 0 0 calc(var(--u)*.3) rgba(226,177,62,.8)}
+.phone img{display:block;width:100%;border-radius:calc(var(--u)*4)}
+/* Düzenler */
+.portrait .wrap{flex-direction:column;align-items:center;text-align:center;padding:calc(var(--u)*7) calc(var(--u)*6) 0}
+.portrait .head{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*1.4)}
+.portrait .icon{width:calc(var(--u)*13);height:calc(var(--u)*13)}
+.portrait .eyebrow{font-size:calc(var(--u)*2.2)}
+.portrait h1{font-size:calc(var(--u)*7.2)}
+.portrait .tag{font-size:calc(var(--u)*3);max-width:28ch}
+.portrait .row{display:flex;gap:calc(var(--u)*2.4);align-items:center;margin-top:calc(var(--u)*3);font-size:calc(var(--u)*3.2)}
+.portrait .soon{font-size:calc(var(--u)*2.4)}
+.portrait .phone{width:var(--pw);margin-top:calc(var(--u)*5)}
+.landscape .wrap{align-items:center;padding:0 calc(var(--u)*7);gap:calc(var(--u)*5)}
+.landscape .text{flex:1;display:flex;flex-direction:column;gap:calc(var(--u)*1.6)}
+.landscape .brand{display:flex;align-items:center;gap:calc(var(--u)*2)}
+.landscape .icon{width:calc(var(--u)*9);height:calc(var(--u)*9)}
+.landscape .name{font-family:"Yeseva One",Georgia,serif;font-size:calc(var(--u)*3.8);line-height:1.1}
+.landscape .eyebrow{font-size:calc(var(--u)*1.9)}
+.landscape h1{font-size:calc(var(--u)*5.8);margin-top:calc(var(--u)*1.2)}
+.landscape .tag{font-size:calc(var(--u)*2.8)}
+.landscape .row{display:flex;gap:calc(var(--u)*2.4);align-items:center;margin-top:calc(var(--u)*1.5);font-size:calc(var(--u)*3)}
+.landscape .soon{font-size:calc(var(--u)*2.2)}
+.landscape .chips{font-size:calc(var(--u)*1.9)}
+.landscape .phone{width:calc(var(--u)*var(--pf,32));flex:none}
+.box .wrap{flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:10px;padding:16px}
+.box .frame{inset:7px;border-width:2px;border-radius:14px}.box .gem{display:none}
+.box .icon{width:64px;height:64px;border-radius:15px}
+.box .eyebrow{font-size:9px}
+.box h1{font-size:26px}
+.box .tag{font-size:12.5px;max-width:24ch}
+.box .cta{font-size:14px}
+.strip .wrap{align-items:center;gap:14px;padding:0 18px}
+.strip .frame{inset:4px;border-width:1.5px;border-radius:8px}.strip .gem{display:none}
+.strip .icon{width:62px;height:62px;border-radius:14px}
+.strip .text{flex:1;display:flex;flex-direction:column}
+.strip h1{font-size:28px}
+.strip .tag{font-size:13px}
+.strip .cta{font-size:15px}
+.strip .soon{font-size:11px;max-width:12ch;text-align:center}
+.mini .wrap{align-items:center;gap:8px;padding:0 8px}
+.mini .frame,.mini .gem,.mini .pat{display:none}
+.mini .icon{width:36px;height:36px;border-radius:8px;box-shadow:none}
+.mini .text{flex:1}
+.mini h1{font-size:17px}
+.mini .tag{font-size:10px;opacity:.85}
+.mini .cta{font-size:12px;padding:.45em .8em;box-shadow:none}
+</style></head>
+<body><div class="pat"></div><div class="frame"></div><div class="wrap" id="w"></div>
+<script>
+const q = Object.fromEntries(location.hash.slice(1).split('&').map(p => p.split('=')));
+const W = +q.w, H = +q.h, L = q.lang;
+const T = {
+  tr: { eyebrow: 'İZNİK ÇİNİLERİYLE BLOK BULMACA', title: 'Çini Ustası', head: 'Satırları patlat, rekorunu kır!', tag: 'Parçaları yerleştir, dolan satırları patlat, seri yap.', cta: 'Hemen oyna', soon: 'Çok yakında App Store’da', chips: ['Ücretsiz', 'İnternetsiz', '7 dil'] },
+  en: { eyebrow: 'A BLOCK PUZZLE WITH IZNIK TILES', title: 'Iznik Tiles', head: 'Blast the lines, beat your record!', tag: 'Place the pieces, clear full lines, chain combos.', cta: 'Play now', soon: 'Coming soon on the App Store', chips: ['Free', 'Plays offline', '7 languages'] }
+}[L];
+const r = W / H;
+const kind = H <= 100 ? (W <= 400 ? 'mini' : 'strip') : (W <= 400 ? 'box' : (r < 0.8 ? 'portrait' : 'landscape'));
+if (kind === 'landscape' && r > 1.4) document.documentElement.style.setProperty('--pf', '25');
+const u = kind === 'landscape' ? Math.min(W, H * 1.25) / 100 : Math.min(W, H) / 100;
+document.documentElement.style.setProperty('--w', W + 'px'); document.documentElement.style.setProperty('--h', H + 'px'); document.documentElement.style.setProperty('--u', u + 'px');
+document.body.className = kind;
+const shot = `oyun-${L}.png`;
+const w = document.getElementById('w');
+if (kind === 'portrait') {
+  const pw = H / W > 1.5 ? W * 0.62 : W * 0.5;
+  document.documentElement.style.setProperty('--pw', pw + 'px');
+  w.innerHTML = `<div class="head"><img class="icon" src="ikon.png"><p class="eyebrow">${T.eyebrow}</p><h1>${T.head}</h1><p class="tag">${T.tag}</p></div>
+    <div class="row"><span class="cta">${T.cta}</span><span class="soon">${T.soon}</span></div><div class="phone"><img src="${shot}"></div>`;
+} else if (kind === 'landscape') {
+  w.innerHTML = `<div class="text"><div class="brand"><img class="icon" src="ikon.png"><div><p class="eyebrow">${T.eyebrow}</p><p class="name">${T.title}</p></div></div>
+    <h1>${T.head}</h1><p class="tag">${T.tag}</p><div class="row"><span class="cta">${T.cta}</span><span class="soon">${T.soon}</span></div><div class="chips">${T.chips.map(c => `<span>${c}</span>`).join('')}</div></div><div class="phone"><img src="${shot}"></div>`;
+} else if (kind === 'box') {
+  w.innerHTML = `<img class="icon" src="ikon.png"><p class="eyebrow">${T.eyebrow}</p><h1>${T.title}</h1><p class="tag">${T.tag}</p><span class="cta">${T.cta}</span>`;
+} else if (kind === 'strip') {
+  w.innerHTML = `<img class="icon" src="ikon.png"><div class="text"><h1>${T.title}</h1><p class="tag">${T.head}</p></div><span class="soon">${T.soon}</span><span class="cta">${T.cta}</span>`;
+} else {
+  w.innerHTML = `<img class="icon" src="ikon.png"><div class="text"><h1>${T.title}</h1><p class="tag">${T.tag.split(',')[0]}</p></div><span class="cta">${T.cta}</span>`;
+}
+if (kind === 'portrait' || kind === 'landscape') {
+  const f = document.querySelector('.frame').getBoundingClientRect();
+  for (const [x, y] of [[f.left, f.top], [f.right, f.top], [f.left, f.bottom], [f.right, f.bottom]]) { const g = document.createElement('div'); g.className = 'gem'; g.style.left = x + 'px'; g.style.top = y + 'px'; document.body.appendChild(g); }
+}
+</script></body></html>
