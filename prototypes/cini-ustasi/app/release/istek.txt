@@ -1,9 +1,10 @@
-metadata
+check
 # Bu dosyanın ilk satırı, GitHub Actions'ta çalışacak App Store işini seçer.
 # Dosya değişip claude/pensive-curie-vvewve dalına gönderilince iş başlar.
 #   status    durum raporu
+#   check     mağaza sayfasının dil dil ayrıntılı raporu
 #   register  paket kimliğini (Bundle ID) kaydet
 #   build     derle, imzala, App Store Connect'e yükle
 #   metadata  7 dilde metinleri ve ekran görüntülerini yükle
 #   submit    incelemeye gönder (yalnızca onaydan sonra)
-# son istek: 2026-11-10T14:46:26Z metadata
+# son istek: 2026-11-10T15:02:23Z check

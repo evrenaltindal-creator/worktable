@@ -122,6 +122,42 @@ platform :ios do
     end
   end
 
+  desc 'Mağaza sayfasını dil dil raporlar: metinler, ekran görüntüleri, adresler, kategori'
+  lane :check do
+    api_key
+    app = Spaceship::ConnectAPI::App.find(app_id)
+    UI.user_error!('Uygulama kaydı bulunamadı') unless app
+    v = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+    UI.user_error!('Düzenlenebilir sürüm yok') unless v
+    UI.message("Sürüm #{v.version_string}: #{v.app_store_state}, telif: #{v.copyright || '-'}")
+    begin
+      b = v.get_build
+      UI.message("Seçili derleme: #{b ? b.version : 'yok'}")
+    rescue StandardError => e
+      UI.message("Derleme bilgisi okunamadı (#{e.message})")
+    end
+    v.get_app_store_version_localizations.sort_by(&:locale).each do |loc|
+      shots = begin
+        loc.get_app_screenshot_sets.map do |set|
+          states = set.app_screenshots.to_a.map { |a| (a.asset_delivery_state || {})['state'] }
+          "#{set.screenshot_display_type} #{states.size} adet (#{states.tally.map { |k, n| "#{k}: #{n}" }.join(', ')})"
+        end.join(' | ')
+      rescue StandardError => e
+        "okunamadı (#{e.message})"
+      end
+      UI.message("#{loc.locale}: açıklama #{loc.description.to_s.length} kr, anahtar kelime #{loc.keywords.to_s.length} kr, " \
+                 "tanıtım #{loc.promotional_text.to_s.length} kr, destek URL #{loc.support_url || '-'}; görseller: #{shots.empty? ? 'yok' : shots}")
+    end
+    info = app.fetch_edit_app_info
+    if info
+      info.get_app_info_localizations.sort_by(&:locale).each do |l|
+        UI.message("#{l.locale}: ad '#{l.name}', alt başlık '#{l.subtitle}', gizlilik URL #{l.privacy_policy_url || '-'}")
+      end
+      cat = [info.primary_category, info.primary_subcategory_one, info.primary_subcategory_two].map { |c| c ? c.id : '-' }
+      UI.message("Kategori: #{cat.join(' / ')}")
+    end
+  end
+
   desc 'Paket kimliğini (Bundle ID) Apple hesabına kaydeder'
   lane :register do
     api_key
@@ -163,6 +199,7 @@ platform :ios do
       api_key: key, app_identifier: id, app_version: s['version'] || '1.0',
       metadata_path: File.join(STORE, 'metadata'), screenshots_path: File.join(STORE, 'screenshots'),
       skip_binary_upload: true, overwrite_screenshots: true, force: true, submit_for_review: false,
+      skip_screenshots: ENV['SKIP_SCREENSHOTS'] == '1', screenshot_processing_timeout: 600,
       run_precheck_before_submit: false, precheck_include_in_app_purchases: false,
       primary_category: 'GAMES', primary_first_sub_category: 'GAMES_PUZZLE', primary_second_sub_category: 'GAMES_CASUAL'
     }

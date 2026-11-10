@@ -14,7 +14,7 @@ on:
       lane:
         description: 'Yapılacak iş'
         type: choice
-        options: [status, register, build, metadata, submit]
+        options: [status, check, register, build, metadata, submit]
         default: status
 
 concurrency:
@@ -45,7 +45,7 @@ jobs:
         run: |
           LANE="${{ inputs.lane }}"
           if [ -z "$LANE" ]; then LANE=$(head -n1 prototypes/cini-ustasi/app/release/istek.txt | tr -d '[:space:]'); fi
-          case "$LANE" in status|register|build|metadata|submit) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
+          case "$LANE" in status|check|register|build|metadata|submit) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
           echo "lane=$LANE" >> "$GITHUB_OUTPUT"
           echo "Is: $LANE"
 
@@ -104,6 +104,7 @@ jobs:
           xcodebuild -version
 
       - name: fastlane
+        timeout-minutes: 40
         run: |
           command -v fastlane >/dev/null || sudo gem install fastlane --no-document
           LANE="${{ needs.plan.outputs.lane }}"
