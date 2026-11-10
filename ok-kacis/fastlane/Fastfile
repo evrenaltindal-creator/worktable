@@ -238,7 +238,7 @@ platform :ios do
         UI.message("Yeni test kullanıcısı olarak eklenemedi: #{scrub(e.message)}")
         tester = Spaceship::ConnectAPI::BetaTester.find(email: u.email)
         if tester
-          UI.message("Var olan test kaydı: davet türü #{tester.invite_type}, durum #{tester.state}")
+          UI.message("Var olan test kaydı: davet türü #{tester.invite_type}")
           begin
             group.add_beta_testers(beta_tester_ids: [tester.id])
             already += 1
