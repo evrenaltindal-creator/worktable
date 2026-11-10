@@ -14,7 +14,7 @@ on:
       lane:
         description: 'Yapılacak iş'
         type: choice
-        options: [status, check, register, build, metadata, text, submit]
+        options: [status, check, register, build, metadata, text, fix_shots, submit]
         default: status
 
 concurrency:
@@ -45,7 +45,7 @@ jobs:
         run: |
           LANE="${{ inputs.lane }}"
           if [ -z "$LANE" ]; then LANE=$(head -n1 prototypes/cini-ustasi/app/release/istek.txt | tr -d '[:space:]'); fi
-          case "$LANE" in status|check|register|build|metadata|text|submit) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
+          case "$LANE" in status|check|register|build|metadata|text|fix_shots|submit) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
           echo "lane=$LANE" >> "$GITHUB_OUTPUT"
           echo "Is: $LANE"
 

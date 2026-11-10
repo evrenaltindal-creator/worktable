@@ -157,7 +157,7 @@ platform :ios do
       UI.message("Kategori: #{cat.join(' / ')}")
       begin
         age = info.fetch_age_rating_declaration
-        filled = age ? age.to_h.reject { |k, v| v.nil? || k.to_s == 'id' }.size : 0
+        filled = age ? (age.instance_variables - [:@id, :@reverse_attr_map]).map { |iv| age.instance_variable_get(iv) }.compact.size : 0
         UI.message("Yaş derecelendirmesi: #{age ? "#{filled} soru yanıtlanmış" : 'yanıtlanmamış'}")
       rescue StandardError => e
         UI.message("Yaş derecelendirmesi okunamadı (#{e.message})")
@@ -214,6 +214,34 @@ platform :ios do
     review = review_info
     opts[:app_review_information] = review if review
     deliver(opts)
+  end
+
+  desc 'Apple tarafında işlenmesi takılan ekran görüntülerini bulup yeniden yükler, sırayı korur'
+  lane :fix_shots do
+    api_key
+    app = Spaceship::ConnectAPI::App.find(app_id)
+    v = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+    fixed = 0
+    v.get_app_store_version_localizations.each do |loc|
+      code = LOCALES.key(loc.locale)
+      next unless code
+      loc.get_app_screenshot_sets.each do |set|
+        stuck = set.app_screenshots.to_a.reject { |a| (a.asset_delivery_state || {})['state'] == 'COMPLETE' }
+        next if stuck.empty?
+        stuck.each do |a|
+          file = File.join(MAGAZA, 'ekran-goruntuleri', code, a.file_name.to_s)
+          UI.user_error!("Yerel dosya yok: #{file}") unless File.exist?(file)
+          UI.message("#{loc.locale}: #{a.file_name} (#{(a.asset_delivery_state || {})['state']}) yeniden yükleniyor")
+          a.delete!
+          set.upload_screenshot(path: file, wait_for_processing: false)
+          fixed += 1
+        end
+        fresh = Spaceship::ConnectAPI::AppScreenshotSet.get(app_screenshot_set_id: set.id)
+        ids = fresh.app_screenshots.to_a.sort_by { |a| a.file_name.to_s }.map(&:id)
+        fresh.reorder_screenshots(app_screenshot_ids: ids)
+      end
+    end
+    UI.success(fixed.zero? ? 'Takılan ekran görüntüsü yok' : "#{fixed} ekran görüntüsü yeniden yüklendi")
   end
 
   desc 'Yalnızca metinleri ve adresleri günceller (ekran görüntülerine dokunmaz)'

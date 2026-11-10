@@ -1,4 +1,4 @@
-check
+fix_shots
 # Bu dosyanın ilk satırı, GitHub Actions'ta çalışacak App Store işini seçer.
 # Dosya değişip claude/pensive-curie-vvewve dalına gönderilince iş başlar.
 #   status    durum raporu
@@ -7,5 +7,6 @@ check
 #   build     derle, imzala, App Store Connect'e yükle
 #   metadata  7 dilde metinleri ve ekran görüntülerini yükle
 #   text      yalnızca metinleri ve adresleri güncelle
+#   fix_shots işlenmesi takılan ekran görüntülerini yeniden yükle
 #   submit    incelemeye gönder (yalnızca onaydan sonra)
-# son istek: 2026-11-10T15:11:58Z check
+# son istek: 2026-11-10T15:14:38Z fix_shots
