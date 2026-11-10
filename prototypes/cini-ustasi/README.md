@@ -74,6 +74,21 @@ Oyun 7 dilde: Türkçe, İngilizce, Portekizce (Brezilya), Almanca, Fransızca, 
 
 Ayar noktaları kodda: `SHAPE_DEFS` ve `EXPERT_DEFS` (ağırlıklar), `guaranteeChance`, `expertLevel`, `genTray` içindeki `mercy` ve `pHelp`. Eşik geliştirici panelindeki **Zorluk** bölümünden değiştirilebilir. **Uzman seviyesine atla** test düğmesi geçişi hemen gösterir.
 
+## Reklamlar ve satın almalar şu an kapalı
+
+Kodda iki ana anahtar var, ikisi de şimdilik `false` (`DEFAULT_CFG` içinde):
+
+| Anahtar | Kapalıyken |
+|---|---|
+| `adsEnabled` | Banner, geçiş ve ödüllü reklamların hepsi kalkar. Reklamla gelen "devam et", "altını 2 katına çıkar" ve "+1 hak" seçenekleri görünmez. Hakkı biten güçlendiricinin rozetinde "0" yazar, yalnızca altınla alınır. |
+| `iapEnabled` | Mağaza düğmesi kalkar. "Reklamları kaldır" ve altın paketi satılmaz. |
+
+Altın kazanma ve altınla güçlendirici alma iki anahtardan bağımsız çalışır.
+
+**Açmak için:** `DEFAULT_CFG` içinde ilgili değeri `true` yapın. Denemek için geliştirici panelinin en üstündeki "Reklamlar açık" ve "Satın almalar açık" kutuları da aynı işi yapar; bu seçim yalnızca o tarayıcıda hatırlanır.
+
+Aşağıdaki yerleşimler ve kurallar reklamlar açıldığında geçerlidir.
+
 ## Reklam yerleşimleri
 
 | Yer (`placement`) | Tür | Ne zaman | Oyuncuya ne kazandırır |

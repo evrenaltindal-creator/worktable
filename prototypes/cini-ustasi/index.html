@@ -137,6 +137,7 @@ button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid
 .booster[aria-pressed="true"]{border-color:var(--primary);box-shadow:inset 0 0 0 2px var(--primary)}
 .count{position:absolute;top:-7px;right:-7px;min-width:24px;height:24px;padding:0 6px;border-radius:12px;display:grid;place-items:center;font-size:.75rem;font-weight:800;background:var(--primary);color:var(--on-primary);font-variant-numeric:tabular-nums}
 .count.ad{background:var(--ad);color:var(--on-ad)}
+.count.empty{background:var(--line);color:var(--muted)}
 .count svg{width:10px;height:10px;fill:currentColor}
 
 /* Banner */
@@ -168,6 +169,8 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 .form label{font-size:.8rem;line-height:1.3}
 .form input{height:34px;width:100%;min-width:0;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);padding:0 8px;font-variant-numeric:tabular-nums}
 .check{display:flex;align-items:center;gap:8px;font-size:.82rem;margin-top:10px}
+.switches{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ads-switch{margin-top:0;padding:10px 12px;border-radius:10px;border:1px solid var(--line);font-weight:700;cursor:pointer}
 .tools{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .tool{height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface-2);font-size:.78rem;font-weight:700;padding:0 6px}
 .tool.wide{grid-column:1/-1}
@@ -296,6 +299,12 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
       </div>
       <button class="icon-btn only-narrow" id="panelClose" aria-label="Paneli kapat"><svg class="ico" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     </div>
+
+    <div class="switches">
+      <label class="check ads-switch" for="cfgAds"><input type="checkbox" id="cfgAds"> Reklamlar açık</label>
+      <label class="check ads-switch" for="cfgIap"><input type="checkbox" id="cfgIap"> Satın almalar açık</label>
+    </div>
+    <p class="note">Reklamlar kapalıyken banner, geçiş ve ödüllü reklamlar oyundan tamamen kalkar; reklamla gelen "devam et", "altını 2 katına çıkar" ve "+1 hak" seçenekleri de görünmez. Satın almalar kapalıyken mağaza düğmesi kalkar, gerçek parayla hiçbir şey satılmaz. Altınla güçlendirici almak ikisinden bağımsız çalışır.</p>
 
     <div class="metrics">
       <div class="metric"><span class="m-label">ÖDÜLLÜ</span><b id="mRew">0</b><span class="m-sub" id="mRewRev">$0,000</span></div>
@@ -591,7 +600,10 @@ function genTray(forceSolvable) {
 }
 
 /* ---------- Kalıcı durum ---------- */
-const DEFAULT_CFG = { minGames: 2, cooldownSec: 90, graceSec: 45, midGameSec: 0, fastAds: false, expertScore: 10000, ecpm: { rewarded: 16, interstitial: 9, banner: 0.4 } };
+// adsEnabled: reklamların ana anahtarı. iapEnabled: gerçek parayla satın almaların
+// (mağaza) ana anahtarı. İkisi de şimdilik kapalı. Açmak için true yapın ya da
+// geliştirici panelindeki "Reklamlar açık" / "Satın almalar açık" kutularını işaretleyin.
+const DEFAULT_CFG = { minGames: 2, cooldownSec: 90, graceSec: 45, midGameSec: 0, fastAds: false, adsEnabled: false, iapEnabled: false, expertScore: 10000, ecpm: { rewarded: 16, interstitial: 9, banner: 0.4 } };
 const CFG = Object.assign({}, DEFAULT_CFG, store.get('cfg', {}));
 CFG.ecpm = Object.assign({}, DEFAULT_CFG.ecpm, CFG.ecpm || {});
 const M = Object.assign({ best: 0, coins: 60, removeAds: false, gamesCompleted: 0, seenTutorial: false, sound: true, records: [] }, store.get('meta', {}));
@@ -636,7 +648,8 @@ const STR = {
     toast_noads: "Reklamsız sürüm etkin. Ödüllü reklamlar isteğe bağlı kaldı.", toast_coins: "+250 altın", toast_restored: "Satın alımlar geri yüklendi.", toast_none: "Geri yüklenecek satın alım yok.",
     pattern_done: "Desen tamam!", praise2: "Harika!", praise3: "Muhteşem!", praise4: "Efsane!", praise_clean: "Duvar tertemiz!", praise_record: "Yeni rekor!", praise_continue: "Devam!",
     lang_title: "Dil",
-    tier_up: "Uzman seviyesi!", tier_toast: "Yeni şekiller geldi. Oyun biraz zorlaşıyor!", tier_badge: "UZMAN"
+    tier_up: "Uzman seviyesi!", tier_toast: "Yeni şekiller geldi. Oyun biraz zorlaşıyor!", tier_badge: "UZMAN",
+    booster_aria_0_coins: "{name}, hak yok, altınla alabilirsin", shop_body_noads: "Test modu, gerçek ödeme alınmaz."
   },
   en: {
     title: "TILE MASTER", coins: "coins", score: "Score", sound_off: "Mute sound", sound_on: "Turn sound on", shop: "Shop", language: "Language",
@@ -666,7 +679,8 @@ const STR = {
     toast_noads: "Ads removed. Rewarded ads are still there if you want them.", toast_coins: "+250 coins", toast_restored: "Purchases restored.", toast_none: "No purchases to restore.",
     pattern_done: "Pattern complete!", praise2: "Great!", praise3: "Amazing!", praise4: "Legendary!", praise_clean: "Wall cleared!", praise_record: "New record!", praise_continue: "Keep going!",
     lang_title: "Language",
-    tier_up: "Expert level!", tier_toast: "New shapes unlocked. It gets a little harder!", tier_badge: "EXPERT"
+    tier_up: "Expert level!", tier_toast: "New shapes unlocked. It gets a little harder!", tier_badge: "EXPERT",
+    booster_aria_0_coins: "{name}, none left, buy more with coins", shop_body_noads: "Test mode: no real payment is taken."
   },
   pt: {
     title: "MESTRE DO AZULEJO", coins: "moedas", score: "Pontuação", sound_off: "Desativar som", sound_on: "Ativar som", shop: "Loja", language: "Idioma",
@@ -696,7 +710,8 @@ const STR = {
     toast_noads: "Anúncios removidos. Os anúncios premiados continuam opcionais.", toast_coins: "+250 moedas", toast_restored: "Compras restauradas.", toast_none: "Nenhuma compra para restaurar.",
     pattern_done: "Padrão completo!", praise2: "Ótimo!", praise3: "Incrível!", praise4: "Lendário!", praise_clean: "Parede limpa!", praise_record: "Novo recorde!", praise_continue: "Continue!",
     lang_title: "Idioma",
-    tier_up: "Nível especialista!", tier_toast: "Novas formas liberadas. O jogo fica um pouco mais difícil!", tier_badge: "ESPECIALISTA"
+    tier_up: "Nível especialista!", tier_toast: "Novas formas liberadas. O jogo fica um pouco mais difícil!", tier_badge: "ESPECIALISTA",
+    booster_aria_0_coins: "{name}, acabou, compre mais com moedas", shop_body_noads: "Modo de teste: nenhum pagamento real é feito."
   },
   de: {
     title: "FLIESENMEISTER", coins: "Münzen", score: "Punkte", sound_off: "Ton aus", sound_on: "Ton an", shop: "Shop", language: "Sprache",
@@ -726,7 +741,8 @@ const STR = {
     toast_noads: "Werbung entfernt. Belohnte Werbung bleibt freiwillig verfügbar.", toast_coins: "+250 Münzen", toast_restored: "Käufe wiederhergestellt.", toast_none: "Keine Käufe zum Wiederherstellen.",
     pattern_done: "Muster komplett!", praise2: "Super!", praise3: "Fantastisch!", praise4: "Legendär!", praise_clean: "Wand blitzblank!", praise_record: "Neuer Rekord!", praise_continue: "Weiter geht's!",
     lang_title: "Sprache",
-    tier_up: "Expertenstufe!", tier_toast: "Neue Formen freigeschaltet. Jetzt wird es etwas schwerer!", tier_badge: "EXPERTE"
+    tier_up: "Expertenstufe!", tier_toast: "Neue Formen freigeschaltet. Jetzt wird es etwas schwerer!", tier_badge: "EXPERTE",
+    booster_aria_0_coins: "{name}, aufgebraucht, mit Münzen nachkaufen", shop_body_noads: "Testmodus: Es wird nichts bezahlt."
   },
   fr: {
     title: "MAÎTRE CÉRAMISTE", coins: "pièces", score: "Score", sound_off: "Couper le son", sound_on: "Activer le son", shop: "Boutique", language: "Langue",
@@ -756,7 +772,8 @@ const STR = {
     toast_noads: "Pubs supprimées. Les pubs récompensées restent disponibles si tu le souhaites.", toast_coins: "+250 pièces", toast_restored: "Achats restaurés.", toast_none: "Aucun achat à restaurer.",
     pattern_done: "Motif complet !", praise2: "Génial !", praise3: "Magnifique !", praise4: "Légendaire !", praise_clean: "Mur nettoyé !", praise_record: "Nouveau record !", praise_continue: "On continue !",
     lang_title: "Langue",
-    tier_up: "Niveau expert\u202F!", tier_toast: "Nouvelles formes débloquées. Ça se corse un peu\u202F!", tier_badge: "EXPERT"
+    tier_up: "Niveau expert\u202F!", tier_toast: "Nouvelles formes débloquées. Ça se corse un peu\u202F!", tier_badge: "EXPERT",
+    booster_aria_0_coins: "{name}, épuisé, achète-en avec des pièces", shop_body_noads: "Mode test\u202F: aucun paiement réel."
   },
   ja: {
     title: "タイル職人", coins: "コイン", score: "スコア", sound_off: "サウンドをオフ", sound_on: "サウンドをオン", shop: "ショップ", language: "言語",
@@ -786,7 +803,8 @@ const STR = {
     toast_noads: "広告を削除しました。リワード広告は見たいときに使えます。", toast_coins: "+250コイン", toast_restored: "購入を復元しました。", toast_none: "復元できる購入はありません。",
     pattern_done: "模様がそろった！", praise2: "すごい！", praise3: "見事！", praise4: "伝説級！", praise_clean: "壁がまっさら！", praise_record: "新記録！", praise_continue: "続行！",
     lang_title: "言語",
-    tier_up: "上級レベル！", tier_toast: "新しい形が登場！少し難しくなります", tier_badge: "上級"
+    tier_up: "上級レベル！", tier_toast: "新しい形が登場！少し難しくなります", tier_badge: "上級",
+    booster_aria_0_coins: "{name}、残りなし。コインで購入できます", shop_body_noads: "テストモードのため、実際の支払いは発生しません。"
   },
   ko: {
     title: "타일 장인", coins: "코인", score: "점수", sound_off: "소리 끄기", sound_on: "소리 켜기", shop: "상점", language: "언어",
@@ -816,7 +834,8 @@ const STR = {
     toast_noads: "광고가 제거되었습니다. 보상형 광고는 원할 때 계속 볼 수 있어요.", toast_coins: "코인 +250", toast_restored: "구매를 복원했습니다.", toast_none: "복원할 구매 내역이 없습니다.",
     pattern_done: "무늬 완성!", praise2: "멋져요!", praise3: "대단해요!", praise4: "전설급!", praise_clean: "벽 클리어!", praise_record: "신기록!", praise_continue: "계속!",
     lang_title: "언어",
-    tier_up: "고수 레벨!", tier_toast: "새로운 모양 등장! 조금 더 어려워집니다", tier_badge: "고수"
+    tier_up: "고수 레벨!", tier_toast: "새로운 모양 등장! 조금 더 어려워집니다", tier_badge: "고수",
+    booster_aria_0_coins: "{name}, 남은 횟수 없음. 코인으로 구매할 수 있습니다", shop_body_noads: "테스트 모드라 실제 결제는 되지 않습니다."
   }
 };
 let FONTS = { display: '"Yeseva One", Georgia, serif', ui: 'Manrope, system-ui, sans-serif' };
@@ -885,6 +904,7 @@ const Ads = {
   lastRewardedAt: 0,
   showing: false,
   blockReason() {
+    if (!CFG.adsEnabled) return 'reklamlar kapalı';
     if (M.removeAds) return 'reklamsız sürüm';
     if (M.gamesCompleted < CFG.minGames) return `ilk ${CFG.minGames} oyun bitmedi`;
     const now = Date.now();
@@ -895,6 +915,7 @@ const Ads = {
     return null;
   },
   maybeInterstitial(placement) {
+    if (!CFG.adsEnabled) return Promise.resolve(false);
     const reason = this.blockReason();
     if (reason) { track('ad_interstitial_skipped', { yer: placement, neden: reason }); return Promise.resolve(false); }
     // GERÇEK (AppLovin MAX): if (MaxSdk.IsInterstitialReady(id)) MaxSdk.ShowInterstitial(id, placement);
@@ -1077,15 +1098,15 @@ function offerContinue() {
   if (!G || G.over || !G.stuck) return;
   const hasBooster = M.boosters.rotate > 0 || M.boosters.refresh > 0 || M.boosters.hammer > 0;
   const actions = [];
-  if (!G.reviveUsed) actions.push({
+  if (!G.reviveUsed && CFG.adsEnabled) actions.push({
     label: t('btn_revive'), kind: 'ad',
     onClick: async () => { closeModal(); const ok = await Ads.showRewarded('devam_et'); if (ok) revive(); else offerContinue(); }
   });
-  if (hasBooster) actions.push({ label: t('btn_use_booster'), kind: G.reviveUsed ? 'primary' : 'ghost', onClick: () => { closeModal(); showStuckBar(); } });
+  if (hasBooster) actions.push({ label: t('btn_use_booster'), kind: G.reviveUsed || !CFG.adsEnabled ? 'primary' : 'ghost', onClick: () => { closeModal(); showStuckBar(); } });
   actions.push({ label: t('btn_end'), kind: 'ghost', onClick: () => { closeModal(); endGame(); } });
   openModal({
     title: t('no_moves_title'),
-    body: `<p class="big">${fmt(G.score)}</p><p class="sub">${t('no_moves_body')}${G.reviveUsed ? '' : ' ' + t('no_moves_revive')}</p>`,
+    body: `<p class="big">${fmt(G.score)}</p><p class="sub">${t('no_moves_body')}${G.reviveUsed || !CFG.adsEnabled ? '' : ' ' + t('no_moves_revive')}</p>`,
     actions, dismissible: false
   });
 }
@@ -1135,7 +1156,7 @@ function recordsHtml() {
 
 function showResult(total, isBest, doubled) {
   const actions = [];
-  if (total > 0) actions.push(doubled
+  if (total > 0 && CFG.adsEnabled) actions.push(doubled
     ? { label: t('doubled'), kind: 'ghost', disabled: true }
     : { label: t('btn_double', { n: total }), kind: 'ad', onClick: async () => {
         closeModal();
@@ -1195,11 +1216,11 @@ function offerBooster(kind) {
     title: t('booster_out', { name: t(kind) }),
     body: `<p>${t(kind + '_desc')}</p><p class="sub">${t('your_coins', { n: fmt(M.coins) })}</p>`,
     actions: [
-      { label: t('btn_ad_plus1'), kind: 'ad', onClick: async () => {
+      ...(!CFG.adsEnabled ? [] : [{ label: t('btn_ad_plus1'), kind: 'ad', onClick: async () => {
           closeModal();
           const ok = await Ads.showRewarded('guclendirici_' + kind);
           if (ok) { M.boosters[kind]++; saveMeta(); updateHud(); track('reward_granted', { tur: kind, miktar: 1 }); flashToast(t('plus_one', { name: t(kind) })); }
-        } },
+        } }]),
       { label: t('btn_buy_coins', { price: b.price }), kind: 'primary', disabled: M.coins < b.price, onClick: () => {
           M.coins -= b.price; M.boosters[kind]++; saveMeta(); updateHud();
           track('booster_buy_coins', { tur: kind, fiyat: b.price });
@@ -2189,10 +2210,13 @@ function updateHud() {
   } else { sEl.textContent = ''; sEl.classList.remove('show', 'hot'); }
   for (const k of Object.keys(BOOSTERS)) {
     const n = M.boosters[k], el = $('c-' + k);
-    if (n > 0) { el.textContent = n; el.classList.remove('ad'); $('b-' + k).setAttribute('aria-label', t('booster_aria_n', { name: t(k), n })); }
-    else { el.innerHTML = PLAY; el.classList.add('ad'); $('b-' + k).setAttribute('aria-label', t('booster_aria_0', { name: t(k) })); }
+    el.classList.remove('ad', 'empty');
+    if (n > 0) { el.textContent = n; $('b-' + k).setAttribute('aria-label', t('booster_aria_n', { name: t(k), n })); }
+    else if (CFG.adsEnabled) { el.innerHTML = PLAY; el.classList.add('ad'); $('b-' + k).setAttribute('aria-label', t('booster_aria_0', { name: t(k) })); }
+    else { el.textContent = '0'; el.classList.add('empty'); $('b-' + k).setAttribute('aria-label', t('booster_aria_0_coins', { name: t(k) })); }
   }
-  $('banner').hidden = M.removeAds;
+  $('banner').hidden = M.removeAds || !CFG.adsEnabled;
+  $('shopBtn').hidden = !CFG.iapEnabled;
 }
 
 // Skor plakası: sayaç yuvarlanarak artar, çubuk rekora ne kadar kaldığını gösterir
@@ -2221,14 +2245,16 @@ function renderSoundBtn() {
 
 function openShop() {
   const actions = [];
-  if (M.removeAds) actions.push({ label: t('remove_ads_on'), kind: 'ghost', disabled: true });
+  // Reklamlar kapalıyken "Reklamları kaldır" satılmaz
+  if (!CFG.adsEnabled) { /* yok */ }
+  else if (M.removeAds) actions.push({ label: t('remove_ads_on'), kind: 'ghost', disabled: true });
   else actions.push({ label: t('btn_remove_ads', { price: money(2.99) }), kind: 'primary', onClick: () => {
     // GERÇEK: StoreKit / Unity IAP ile "remove_ads" (tüketilmeyen ürün) satın alımı
     M.removeAds = true; saveMeta(); updateHud();
     track('iap_purchase', { urun: 'remove_ads', fiyat: 2.99 });
     closeModal(); flashToast(t('toast_noads'), 3200);
   } });
-  actions.push({ label: t('btn_coin_pack', { price: money(0.99) }), kind: 'ghost', onClick: () => {
+  actions.push({ label: t('btn_coin_pack', { price: money(0.99) }), kind: CFG.adsEnabled ? 'ghost' : 'primary', onClick: () => {
     M.coins += 250; saveMeta(); updateHud();
     track('iap_purchase', { urun: 'coins_250', fiyat: 0.99 });
     closeModal(); flashToast(t('toast_coins'));
@@ -2240,7 +2266,7 @@ function openShop() {
   actions.push({ label: t('btn_close'), kind: 'ghost', onClick: closeModal });
   openModal({
     title: t('shop_title'),
-    body: `<p class="sub">${t('shop_body')}</p>`,
+    body: `<p class="sub">${t(CFG.adsEnabled ? 'shop_body' : 'shop_body_noads')}</p>`,
     actions
   });
 }
@@ -2297,6 +2323,19 @@ bindNum('ecpmRew', () => CFG.ecpm.rewarded, v => CFG.ecpm.rewarded = v);
 bindNum('ecpmInt', () => CFG.ecpm.interstitial, v => CFG.ecpm.interstitial = v);
 bindNum('ecpmBan', () => CFG.ecpm.banner, v => CFG.ecpm.banner = v);
 bindNum('cfgExpert', () => CFG.expertScore, v => CFG.expertScore = Math.max(500, Math.round(v)));
+$('cfgAds').checked = CFG.adsEnabled;
+$('cfgAds').addEventListener('change', e => {
+  CFG.adsEnabled = e.target.checked; saveCfg();
+  if (CFG.adsEnabled) Ads.lastInterstitialAt = Date.now();
+  updateHud(); renderPanel();
+  track('ads_toggle', { acik: CFG.adsEnabled ? 1 : 0 });
+});
+$('cfgIap').checked = CFG.iapEnabled;
+$('cfgIap').addEventListener('change', e => {
+  CFG.iapEnabled = e.target.checked; saveCfg();
+  updateHud(); renderPanel();
+  track('iap_toggle', { acik: CFG.iapEnabled ? 1 : 0 });
+});
 $('cfgFast').checked = CFG.fastAds;
 $('cfgFast').addEventListener('change', e => { CFG.fastAds = e.target.checked; saveCfg(); });
 
@@ -2337,7 +2376,7 @@ function openPanel(open) { $('panel').classList.toggle('open', open); $('sheetSc
 $('panelBtn').addEventListener('click', () => openPanel(true));
 $('panelClose').addEventListener('click', () => openPanel(false));
 $('sheetScrim').addEventListener('click', () => openPanel(false));
-$('shopBtn').addEventListener('click', () => { if (!Ads.showing) openShop(); });
+$('shopBtn').addEventListener('click', () => { if (!Ads.showing && CFG.iapEnabled) openShop(); });
 $('langBtn').addEventListener('click', () => { if (!Ads.showing) openLang(); });
 $('soundBtn').addEventListener('click', () => {
   M.sound = !M.sound; saveMeta(); renderSoundBtn();
@@ -2357,7 +2396,7 @@ document.addEventListener('visibilitychange', () => { if (document.hidden) saveG
 // Banner: görünürken 30 sn'de bir yenilenir; her yenileme bir gösterimdir.
 let bannerSec = 0;
 setInterval(() => {
-  if (!M.removeAds && !Ads.showing && !document.hidden) {
+  if (CFG.adsEnabled && !M.removeAds && !Ads.showing && !document.hidden) {
     if (++bannerSec >= 30) { bannerSec = 0; Ads.impr.banner++; track('ad_banner_refresh'); }
   }
   renderPanel();
@@ -2390,7 +2429,7 @@ function boot(data) {
   if (G.bestAtStart == null) G.bestAtStart = M.best;
   scoreShown = G.score;
   checkTier(true); updateTierUI();
-  if (!data.impr && !M.removeAds) { Ads.impr.banner++; track('ad_banner_show', { yer: 'alt' }); }
+  if (!data.impr && !M.removeAds && CFG.adsEnabled) { Ads.impr.banner++; track('ad_banner_show', { yer: 'alt' }); }
   track('session_start', { reklamsiz: M.removeAds ? 1 : 0 });
   renderSoundBtn(); updateHud(); renderPanel(); renderLog(); setModeUI();
   checkStuck();
