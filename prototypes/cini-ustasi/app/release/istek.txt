@@ -1,4 +1,4 @@
-check
+text
 # Bu dosyanın ilk satırı, GitHub Actions'ta çalışacak App Store işini seçer.
 # Dosya değişip claude/pensive-curie-vvewve dalına gönderilince iş başlar.
 #   status    durum raporu
@@ -6,5 +6,6 @@ check
 #   register  paket kimliğini (Bundle ID) kaydet
 #   build     derle, imzala, App Store Connect'e yükle
 #   metadata  7 dilde metinleri ve ekran görüntülerini yükle
+#   text      yalnızca metinleri ve adresleri güncelle
 #   submit    incelemeye gönder (yalnızca onaydan sonra)
-# son istek: 2026-11-10T15:02:23Z check
+# son istek: 2026-11-10T15:06:25Z text
