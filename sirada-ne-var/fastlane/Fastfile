@@ -1,0 +1,48 @@
+# Sirada Ne Var? - App Store metinleri ve ekran goruntuleri
+# GitHub Actions icinden calisir (.github/workflows/ios-appstore.yml).
+# Uygulama dosyasi (ipa) bu lane ile degil, workflow'daki Codemagic CLI adimlariyla yuklenir.
+require 'json'
+
+default_platform(:ios)
+
+# fastlane/metadata klasorundeki dil -> uygulamadaki dil (gizlilik/destek sayfasi #dil)
+LOCALE_TO_LANG = {
+  'tr' => 'tr', 'en-US' => 'en', 'pt-BR' => 'pt', 'de-DE' => 'de',
+  'fr-FR' => 'fr', 'ja' => 'ja', 'ko' => 'ko'
+}.freeze
+
+platform :ios do
+  desc 'Magaza metinlerini ve ekran goruntulerini App Store Connect\'e yukler (incelemeye gondermez)'
+  lane :metadata do
+    bundle_id = JSON.parse(File.read(File.expand_path('../capacitor.config.json', __dir__)))['appId']
+
+    web_url = ENV['WEB_URL'].to_s.strip.chomp('/')
+    UI.user_error!('WEB_URL degiskeni bos. Ornek: https://siteniz.com/sirada-ne-var') if web_url.empty?
+
+    api_key = app_store_connect_api_key(
+      key_id: ENV.fetch('APP_STORE_CONNECT_KEY_IDENTIFIER'),
+      issuer_id: ENV.fetch('APP_STORE_CONNECT_ISSUER_ID'),
+      key_content: ENV.fetch('APP_STORE_CONNECT_PRIVATE_KEY')
+    )
+
+    options = {
+      api_key: api_key,
+      app_identifier: bundle_id,
+      metadata_path: './fastlane/metadata',
+      screenshots_path: './fastlane/screenshots',
+      skip_binary_upload: true,
+      overwrite_screenshots: true,
+      submit_for_review: false,
+      automatic_release: false,
+      run_precheck_before_submit: false,
+      force: true,
+      privacy_url: LOCALE_TO_LANG.to_h { |loc, lang| [loc, "#{web_url}/privacy.html##{lang}"] },
+      support_url: LOCALE_TO_LANG.to_h { |loc, lang| [loc, "#{web_url}/support.html##{lang}"] },
+      marketing_url: LOCALE_TO_LANG.to_h { |loc, lang| [loc, "#{web_url}/##{lang}"] }
+    }
+    copyright = ENV['APP_COPYRIGHT'].to_s.strip
+    options[:copyright] = copyright unless copyright.empty?
+
+    deliver(options)
+  end
+end

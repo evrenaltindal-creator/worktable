@@ -1,5 +1,5 @@
-# Hediye Carki: iPhone uygulamasini GitHub'in Mac sunucusunda derler ve App Store Connect'e yukler.
-# Mac gerekmez. Gerekli ayarlar icin: hediye-carki/YAYINLAMA.md
+# Sirada Ne Var?: iPhone uygulamasini GitHub'in Mac sunucusunda derler ve App Store Connect'e yukler.
+# Mac gerekmez. Gerekli ayarlar icin: sirada-ne-var/YAYINLAMA.md
 name: iOS - App Store'a yukle
 
 on:
@@ -30,7 +30,7 @@ jobs:
     timeout-minutes: 60
     defaults:
       run:
-        working-directory: hediye-carki
+        working-directory: sirada-ne-var
     env:
       APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
       APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.ASC_KEY_ID }}
@@ -49,13 +49,13 @@ jobs:
           missing=0
           for name in APP_STORE_CONNECT_ISSUER_ID:ASC_ISSUER_ID APP_STORE_CONNECT_KEY_IDENTIFIER:ASC_KEY_ID APP_STORE_CONNECT_PRIVATE_KEY:ASC_PRIVATE_KEY; do
             var="${name%%:*}"; secret="${name##*:}"
-            if [ -z "${!var}" ]; then echo "::error::GitHub secret '$secret' eksik (bkz. hediye-carki/YAYINLAMA.md)"; missing=1; fi
+            if [ -z "${!var}" ]; then echo "::error::GitHub secret '$secret' eksik (bkz. sirada-ne-var/YAYINLAMA.md)"; missing=1; fi
           done
           if [ "$DO_BUILD" = "true" ] && [ -z "$CERTIFICATE_PRIVATE_KEY" ]; then
-            echo "::error::GitHub secret 'CERTIFICATE_PRIVATE_KEY' eksik (bkz. hediye-carki/YAYINLAMA.md)"; missing=1
+            echo "::error::GitHub secret 'CERTIFICATE_PRIVATE_KEY' eksik (bkz. sirada-ne-var/YAYINLAMA.md)"; missing=1
           fi
           if [ "$DO_METADATA" = "true" ] && [ -z "$WEB_URL" ]; then
-            echo "::error::GitHub variable 'WEB_URL' eksik, orn. https://siteniz.com/hediye-carki"; missing=1
+            echo "::error::GitHub variable 'WEB_URL' eksik, orn. https://siteniz.com/sirada-ne-var"; missing=1
           fi
           exit $missing
 
@@ -63,7 +63,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: hediye-carki/package-lock.json
+          cache-dependency-path: sirada-ne-var/package-lock.json
 
       - uses: actions/setup-python@v5
         if: env.DO_BUILD == 'true'

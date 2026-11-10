@@ -1,0 +1,15 @@
+{
+  "name": "Sırada Ne Var?",
+  "short_name": "Sırada Ne Var",
+  "description": "Seçenekleri siz yazın, çarkı çevirin ya da kolu çekin. Ne çıkarsa onu yapın.",
+  "lang": "tr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ECEFF5",
+  "theme_color": "#C81F2D",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

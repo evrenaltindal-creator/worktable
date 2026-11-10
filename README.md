@@ -256,14 +256,14 @@ eklemeniz onerilir.
 - Masa animasyonlari, avatarlar icin gorsel iyilestirme
 - Cok kullanicili kimlik dogrulama ve yetkilendirme
 
-## Hediye Carki (ayri uygulama)
+## Sirada Ne Var? (ayri uygulama, eski adi: Hediye Carki)
 
-`hediye-carki/web/index.html` AI Ofis'ten bagimsiz bir karar carkidir.
+`sirada-ne-var/web/index.html` AI Ofis'ten bagimsiz bir karar carkidir.
 Kurulum, sunucu veya `npm install` gerektirmez: dosyaya cift tiklayip
 tarayicida acmaniz yeterli (telefonda da calisir). Ayni dosyalar hem
-siteye yuklenir hem de iPhone uygulamasinin (`hediye-carki/ios`, Capacitor)
+siteye yuklenir hem de iPhone uygulamasinin (`sirada-ne-var/ios`, Capacitor)
 icine girer. App Store'a gonderme ve siteye koyma adimlari:
-`hediye-carki/YAYINLAMA.md`.
+`sirada-ne-var/YAYINLAMA.md`.
 
 - Secenekleri kullanicilar kendisi yazar (en fazla 30). Birden cok satir
   yapistirilirsa her satir ayri secenek olur.

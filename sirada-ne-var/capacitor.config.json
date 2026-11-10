@@ -1,0 +1,11 @@
+{
+  "appId": "com.evrenaltindal.siradanevar",
+  "appName": "Sırada Ne Var?",
+  "webDir": "web",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#18223D",
+    "scrollEnabled": true,
+    "limitsNavigationsToAppBoundDomains": false
+  }
+}
