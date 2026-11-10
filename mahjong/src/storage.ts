@@ -1,11 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Boosters, START_BOOSTERS } from './boosters';
 import { FaceId } from './game/tiles';
+import { LangSetting } from './i18n';
 
 export interface Settings {
   sound: boolean;
   haptics: boolean;
   highlightFree: boolean;
+  /** 'auto' = telefonun dili */
+  language: LangSetting;
 }
 
 export interface Progress {
@@ -42,7 +45,7 @@ export const DEFAULT_PROGRESS: Progress = {
   best: {},
   stars: {},
   boosters: START_BOOSTERS,
-  settings: { sound: true, haptics: true, highlightFree: true },
+  settings: { sound: true, haptics: true, highlightFree: true, language: 'auto' },
 };
 
 export async function loadProgress(): Promise<Progress> {

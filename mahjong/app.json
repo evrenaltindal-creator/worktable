@@ -37,7 +37,31 @@
           "enableBackgroundRecording": false
         }
       ],
-      "expo-localization",
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "ios": [
+              "tr",
+              "en",
+              "pt",
+              "de",
+              "fr",
+              "ja",
+              "ko"
+            ],
+            "android": [
+              "tr",
+              "en",
+              "pt",
+              "de",
+              "fr",
+              "ja",
+              "ko"
+            ]
+          }
+        }
+      ],
       [
         "expo-splash-screen",
         {

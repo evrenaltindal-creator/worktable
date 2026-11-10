@@ -70,7 +70,7 @@ export function ToolButton({ label, icon, onPress, count, tone = 'teal', disable
       ]}
     >
       <Image source={UI_ICONS[icon]} style={[styles.toolIcon, { tintColor: c.fg }]} />
-      <Text style={[styles.toolLabel, { color: c.fg }]} numberOfLines={1}>
+      <Text style={[styles.toolLabel, { color: c.fg }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.75}>
         {label}
       </Text>
       {count !== undefined ? (

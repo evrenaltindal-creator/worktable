@@ -255,7 +255,7 @@ export function GameScreen(props: Props) {
     if (!last || s.wonSeconds !== null) return;
     if (boosters.undo <= 0) {
       playSound('wrong');
-      showToast(t.outOf(t.booster.undo));
+      showToast(t.outOf.undo);
       return;
     }
     onUseBooster('undo');
@@ -286,7 +286,7 @@ export function GameScreen(props: Props) {
     }
     if (boosters.hint <= 0) {
       playSound('wrong');
-      showToast(t.outOf(t.booster.hint));
+      showToast(t.outOf.hint);
       return;
     }
     onUseBooster('hint');
@@ -307,7 +307,7 @@ export function GameScreen(props: Props) {
     if (stateRef.current.wonSeconds !== null) return;
     if (boosters.shuffle <= 0) {
       playSound('wrong');
-      showToast(t.outOf(t.booster.shuffle));
+      showToast(t.outOf.shuffle);
       return;
     }
     onUseBooster('shuffle');
@@ -366,7 +366,7 @@ export function GameScreen(props: Props) {
         ) : null}
         {toast ? (
           <View key={toast.id} style={styles.toast} pointerEvents="none">
-            <Text style={styles.toastText}>{toast.text}</Text>
+            <Text lineBreakStrategyIOS="hangul-word" style={styles.toastText}>{toast.text}</Text>
           </View>
         ) : null}
       </View>
@@ -425,7 +425,7 @@ export function GameScreen(props: Props) {
           </>
         }
       >
-        <Text style={styles.body}>{t.stuckBody}</Text>
+        <Text lineBreakStrategyIOS="hangul-word" style={styles.body}>{t.stuckBody}</Text>
       </Overlay>
     </View>
   );

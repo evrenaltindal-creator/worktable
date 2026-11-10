@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Animated, Easing, Image, Platform, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { Animated, Easing, Image, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BigButton } from '../components/Buttons';
 import { Overlay } from '../components/Overlay';
 import { TILE_BODY, TILE_IMAGES } from '../images';
-import { t } from '../i18n';
+import { LANGUAGES, LangSetting, t } from '../i18n';
 import { Settings } from '../storage';
 import { colors, font } from '../theme';
 
@@ -88,7 +88,7 @@ export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsCh
       <Text style={styles.title} accessibilityRole="header">
         {t.appName}
       </Text>
-      <Text style={styles.tagline}>{t.tagline}</Text>
+      <Text lineBreakStrategyIOS="hangul-word" style={styles.tagline}>{t.tagline}</Text>
 
       <View style={styles.buttons}>
         <Pulse>
@@ -108,7 +108,7 @@ export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsCh
         {t.rules.map((r, i) => (
           <View key={i} style={styles.ruleRow}>
             <Text style={styles.ruleNum}>{i + 1}</Text>
-            <Text style={styles.ruleText}>{r}</Text>
+            <Text lineBreakStrategyIOS="hangul-word" style={styles.ruleText}>{r}</Text>
           </View>
         ))}
       </Overlay>
@@ -126,6 +126,26 @@ export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsCh
           value={settings.highlightFree}
           onChange={(v) => onSettingsChange({ ...settings, highlightFree: v })}
         />
+        <View style={styles.langBox}>
+          <Text style={styles.settingLabel}>{t.language}</Text>
+          <View style={styles.langRow}>
+            {([{ code: 'auto', name: t.languageAuto }, ...LANGUAGES] as { code: LangSetting; name: string }[]).map((l) => {
+              const active = settings.language === l.code;
+              return (
+                <Pressable
+                  key={l.code}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: active }}
+                  accessibilityLabel={l.name}
+                  onPress={() => onSettingsChange({ ...settings, language: l.code })}
+                  style={({ pressed }) => [styles.langChip, active && styles.langChipActive, pressed && { opacity: 0.8 }]}
+                >
+                  <Text style={[styles.langText, active && styles.langTextActive]}>{l.name}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+        </View>
       </Overlay>
     </ScrollView>
   );
@@ -134,7 +154,7 @@ export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsCh
 function SettingRow({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
     <View style={styles.settingRow}>
-      <Text style={styles.settingLabel}>{label}</Text>
+      <Text lineBreakStrategyIOS="hangul-word" style={styles.settingLabel}>{label}</Text>
       <Switch
         value={value}
         onValueChange={onChange}
@@ -200,4 +220,18 @@ const styles = StyleSheet.create({
   },
   settingLabel: { color: colors.text, fontSize: font.normal, fontWeight: '600', flex: 1 },
   switch: { transform: [{ scale: 1.15 }] },
+  langBox: { backgroundColor: colors.panel, borderRadius: 14, padding: 14, gap: 12 },
+  langRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  langChip: {
+    minHeight: 48,
+    paddingHorizontal: 14,
+    borderRadius: 12,
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  langChipActive: { backgroundColor: colors.accent, borderColor: '#FFFFFF' },
+  langText: { color: colors.text, fontSize: font.small, fontWeight: '700' },
+  langTextActive: { color: '#3A2A08' },
 });

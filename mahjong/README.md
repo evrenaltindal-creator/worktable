@@ -26,7 +26,10 @@ oyunu. iPhone ve iPad için hazırlandı; aynı kod Android'de de çalışır.
 - **Yıldızlar:** hiç ipucu/karıştırma kullanmadan bitirmek 3 yıldız; süre baskısı yok.
 - **200 seviye**, 16 özgün dizilim (kalp, ev, kelebek, kale, piramit…).
 - **Otomatik kayıt:** uygulama kapansa da oyun kaldığı yerden devam eder.
-- Türkçe ve İngilizce (telefon diline göre otomatik), ses efektleri, titreşim.
+- **7 dil:** Türkçe, İngilizce, Portekizce (Brezilya), Almanca, Fransızca, Japonca, Korece.
+  Telefonun diline göre otomatik açılır; oyuncu Ayarlar → Dil'den değiştirebilir. Desteklenmeyen
+  bir dilde İngilizce açılır. iPhone'da Ayarlar → Huzur Mahjong → Dil'den de seçilebilir.
+- Ses efektleri ve titreşim.
 - İnternet gerektirmez, **hiçbir kullanıcı verisi toplamaz**.
 
 ## Bilgisayarınızda / telefonunuzda deneme (Windows'ta da çalışır)
@@ -79,15 +82,18 @@ teklif eder.
 ### App Store Connect'te doldurulacaklar (<https://appstoreconnect.apple.com>)
 
 1. **TestFlight:** derleme birkaç dakika içinde görünür; kendi iPhone'unuzda test edin.
-2. **Ekran görüntüleri:** hazır — `store/screenshots/tr/` (Türkçe) ve `store/screenshots/en/`
-   (İngilizce). `iphone-6.9` klasörü 6.9" iPhone, `ipad-13` klasörü 13" iPad içindir.
-3. **Açıklama, anahtar kelimeler, alt başlık:** taslaklar `store/app-store-listing.md` dosyasında.
-4. **Gizlilik politikası adresi (zorunlu):** `store/privacy-policy.md` metnini bir web sayfasında
+2. **Diller:** App Store Connect'te uygulama sayfasının sağ üstündeki dil menüsünden Türkçe,
+   English (U.S.), Portuguese (Brazil), German, French, Japanese ve Korean dillerini ekleyin.
+3. **Ekran görüntüleri:** her dil için hazır — `store/screenshots/<dil>/iphone-6.9/` (6.9" iPhone).
+   13" iPad görüntüleri Türkçe ve İngilizce için `ipad-13` klasöründe; diğer dillerde App Store
+   ana dilin iPad görüntülerini kullanır.
+4. **Açıklama, anahtar kelimeler, alt başlık:** 7 dilde hazır, `store/app-store-listing.md` dosyasında.
+5. **Gizlilik politikası adresi (zorunlu):** `store/privacy-policy.md` metnini bir web sayfasında
    yayınlayın (ör. GitHub Pages, Google Sites) ve adresini girin.
-5. **App Privacy (Uygulama Gizliliği):** "Veri toplanmıyor" (*Data Not Collected*) seçin.
-6. **Yaş derecelendirmesi:** anketteki tüm sorulara "Hayır/Yok" → 4+.
-7. **Kategori:** Oyunlar → Bulmaca (Puzzle), ikinci: Masa Oyunu (Board).
-8. **Fiyat:** Ücretsiz (veya istediğiniz fiyat). Sonra **İncelemeye Gönder**.
+6. **App Privacy (Uygulama Gizliliği):** "Veri toplanmıyor" (*Data Not Collected*) seçin.
+7. **Yaş derecelendirmesi:** anketteki tüm sorulara "Hayır/Yok" → 4+.
+8. **Kategori:** Oyunlar → Bulmaca (Puzzle), ikinci: Masa Oyunu (Board).
+9. **Fiyat:** Ücretsiz (veya istediğiniz fiyat). Sonra **İncelemeye Gönder**.
 
 Apple incelemesi genellikle 1-3 gün sürer.
 
@@ -128,7 +134,8 @@ store/                     Mağaza ekran görüntüleri, açıklama taslağı, g
 - **Renkler:** `src/theme.ts`
 - **Güçlendirici sayıları ve ödüller:** `src/boosters.ts` (`START_BOOSTERS`, `levelRewards`)
 - **Temalar ve hareketli parçacıklar:** `src/themes.ts`; sahne çizimleri `scripts/art-scenes.cjs`
-- **Metinler / dil eklemek:** `src/i18n.ts`
+- **Metinler / dil eklemek:** `src/i18n.ts` (yeni bir dil için: o dilin metin bloğunu ekleyin,
+  `LANGUAGES` listesine yazın ve `app.json` içindeki `supportedLocales` listesine ekleyin)
 - **Taş çizimleri:** `scripts/generate-art.cjs` içindeki SVG kodları; değiştirdikten sonra
   `npm run gen:art` (Playwright gerektirir, dosyanın başındaki nota bakın).
 

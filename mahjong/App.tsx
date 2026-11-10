@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { BoosterKind, addBoosters, levelRewards } from './src/boosters';
 import { SceneBackground } from './src/components/SceneBackground';
 import { initFeedback, setFeedbackSettings } from './src/feedback';
+import { setLanguage } from './src/i18n';
 import { LEVEL_COUNT } from './src/game/levels';
 import { GameScreen, WinResult } from './src/screens/GameScreen';
 import { HomeScreen } from './src/screens/HomeScreen';
@@ -31,6 +32,7 @@ export default function App() {
     initFeedback();
     Promise.all([loadProgress(), loadGame()]).then(([p, g]) => {
       setFeedbackSettings(p.settings.sound, p.settings.haptics);
+      setLanguage(p.settings.language);
       setProgress(p);
       setSaved(g);
     });
@@ -58,6 +60,8 @@ export default function App() {
   const onSettingsChange = useCallback(
     (s: Settings) => {
       setFeedbackSettings(s.sound, s.haptics);
+      // Dil değişince ekranlar yeni ayarlarla yeniden çizilir ve yeni dil görünür
+      setLanguage(s.language);
       updateProgress((p) => ({ ...p, settings: s }));
     },
     [updateProgress],
