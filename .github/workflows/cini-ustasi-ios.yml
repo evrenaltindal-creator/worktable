@@ -4,6 +4,7 @@ name: Cini Ustasi iOS
 # Tetikleme: prototypes/cini-ustasi/app/release/istek.txt dosyasının ilk satırına iş adı
 # (status, register, build, metadata, submit) yazılıp bu dala gönderilir.
 # Workflow varsayılan dala alındığında Actions sekmesinden elle de başlatılabilir.
+# Yalnızca derleme Mac sunucusunda çalışır; diğer işler hızlı başlayan Linux sunucusunda.
 on:
   push:
     branches: [claude/pensive-curie-vvewve]
@@ -24,33 +25,26 @@ permissions:
   contents: read
 
 jobs:
-  app-store:
-    runs-on: macos-15
-    timeout-minutes: 60
-    defaults:
-      run:
-        working-directory: prototypes/cini-ustasi/app
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      lane: ${{ steps.lane.outputs.lane }}
+      ok: ${{ steps.ready.outputs.ok }}
     env:
       ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
       ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
       ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      REVIEW_FIRST_NAME: ${{ secrets.REVIEW_FIRST_NAME }}
-      REVIEW_LAST_NAME: ${{ secrets.REVIEW_LAST_NAME }}
-      REVIEW_PHONE: ${{ secrets.REVIEW_PHONE }}
-      REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
-      FASTLANE_SKIP_UPDATE_CHECK: '1'
-      FASTLANE_HIDE_CHANGELOG: '1'
-      LC_ALL: en_US.UTF-8
-      LANG: en_US.UTF-8
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: prototypes/cini-ustasi/app/release
 
       - name: Isi sec
         id: lane
         run: |
           LANE="${{ inputs.lane }}"
-          if [ -z "$LANE" ]; then LANE=$(head -n1 release/istek.txt | tr -d '[:space:]'); fi
+          if [ -z "$LANE" ]; then LANE=$(head -n1 prototypes/cini-ustasi/app/release/istek.txt | tr -d '[:space:]'); fi
           case "$LANE" in status|register|build|metadata|submit) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
           echo "lane=$LANE" >> "$GITHUB_OUTPUT"
           echo "Is: $LANE"
@@ -69,15 +63,40 @@ jobs:
             echo "ok=true" >> "$GITHUB_OUTPUT"
           fi
 
+  app-store:
+    needs: plan
+    if: needs.plan.outputs.ok == 'true'
+    runs-on: ${{ needs.plan.outputs.lane == 'build' && 'macos-15' || 'ubuntu-latest' }}
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: prototypes/cini-ustasi/app
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      REVIEW_FIRST_NAME: ${{ secrets.REVIEW_FIRST_NAME }}
+      REVIEW_LAST_NAME: ${{ secrets.REVIEW_LAST_NAME }}
+      REVIEW_PHONE: ${{ secrets.REVIEW_PHONE }}
+      REVIEW_EMAIL: ${{ secrets.REVIEW_EMAIL }}
+      FASTLANE_SKIP_UPDATE_CHECK: '1'
+      FASTLANE_HIDE_CHANGELOG: '1'
+      FASTLANE_OPT_OUT_USAGE: '1'
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+    steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
-        if: steps.ready.outputs.ok == 'true' && steps.lane.outputs.lane == 'build'
+        if: needs.plan.outputs.lane == 'build'
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: prototypes/cini-ustasi/app/package-lock.json
 
       - name: Oyunu derle ve Xcode projesine kopyala
-        if: steps.ready.outputs.ok == 'true' && steps.lane.outputs.lane == 'build'
+        if: needs.plan.outputs.lane == 'build'
         run: |
           npm ci
           npm run build
@@ -85,9 +104,8 @@ jobs:
           xcodebuild -version
 
       - name: fastlane
-        if: steps.ready.outputs.ok == 'true'
         run: |
           command -v fastlane >/dev/null || sudo gem install fastlane --no-document
-          LANE="${{ steps.lane.outputs.lane }}"
+          LANE="${{ needs.plan.outputs.lane }}"
           [ "$LANE" = build ] && LANE=build_upload
           fastlane ios "$LANE"
