@@ -157,7 +157,8 @@ platform :ios do
     api_key
     need_env('APPLE_TEAM_ID')
     id = app_id
-    find_app!
+    app = Spaceship::ConnectAPI::App.find(id)
+    UI.important("App Store Connect'te #{id} için uygulama kaydı yok: derleyip doğrulayacağım ama yüklemeyeceğim.") unless app
     latest = begin
       latest_testflight_build_number(app_identifier: id, initial_build_number: 0)
     rescue StandardError => e
@@ -167,7 +168,7 @@ platform :ios do
     build_number = latest.to_i + 1
     uuid = app_store_profile(distribution_certificate)
     UI.message("Sürüm #{version}, derleme #{build_number}, profil #{uuid}")
-    sh(File.join(APP_DIR, 'tools', 'ios-build.sh'), id, version, build_number.to_s, uuid)
+    sh(File.join(APP_DIR, 'tools', 'ios-build.sh'), id, version, build_number.to_s, uuid, app ? 'upload' : 'no-upload')
   end
 
   desc '7 dilde metinleri, tanıtım görsellerini ve kategoriyi yükler'

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Ok Kaçış iOS uygulamasını arşivler, dağıtım sertifikasıyla imzalar, doğrular ve
 # App Store Connect'e yükler. fastlane'in "build" işi çağırır (yalnızca macOS + Xcode).
-# Kullanım: tools/ios-build.sh <bundle-id> <sürüm> <derleme-numarası> <profil-uuid>
+# Kullanım: tools/ios-build.sh <bundle-id> <sürüm> <derleme-numarası> <profil-uuid> [upload|no-upload]
 # Ortam: APPLE_TEAM_ID, IOS_DISTRIBUTION_P12 (base64), IOS_P12_PASSWORD, ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8
 set -euo pipefail
 
@@ -9,6 +9,7 @@ APP_ID="$1"
 VERSION="$2"
 BUILD="$3"
 UUID="$4"
+MODE="${5:-upload}"
 : "${APPLE_TEAM_ID:?APPLE_TEAM_ID eksik}" "${IOS_DISTRIBUTION_P12:?IOS_DISTRIBUTION_P12 eksik}" "${IOS_P12_PASSWORD:?IOS_P12_PASSWORD eksik}"
 : "${ASC_KEY_ID:?ASC_KEY_ID eksik}" "${ASC_ISSUER_ID:?ASC_ISSUER_ID eksik}" "${ASC_KEY_P8:?ASC_KEY_P8 eksik}"
 
@@ -86,6 +87,12 @@ test -f "$APP/embedded.mobileprovision"
 test -f "$APP/public/index.html"
 codesign --verify --deep --strict --verbose=2 "$APP"
 echo "IPA hazır: $(basename "$IPA") ($(du -h "$IPA" | cut -f1))"
+
+if [ "$MODE" != upload ]; then
+  echo "Yükleme atlandı (App Store Connect'te uygulama kaydı yok). Derleme ve imza doğrulandı."
+  [ -n "${GITHUB_STEP_SUMMARY:-}" ] && echo "### Derlendi ve imzalandı (yüklenmedi): Ok Kaçış $VERSION ($BUILD)" >> "$GITHUB_STEP_SUMMARY"
+  exit 0
+fi
 
 echo "== App Store Connect'e yükle"
 mkdir -p "$KEY_DIR"
