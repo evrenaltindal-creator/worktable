@@ -77,6 +77,19 @@ jobs:
           xcodebuild -exportArchive -archivePath "$PWD/build/ios/App.xcarchive" \
             -exportOptionsPlist "$PWD/build/ios/ExportOptions.plist" \
             -exportPath "$PWD/build/ios/export"
+      - name: Verify the signed IPA
+        run: |
+          set -euo pipefail
+          IPA="$(find build/ios/export -maxdepth 1 -name '*.ipa' -print -quit)"
+          test -n "$IPA"
+          unzip -q "$IPA" -d "$RUNNER_TEMP/ipa-check"
+          APP="$RUNNER_TEMP/ipa-check/Payload/App.app"
+          test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$APP/Info.plist")" = 'com.evrenaltindal.ciniustasi'
+          test -f "$APP/embedded.mobileprovision"
+          test -f "$APP/public/privacy.html"
+          codesign --verify --deep --strict --verbose=2 "$APP"
+          security cms -D -i "$APP/embedded.mobileprovision" > "$RUNNER_TEMP/embedded-profile.plist"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$RUNNER_TEMP/embedded-profile.plist")" = "$APPLE_TEAM_ID.com.evrenaltindal.ciniustasi"
       - name: Keep the signed IPA for download
         uses: actions/upload-artifact@v4
         with:
