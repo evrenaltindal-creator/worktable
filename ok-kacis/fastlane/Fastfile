@@ -243,6 +243,12 @@ platform :ios do
       end
     end
     UI.success("Test kullanıcıları: #{added} eklendi, #{already} zaten vardı, #{failed} eklenemedi")
+    begin
+      in_group = Spaceship::ConnectAPI::BetaTester.all(filter: { betaGroups: group.id }).size
+      UI.success("Ekip grubunda #{in_group} test kullanıcısı var")
+    rescue StandardError => e
+      UI.important("Grup üyeleri okunamadı (#{e.message})")
+    end
     builds = app.get_builds(sort: '-uploadedDate', limit: 10)
     builds.first(5).each do |b|
       UI.message("Derleme #{b.version}: #{b.processing_state}#{b.expired ? ' (süresi dolmuş)' : ''}")
