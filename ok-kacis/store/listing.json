@@ -13,7 +13,7 @@
     "name": "Ok Kaçış: Ok Bulmacası",
     "subtitle": "Okları sırayla tahtadan kaçır",
     "promotionalText": "Bir oka dokun, önü boşsa kaçar. Doğru sırayı bul, kombo yap, zamana karşı rekor kır. Sonsuz seviye, 7 dil, internetsiz oyna.",
-    "keywords": "bulmaca,zeka,mantık,beyin,labirent,yön,puzzle,kafa,çevrimdışı,rahatlatıcı,kombo,zaman",
+    "keywords": "zeka,akıl,mantık,beyin,puzzle,internetsiz,çevrimdışı,labirent,oyun,yön,kafa,rahatlatıcı,kombo,süre",
     "description": "Ok Kaçış, her hamlenin önemli olduğu sakin ama sürükleyici bir bulmaca oyunu.\n\nTahtada kıvrılan oklar var. Bir oka dokun: önü boşsa kayıp tahtadan kaçar. Önünde başka bir ok varsa çarpar ve bir can gider. Doğru sırayı bul ve tahtayı temizle.\n\nÖZELLİKLER\n• Sonsuz seviye: tahtalar giderek büyür, oklar birbirine kenetlenir. Her seviye çözülebilir.\n• Zamana karşı: 60 saniyeyle başla, temizlediğin her tahta +8 saniye kazandırır. Rekorunu kır.\n• Kombo: hızlı ve doğru hamlelerle çarpanı x5'e kadar yükselt.\n• Skor tablosu: en iyi skorların cihazında saklanır.\n• İpucu: takıldığında önü açık bir oku gösterir.\n• Açık ve koyu tema, 7 dil, internetsiz oynanır.\n\nKısa molalar için ideal: bir seviye çoğu zaman bir dakikadan kısa sürer.",
     "web": {
       "lead": "Bir oka dokun. Önü boşsa kayıp kaçar, önü kapalıysa çarpar. Doğru sırayı bul, tahtayı temizle.",
@@ -74,7 +74,7 @@
     "name": "Ok Kaçış: Arrow Puzzle",
     "subtitle": "Slide every arrow off the grid",
     "promotionalText": "Tap an arrow and it slides out if the path is clear. Find the right order, chain combos and beat your best in time attack. Endless levels, 7 languages, plays offline.",
-    "keywords": "arrows,escape,logic,brain,tap,maze,grid,unblock,offline,relaxing,combo,time attack,mind",
+    "keywords": "escape,brain,teaser,logic,maze,unblock,offline,relax,mind,iq,game,free,direction,line,tap,casual",
     "description": "Ok Kaçış is a calm but gripping puzzle game where every move counts.\n\nThe board is full of bending arrows. Tap one: if its path is clear, it slides off the board. If another arrow is in the way, it crashes and you lose a heart. Find the right order and clear the board.\n\nFEATURES\n• Endless levels: boards grow and the arrows lock together tighter. Every level is solvable.\n• Time attack: start with 60 seconds and earn +8 seconds for every board you clear. Beat your record.\n• Combos: quick, correct moves push your multiplier up to x5.\n• Leaderboard: your best scores are kept on your device.\n• Hints: stuck? A hint shows an arrow with a clear path.\n• Light and dark themes, 7 languages, plays offline.\n\nGreat for short breaks: most levels take less than a minute.",
     "web": {
       "lead": "Tap an arrow. If its path is clear it slides out; if not, it crashes. Find the right order and clear the board.",
@@ -135,7 +135,7 @@
     "name": "Ok Kaçış: Puzzle de Setas",
     "subtitle": "Deslize as setas para fora",
     "promotionalText": "Toque em uma seta e ela sai se o caminho estiver livre. Encontre a ordem certa, faça combos e bata seu recorde contra o tempo. Níveis infinitos, 7 idiomas, offline.",
-    "keywords": "setas,seta,quebra-cabeça,lógica,cérebro,labirinto,raciocínio,offline,relaxante,combo",
+    "keywords": "quebra-cabeça,lógica,cérebro,raciocínio,labirinto,offline,relaxante,jogo,mente,desafio,grátis,combo",
     "description": "Ok Kaçış é um jogo de quebra-cabeça tranquilo, mas viciante, em que cada jogada conta.\n\nO tabuleiro está cheio de setas que fazem curvas. Toque em uma: se o caminho estiver livre, ela desliza para fora. Se outra seta estiver no caminho, ela bate e você perde uma vida. Encontre a ordem certa e limpe o tabuleiro.\n\nRECURSOS\n• Níveis infinitos: os tabuleiros crescem e as setas se encaixam cada vez mais. Todo nível tem solução.\n• Contra o tempo: comece com 60 segundos e ganhe +8 segundos a cada tabuleiro limpo. Bata seu recorde.\n• Combos: jogadas rápidas e certas levam o multiplicador até x5.\n• Placar: suas melhores pontuações ficam salvas no aparelho.\n• Dicas: travou? A dica mostra uma seta com o caminho livre.\n• Tema claro e escuro, 7 idiomas, funciona offline.\n\nPerfeito para pausas curtas: a maioria dos níveis leva menos de um minuto.",
     "web": {
       "lead": "Toque em uma seta. Se o caminho estiver livre, ela sai; se não, ela bate. Encontre a ordem certa e limpe o tabuleiro.",
@@ -196,7 +196,7 @@
     "name": "Ok Kaçış: Pfeil-Rätsel",
     "subtitle": "Schieb alle Pfeile vom Brett",
     "promotionalText": "Tippe auf einen Pfeil – ist der Weg frei, gleitet er hinaus. Finde die richtige Reihenfolge, sammle Kombos, knack deinen Rekord. Endlos viele Level, 7 Sprachen, offline.",
-    "keywords": "pfeile,pfeil,logik,denkspiel,gehirn,labyrinth,knobeln,offline,entspannend,puzzle,kombo",
+    "keywords": "logik,denkspiel,gehirn,labyrinth,knobeln,offline,entspannend,puzzle,spiel,iq,kostenlos,gehirnjogging",
     "description": "Ok Kaçış ist ein ruhiges, aber fesselndes Rätselspiel, in dem jeder Zug zählt.\n\nAuf dem Brett liegen verschlungene Pfeile. Tippe einen an: Ist sein Weg frei, gleitet er vom Brett. Steht ein anderer Pfeil im Weg, prallt er dagegen und du verlierst ein Leben. Finde die richtige Reihenfolge und räum das Brett ab.\n\nFUNKTIONEN\n• Endlos viele Level: Die Bretter wachsen, die Pfeile verhaken sich immer stärker. Jedes Level ist lösbar.\n• Gegen die Zeit: Starte mit 60 Sekunden, jedes geräumte Brett bringt +8 Sekunden. Knack deinen Rekord.\n• Kombos: Schnelle, richtige Züge treiben den Multiplikator bis x5.\n• Bestenliste: Deine besten Ergebnisse bleiben auf deinem Gerät.\n• Tipps: Festgefahren? Ein Tipp zeigt einen Pfeil mit freiem Weg.\n• Helles und dunkles Design, 7 Sprachen, offline spielbar.\n\nIdeal für kurze Pausen: Die meisten Level dauern weniger als eine Minute.",
     "web": {
       "lead": "Tippe auf einen Pfeil. Ist sein Weg frei, gleitet er hinaus, sonst prallt er dagegen. Finde die richtige Reihenfolge.",
@@ -257,7 +257,7 @@
     "name": "Ok Kaçış : Puzzle de flèches",
     "subtitle": "Fais glisser chaque flèche",
     "promotionalText": "Touche une flèche : si la voie est libre, elle s’échappe. Trouve le bon ordre, enchaîne les combos et bats ton record contre la montre. Niveaux infinis, 7 langues.",
-    "keywords": "flèches,flèche,casse-tête,logique,cerveau,réflexion,labyrinthe,énigme,hors ligne,relaxant",
+    "keywords": "casse-tête,logique,cerveau,réflexion,labyrinthe,énigme,hors ligne,relaxant,jeu,esprit,défi,gratuit",
     "description": "Ok Kaçış est un casse-tête calme mais prenant, où chaque coup compte.\n\nLe plateau est rempli de flèches sinueuses. Touche-en une : si son chemin est libre, elle glisse hors du plateau. Si une autre flèche bloque le passage, elle la percute et tu perds une vie. Trouve le bon ordre et vide le plateau.\n\nFONCTIONNALITÉS\n• Niveaux infinis : les plateaux grandissent et les flèches s’imbriquent de plus en plus. Chaque niveau a une solution.\n• Contre la montre : commence avec 60 secondes, chaque plateau vidé rapporte +8 secondes. Bats ton record.\n• Combos : des coups rapides et justes font grimper le multiplicateur jusqu’à x5.\n• Classement : tes meilleurs scores restent sur ton appareil.\n• Indices : bloqué ? Un indice montre une flèche dont le chemin est libre.\n• Thème clair et sombre, 7 langues, jouable hors ligne.\n\nIdéal pour les petites pauses : la plupart des niveaux durent moins d’une minute.",
     "web": {
       "lead": "Touche une flèche. Si son chemin est libre, elle s’échappe ; sinon, elle percute. Trouve le bon ordre et vide le plateau.",
@@ -318,7 +318,7 @@
     "name": "Ok Kaçış：矢印パズル",
     "subtitle": "矢印を順番にすべらせて脱出",
     "promotionalText": "矢印をタップ。進む先が空いていれば外へ脱出！正しい順番を見つけて、コンボをつなぎ、タイムアタックで記録を更新しよう。レベル無限・7言語・オフラインOK。",
-    "keywords": "矢印,パズル,脳トレ,ロジック,脱出,迷路,頭脳,ひまつぶし,オフライン,無料,カジュアル,コンボ,タイムアタック",
+    "keywords": "脳トレ,ロジック,迷路,頭脳,ひまつぶし,オフライン,無料,カジュアル,コンボ,タイムアタック,頭の体操,謎解き,ゲーム,知育,一筆",
     "description": "Ok Kaçış（オク・カチュシュ）は、一手一手が大切な、落ち着いて遊べるのについ夢中になるパズルゲームです。\n\nボードには曲がりくねった矢印が並んでいます。矢印をタップして、進む先が空いていればボードの外へすべり出ます。ほかの矢印にぶつかるとライフが1つ減ります。正しい順番を見つけてボードを空にしよう。\n\n特長\n• レベル無限：ボードはだんだん大きくなり、矢印同士がしっかりかみ合っていきます。どのレベルも必ず解けます。\n• タイムアタック：60秒からスタート。ボードをクリアするたびに+8秒。自己ベストを更新しよう。\n• コンボ：すばやく正確に動かすと倍率が最大x5まで上がります。\n• ランキング：ベストスコアは端末に保存されます。\n• ヒント：行き詰まったら、進める矢印を教えてくれます。\n• ライト／ダークテーマ、7言語対応、オフラインで遊べます。\n\nちょっとした休憩にぴったり。ほとんどのレベルは1分以内で遊べます。",
     "web": {
       "lead": "矢印をタップ。進む先が空いていれば脱出、ふさがっていればぶつかります。正しい順番を見つけよう。",
@@ -379,7 +379,7 @@
     "name": "Ok Kaçış: 화살표 퍼즐",
     "subtitle": "화살표를 순서대로 빼내세요",
     "promotionalText": "화살표를 탭하면 앞길이 비어 있을 때 빠져나가요. 올바른 순서를 찾고 콤보를 이어 타임 어택 기록을 깨 보세요. 무한 레벨, 7개 언어, 오프라인 플레이.",
-    "keywords": "화살표,퍼즐,두뇌,논리,탈출,미로,브레인,오프라인,무료,캐주얼,콤보,타임어택,머리",
+    "keywords": "두뇌,논리,탈출,미로,브레인,오프라인,무료,캐주얼,콤보,타임어택,두뇌게임,퍼즐게임,머리,지능,게임",
     "description": "Ok Kaçış(오크 카추시)는 한 수 한 수가 중요한, 차분하지만 빠져드는 퍼즐 게임입니다.\n\n보드에는 구불구불한 화살표가 가득합니다. 화살표를 탭하면 앞길이 비어 있을 때 보드 밖으로 미끄러져 나갑니다. 다른 화살표에 막혀 있으면 부딪혀서 하트를 하나 잃어요. 올바른 순서를 찾아 보드를 비우세요.\n\n특징\n• 무한 레벨: 보드가 점점 커지고 화살표가 더 단단히 얽힙니다. 모든 레벨은 풀 수 있어요.\n• 타임 어택: 60초로 시작해 보드를 비울 때마다 +8초. 최고 기록을 깨 보세요.\n• 콤보: 빠르고 정확한 수로 배율을 최대 x5까지 올리세요.\n• 랭킹: 최고 점수는 기기에 저장됩니다.\n• 힌트: 막히면 앞길이 열린 화살표를 알려 줍니다.\n• 라이트/다크 테마, 7개 언어, 오프라인 플레이.\n\n짧은 휴식에 딱 좋아요. 대부분의 레벨은 1분이 채 걸리지 않습니다.",
     "web": {
       "lead": "화살표를 탭하세요. 앞길이 비어 있으면 빠져나가고, 막혀 있으면 부딪혀요. 올바른 순서를 찾아보세요.",
