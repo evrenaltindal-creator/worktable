@@ -1,0 +1,69 @@
+name: Cini Ustasi signed IPA
+
+on:
+  push:
+    branches: [codex/cini-ustasi-release-prep]
+    paths: ['prototypes/cini-ustasi/app/release/export-istek.txt']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export-ipa:
+    runs-on: macos-26
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: prototypes/cini-ustasi/app
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: prototypes/cini-ustasi/app/package-lock.json
+      - name: Install and prepare the iOS project
+        run: |
+          npm ci --ignore-scripts
+          npm run sync
+      - name: Archive and export an IPA
+        run: |
+          set -euo pipefail
+          : "${ASC_KEY_ID:?missing ASC_KEY_ID}" "${ASC_ISSUER_ID:?missing ASC_ISSUER_ID}" "${ASC_KEY_P8:?missing ASC_KEY_P8}" "${APPLE_TEAM_ID:?missing APPLE_TEAM_ID}"
+          umask 077
+          KEY_PATH="$RUNNER_TEMP/AuthKey.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY_PATH"
+          trap 'rm -f "$KEY_PATH"' EXIT
+          AUTH=(-allowProvisioningUpdates -authenticationKeyPath "$KEY_PATH" -authenticationKeyID "$ASC_KEY_ID" -authenticationKeyIssuerID "$ASC_ISSUER_ID")
+          mkdir -p build/ios
+          xcodebuild -quiet -project ios/App/App.xcodeproj -scheme App -configuration Release \
+            -destination 'generic/platform=iOS' -archivePath "$PWD/build/ios/App.xcarchive" \
+            "${AUTH[@]}" DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGN_STYLE=Automatic \
+            PRODUCT_BUNDLE_IDENTIFIER=com.evrenaltindal.ciniustasi CURRENT_PROJECT_VERSION=1 archive
+          cat > build/ios/ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>export</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>${APPLE_TEAM_ID}</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+          xcodebuild -exportArchive -archivePath "$PWD/build/ios/App.xcarchive" \
+            -exportOptionsPlist "$PWD/build/ios/ExportOptions.plist" \
+            -exportPath "$PWD/build/ios/export" "${AUTH[@]}"
+      - name: Keep the signed IPA for download
+        uses: actions/upload-artifact@v4
+        with:
+          name: cini-ustasi-ipa
+          path: prototypes/cini-ustasi/app/build/ios/export/*.ipa
+          if-no-files-found: error
+          retention-days: 7
