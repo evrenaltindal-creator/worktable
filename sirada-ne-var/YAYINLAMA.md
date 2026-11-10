@@ -18,7 +18,7 @@ sirada-ne-var/
     metadata/           App Store metinleri, 7 dil (scripts/store-metadata.py üretir)
     screenshots/        App Store ekran görüntüleri, 7 dil x 4 (scripts/screenshots.mjs çeker)
   scripts/            Site paketi, ekran görüntüsü ve metin üreten betikler
-.github/workflows/ios-appstore.yml   Derleyip App Store Connect'e gönderen otomasyon
+.github/workflows/sirada-ne-var-ios.yml   App Store / TestFlight otomasyonu (store/istek.txt ile)
 ```
 
 Uygulama bilgileri:
@@ -32,107 +32,64 @@ Uygulama bilgileri:
 
 ---
 
-## A. App Store (bir kerelik hazırlık, ~20 dakika)
+## A. App Store ve TestFlight
 
-### 1. Uygulama kimliğini kaydet (developer.apple.com)
+Bu depoda daha önce kurulmuş iOS uygulamaları (Ok Kaçış, Çini Ustası) ile
+**aynı Apple anahtarları** kullanılır; GitHub'a yeni secret girmen gerekmez:
+`ASC_KEY_ID`, `ASC_ISSUER_ID`, `ASC_KEY_P8`, `APPLE_TEAM_ID`,
+`IOS_DISTRIBUTION_P12`, `IOS_P12_PASSWORD`.
 
-1. https://developer.apple.com/account → **Certificates, IDs & Profiles** → **Identifiers** → **+**
-2. **App IDs** → **App** → Continue
-3. Description: `Sirada Ne Var`, Bundle ID: **Explicit** → `com.evrenaltindal.siradanevar`
-4. Ek özellik (capability) seçme → **Continue** → **Register**
+İşler `sirada-ne-var/store/istek.txt` dosyasının ilk satırına yazılıp bu
+dala gönderilerek başlatılır (Claude bunu senin için yapar):
 
-### 2. App Store Connect'te uygulamayı oluştur
+| İş | Ne yapar | Nerede |
+|---|---|---|
+| `status` | Paket kimliği, uygulama kaydı, son derleme, TestFlight grupları | Linux |
+| `register` | Paket kimliğini (`com.evrenaltindal.siradanevar`) Apple hesabına kaydeder | Linux |
+| `build` | Derler, dağıtım sertifikasıyla imzalar, doğrular ve App Store Connect'e yükler (TestFlight) | Mac (macos-26) |
+| `testers` | TestFlight'ta "Ekip" iç test grubunu kurar, App Store Connect kullanıcılarını ekler | Linux |
+| `metadata` | 7 dilde mağaza metinleri ve 28 ekran görüntüsü | Linux |
+
+Her derlemede derleme numarası TestFlight'taki son numaradan bir fazla olur.
+Yeni sürüm için `package.json` içindeki `version` değerini artır.
+
+### Elle yapılması gereken tek adım: uygulama kaydı
+
+Apple, uygulama kaydının API ile açılmasına izin vermiyor:
 
 1. https://appstoreconnect.apple.com → **Apps** → **+** → **New App**
 2. Platform: **iOS**, Name: **Sırada Ne Var?**, Primary Language: **Turkish**,
-   Bundle ID: az önce kaydettiğin, SKU: `sirada-ne-var`, User Access: Full Access
-3. **Create**
+   Bundle ID: **com.evrenaltindal.siradanevar**, SKU: `sirada-ne-var`,
+   User Access: Full Access → **Create**
 
 > İsim başkası tarafından alınmışsa Apple uyarır; o zaman örneğin
 > "Sırada Ne Var? Karar Çarkı" gibi bir isim dene ve aynı ismi
 > `scripts/store-metadata.py` içindeki `tr` → `name` alanına da yaz.
 
-### 3. App Store Connect API anahtarı oluştur
+### TestFlight'tan kendi telefonuna kurmak
 
-1. App Store Connect → **Users and Access** → **Integrations** → **App Store Connect API** → **Team Keys**
-2. **+** (Generate API Key) → Name: `GitHub`, Access: **Admin** → Generate
-   (Admin gerekli: sertifika ve profil oluşturabilmesi için.)
-3. **Download API Key** → `AuthKey_XXXXXXXXXX.p8` dosyası iner. **Bu dosya yalnızca bir kez indirilebilir**, güvenli bir yerde sakla.
-4. Sayfadaki **Issuer ID** ve anahtarın **Key ID** değerlerini not al.
+1. iPhone'a App Store'dan **TestFlight** uygulamasını kur.
+2. `testers` işi seni "Ekip" grubuna ekler; Apple'dan davet e-postası gelir
+   (App Store Connect hesabının e-postasına). Ya da TestFlight uygulamasını
+   aynı Apple hesabıyla açman yeterli: uygulama listede görünür.
+3. **Install** → uygulama telefonunda. Her yeni derleme TestFlight'ta otomatik görünür.
 
-### 4. İmza anahtarı oluştur (Windows'ta, 1 dakika)
+İç test (kendi ekibin) için Apple incelemesi gerekmez; derleme işlendikten
+(15-30 dk) hemen sonra kurulabilir.
 
-Uygulamayı imzalamak için kalıcı bir anahtar gerekiyor. Mac olmadan
-şöyle oluşturulur:
+### App Store'a göndermeden önce (elle)
 
-1. Başlat menüsüne `cmd` yaz, **Komut İstemi**'ni aç.
-2. Şunu yapıştırıp Enter'a bas:
-   ```
-   ssh-keygen -t rsa -b 2048 -m PEM -f %USERPROFILE%\Desktop\sirada_imza_anahtari -q -N ""
-   ```
-3. Masaüstünde `sirada_imza_anahtari` adında bir dosya oluşur (yanındaki `.pub` dosyası gerekmez).
-   Bu dosyayı **Not Defteri** ile aç; `-----BEGIN RSA PRIVATE KEY-----` ile başlar.
+1. **App Privacy** → "Do you or your third-party partners collect data from this app?" → **No** → Publish
+2. **Age Rating** anketini doldur (şiddet, cinsellik vb. hepsi "None").
+   "Simulated Gambling" için not: uygulamada para, jeton, bahis ya da ödül
+   yok; slot makinesi yalnızca rastgele seçim görünümü. Yine de inceleme
+   ekibi bunu kumar benzetimi sayabilir; "None" seçip ret gelirse
+   "Infrequent/Mild" olarak güncellemek yeterli olur.
+3. **Pricing and Availability** → Free
+4. Sürüm sayfasında derlemeyi seç, **App Review Information** doldur → **Submit to App Review**
 
-> `ssh-keygen` bulunamadı derse: Ayarlar → Uygulamalar → İsteğe bağlı özellikler →
-> **OpenSSH İstemcisi**'ni ekle ve tekrar dene.
-
-### 5. GitHub'a gizli bilgileri gir
-
-Depo: https://github.com/evrenaltindal-creator/worktable →
-**Settings** → **Secrets and variables** → **Actions**
-
-**Secrets** sekmesi → **New repository secret** (4 tane):
-
-| Ad | Değer |
-|---|---|
-| `ASC_ISSUER_ID` | 3. adımdaki Issuer ID |
-| `ASC_KEY_ID` | 3. adımdaki Key ID |
-| `ASC_PRIVATE_KEY` | `.p8` dosyasını Not Defteri ile açıp **tamamını** yapıştır (BEGIN/END satırları dahil) |
-| `CERTIFICATE_PRIVATE_KEY` | 4. adımdaki dosyanın **tamamı** |
-
-**Variables** sekmesi → **New repository variable** (2 tane):
-
-| Ad | Değer |
-|---|---|
-| `WEB_URL` | Uygulamanın sitedeki adresi, örn. `https://siteniz.com/sirada-ne-var` |
-| `APP_COPYRIGHT` | Örn. `2026 Adınız Soyadınız` |
-
-> Depo herkese açık (public) olsa da secrets içeriği kimseye görünmez,
-> kayıtlarda da gizlenir. Anahtarları asla bir dosyaya yazıp depoya ekleme.
-> İşin bitince masaüstündeki anahtar dosyasını ve `.p8` dosyasını
-> güvenli bir yere taşı.
-
-### 6. Derle ve gönder
-
-Otomasyon dosyası (`.github/workflows/ios-appstore.yml`) GitHub'ın **Run
-workflow** düğmesinde görünmesi için önce ana dala (main) birleştirilmelidir.
-
-1. GitHub → **Actions** → **iOS - App Store'a yukle** → **Run workflow**
-2. İki kutu da işaretli kalsın → **Run workflow**
-3. ~15-25 dakika sürer. Yeşil tik = uygulama App Store Connect'e ulaştı.
-   Apple'ın işlemesi 10-30 dakika daha sürer (e-posta gelir).
-
-Yeni sürüm göndermek için: `package.json` içindeki `version` değerini
-artır (örn. 1.0.1) ve aynı düğmeye bas.
-
-### 7. App Store Connect'te kalan son adımlar (elle)
-
-Otomasyon metinleri, ekran görüntülerini ve uygulamayı yükler; bunları
-Apple yalnızca elle kabul ediyor:
-
-1. **App Privacy** → Get Started → "Do you or your third-party partners collect data from this app?" → **No, we do not collect data from this app** → Publish
-2. **App Information** → **Age Rating** → anketi doldur (şiddet, cinsellik vb. hepsi "None").
-   "Simulated Gambling" sorusu için not: uygulamada para, jeton, bahis
-   ya da ödül yok; slot makinesi sadece rastgele seçim görünümü.
-   Yine de inceleme ekibi bunu kumar benzetimi sayabilir. "None" seçip
-   ret gelirse "Infrequent/Mild" olarak güncellemek yeterli olur.
-3. **Pricing and Availability** → Price: **Free (0)**, ülkeleri seç
-4. Sürüm sayfası (1.0 Prepare for Submission):
-   - **Build** bölümünde **+** ile yüklenen derlemeyi seç
-   - **App Review Information**: ad, telefon, e-posta (Apple'ın sana ulaşması için, mağazada görünmez); "Sign-in required" işaretleme
-5. **Add for Review** → **Submit to App Review**
-
-İnceleme genelde 1-3 gün sürer.
+Gizlilik ve destek adresleri için `store/ayarlar.json` içine `web_url`
+(örn. `https://siteniz.com/sirada-ne-var`) yazılıp `metadata` işi çalıştırılır.
 
 ---
 
@@ -174,5 +131,3 @@ Sitendeki herhangi bir sayfaya (HTML düzenleyebildiğin bir yere) şunu ekle:
   uygulamaları zaman zaman 4.3 (spam) maddesiyle reddedebiliyor. Sırada
   Ne Var?'ın slot makinesi, pay sistemi, 7 dili ve çevrimdışı çalışması
   ayırt edici; ret gelirse inceleme notuna bunları yazmak işe yarar.
-- Otomasyon bu ortamda gerçek bir Mac'te çalıştırılamadı; ilk çalıştırmada
-  bir hata çıkarsa Actions sayfasındaki kaydı Claude'a göster.
