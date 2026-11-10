@@ -258,9 +258,12 @@ eklemeniz onerilir.
 
 ## Hediye Carki (ayri uygulama)
 
-`hediye-carki/index.html` AI Ofis'ten bagimsiz, tek dosyalik bir karar
-carkidir. Kurulum, sunucu veya `npm install` gerektirmez: dosyaya cift
-tiklayip tarayicida acmaniz yeterli (telefonda da calisir).
+`hediye-carki/web/index.html` AI Ofis'ten bagimsiz bir karar carkidir.
+Kurulum, sunucu veya `npm install` gerektirmez: dosyaya cift tiklayip
+tarayicida acmaniz yeterli (telefonda da calisir). Ayni dosyalar hem
+siteye yuklenir hem de iPhone uygulamasinin (`hediye-carki/ios`, Capacitor)
+icine girer. App Store'a gonderme ve siteye koyma adimlari:
+`hediye-carki/YAYINLAMA.md`.
 
 - Secenekleri kullanicilar kendisi yazar (en fazla 30). Birden cok satir
   yapistirilirsa her satir ayri secenek olur.
@@ -280,5 +283,5 @@ tiklayip tarayicida acmaniz yeterli (telefonda da calisir).
   kulture gore degisir (kullanicinin kendi yazdigi liste korunur).
   Adresin sonuna `#en`, `#pt`, `#de`, `#fr`, `#ja`, `#ko` veya `#tr`
   eklenerek belirli bir dilde acilan baglanti paylasilabilir.
-- Ceviriler `index.html` icindeki `I18N` sozlugundedir; yeni dil eklemek
+- Ceviriler `web/index.html` icindeki `I18N` sozlugundedir; yeni dil eklemek
   icin oraya bir blok ve `LANGS` ile dil menusune birer satir eklemek yeterli.

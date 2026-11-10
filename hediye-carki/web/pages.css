@@ -1,0 +1,40 @@
+/* Gizlilik ve destek sayfalari: uygulamayla ayni renkler, sade okuma duzeni */
+:root {
+  --bg: #ECEFF5;
+  --surface: #FFFFFF;
+  --ink: #18213B;
+  --ink-2: #545F79;
+  --line: #D2D9E5;
+  --accent: #C81F2D;
+  --font-display: "Bungee", "Dela Gothic One", "Black Han Sans", "Arial Black", system-ui, sans-serif;
+  --font-body: "Rubik", system-ui, -apple-system, "Segoe UI", "Hiragino Sans", "Yu Gothic UI", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0C1322; --surface: #141D31; --ink: #EBEEF5; --ink-2: #9FA9C2; --line: #27324C; --accent: #FF6B76; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 16px; line-height: 1.6; }
+.doc {
+  max-width: 720px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-top: calc(24px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+}
+.langs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.langs a { padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); color: var(--ink); text-decoration: none; font-size: 0.875rem; }
+.langs a[aria-current="true"] { border-color: var(--ink); font-weight: 600; }
+article { display: none; background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 24px; }
+article.on { display: block; }
+h1 { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; font-size: clamp(1.6rem, 6vw, 2.2rem); line-height: 1.1; margin: 0 0 6px; text-wrap: balance; }
+h2 { font-size: 1.125rem; margin: 24px 0 6px; }
+h3 { font-size: 1rem; margin: 18px 0 4px; }
+p, li { max-width: 65ch; }
+ul { padding-left: 1.2em; }
+li + li { margin-top: 6px; }
+.meta { color: var(--ink-2); font-size: 0.875rem; margin: 0; }
+.lead { font-size: 1.0625rem; }
+a { color: var(--accent); }
+.mail { overflow-wrap: anywhere; font-weight: 600; }
+.back { margin-top: 24px; color: var(--ink-2); }

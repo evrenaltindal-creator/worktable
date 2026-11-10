@@ -1,0 +1,115 @@
+# Hediye Carki: iPhone uygulamasini GitHub'in Mac sunucusunda derler ve App Store Connect'e yukler.
+# Mac gerekmez. Gerekli ayarlar icin: hediye-carki/YAYINLAMA.md
+name: iOS - App Store'a yukle
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload_build:
+        description: "Uygulamayi derleyip yukle"
+        type: boolean
+        default: true
+      upload_metadata:
+        description: "Magaza metinlerini ve ekran goruntulerini yukle"
+        type: boolean
+        default: true
+  push:
+    tags:
+      - "ios-v*"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-appstore
+  cancel-in-progress: false
+
+jobs:
+  ios:
+    runs-on: macos-26
+    timeout-minutes: 60
+    defaults:
+      run:
+        working-directory: hediye-carki
+    env:
+      APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      APP_STORE_CONNECT_KEY_IDENTIFIER: ${{ secrets.ASC_KEY_ID }}
+      APP_STORE_CONNECT_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+      CERTIFICATE_PRIVATE_KEY: ${{ secrets.CERTIFICATE_PRIVATE_KEY }}
+      WEB_URL: ${{ vars.WEB_URL }}
+      APP_COPYRIGHT: ${{ vars.APP_COPYRIGHT }}
+      DO_BUILD: ${{ github.event_name == 'push' || inputs.upload_build }}
+      DO_METADATA: ${{ github.event_name == 'push' || inputs.upload_metadata }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ayarlari kontrol et
+        run: |
+          missing=0
+          for name in APP_STORE_CONNECT_ISSUER_ID:ASC_ISSUER_ID APP_STORE_CONNECT_KEY_IDENTIFIER:ASC_KEY_ID APP_STORE_CONNECT_PRIVATE_KEY:ASC_PRIVATE_KEY; do
+            var="${name%%:*}"; secret="${name##*:}"
+            if [ -z "${!var}" ]; then echo "::error::GitHub secret '$secret' eksik (bkz. hediye-carki/YAYINLAMA.md)"; missing=1; fi
+          done
+          if [ "$DO_BUILD" = "true" ] && [ -z "$CERTIFICATE_PRIVATE_KEY" ]; then
+            echo "::error::GitHub secret 'CERTIFICATE_PRIVATE_KEY' eksik (bkz. hediye-carki/YAYINLAMA.md)"; missing=1
+          fi
+          if [ "$DO_METADATA" = "true" ] && [ -z "$WEB_URL" ]; then
+            echo "::error::GitHub variable 'WEB_URL' eksik, orn. https://siteniz.com/hediye-carki"; missing=1
+          fi
+          exit $missing
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: hediye-carki/package-lock.json
+
+      - uses: actions/setup-python@v5
+        if: env.DO_BUILD == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Bagimliliklari kur
+        run: |
+          npm ci
+          if [ "$DO_BUILD" = "true" ]; then pip install codemagic-cli-tools; fi
+
+      - name: Web dosyalarini iOS projesine kopyala
+        if: env.DO_BUILD == 'true'
+        run: npx cap sync ios
+
+      - name: Imza sertifikasi ve profil
+        if: env.DO_BUILD == 'true'
+        run: |
+          BUNDLE_ID=$(node -p "require('./capacitor.config.json').appId")
+          echo "Bundle ID: $BUNDLE_ID"
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles --project ios/App/App.xcodeproj
+
+      - name: Derle (ipa)
+        if: env.DO_BUILD == 'true'
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          BUILD=$(date -u +%y%m%d%H%M)
+          echo "Surum $VERSION, derleme $BUILD"
+          xcode-project build-ipa \
+            --project ios/App/App.xcodeproj \
+            --scheme App \
+            --archive-xcargs "MARKETING_VERSION=$VERSION CURRENT_PROJECT_VERSION=$BUILD"
+
+      - name: App Store Connect'e yukle
+        if: env.DO_BUILD == 'true'
+        run: app-store-connect publish --path build/ios/ipa/*.ipa
+
+      - name: Magaza metinleri ve ekran goruntuleri
+        if: env.DO_METADATA == 'true'
+        run: |
+          command -v fastlane >/dev/null || gem install fastlane --no-document
+          fastlane ios metadata
+
+      - name: Anahtarliktan temizle
+        if: always() && env.DO_BUILD == 'true'
+        run: keychain use-login || true

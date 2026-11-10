@@ -1,0 +1,11 @@
+{
+  "appId": "com.evrenaltindal.hediyecarki",
+  "appName": "Hediye Çarkı",
+  "webDir": "web",
+  "ios": {
+    "contentInset": "never",
+    "backgroundColor": "#18223D",
+    "scrollEnabled": true,
+    "limitsNavigationsToAppBoundDomains": false
+  }
+}

@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hediye Çarkı</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bungee&family=Rubik:wght@400;500;600;700&display=swap">
+<meta name="description" content="Seçenekleri siz yazın, çarkı çevirin ya da slot makinesinin kolunu çekin. Ne çıkarsa onu yapın. 7 dilde, ücretsiz.">
+<meta name="theme-color" content="#C81F2D">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
 /* Lunapark sahnesi: solda isikli sahne (cark ya da slot makinesi), sagda secenek defteri; telefonda alt alta */
 :root {
@@ -124,7 +127,8 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
-button { font: inherit; color: inherit; }
+button { font: inherit; color: inherit; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.spin-btn, .hub, .lever, .mode, .preset, .pay button { -webkit-user-select: none; user-select: none; }
 :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
 .app {
@@ -132,7 +136,8 @@ button { font: inherit; color: inherit; }
   margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 20px 56px;
+  padding-top: calc(20px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
   gap: 22px;
@@ -1046,8 +1051,8 @@ button { font: inherit; color: inherit; }
     pt: { locale: 'pt-BR' },
     de: { locale: 'de-DE' },
     fr: { locale: 'fr-FR' },
-    ja: { locale: 'ja-JP', font: 'Dela+Gothic+One' },
-    ko: { locale: 'ko-KR', font: 'Black+Han+Sans' }
+    ja: { locale: 'ja-JP' },
+    ko: { locale: 'ko-KR' }
   };
 
   const I18N = {
@@ -1569,18 +1574,6 @@ button { font: inherit; color: inherit; }
     return 'en';
   }
 
-  // Japonca/Korece baslik yazi tipi yalnizca o dil secilince yuklenir
-  const loadedFonts = {};
-  function ensureFont(code) {
-    const fam = LANGS[code].font;
-    if (!fam || loadedFonts[code]) return;
-    loadedFonts[code] = true;
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://fonts.googleapis.com/css2?family=' + fam + '&display=swap';
-    document.head.appendChild(link);
-  }
-
   /* ---------- Yardimcilar ---------- */
   const $ = (sel) => document.querySelector(sel);
   const mod = (a, n) => ((a % n) + n) % n;
@@ -1787,6 +1780,28 @@ button { font: inherit; color: inherit; }
       },
       set muted(v) { muted = !!v; },
       get muted() { return muted; }
+    };
+  })();
+
+  /* ---------- Titresim (yalnizca iPhone uygulamasinda) ---------- */
+  const Haptics = (() => {
+    let last = 0;
+    function call(method, options) {
+      const cap = window.Capacitor;
+      if (!cap || !cap.isNativePlatform || !cap.isNativePlatform() || !cap.nativePromise) return;
+      try { cap.nativePromise('Haptics', method, options || {}).catch(() => {}); } catch (e) { /* titresim yoksa sorun degil */ }
+    }
+    return {
+      tick() {
+        const now = performance.now();
+        if (now - last < 70) return;
+        last = now;
+        call('selectionChanged');
+      },
+      start() { call('selectionStart'); },
+      end() { call('selectionEnd'); },
+      win() { call('notification', { type: 'SUCCESS' }); },
+      thunk() { call('impact', { style: 'MEDIUM' }); }
     };
   })();
 
@@ -2092,6 +2107,7 @@ button { font: inherit; color: inherit; }
       if (idx !== lastIdx) {
         lastIdx = idx;
         Sound.tick('wheel');
+        Haptics.tick();
         wobblePointer();
       }
     });
@@ -2106,6 +2122,7 @@ button { font: inherit; color: inherit; }
     void lever.offsetWidth;
     lever.classList.add('pull');
     Sound.lever();
+    Haptics.thunk();
     await wait(reducedMotion() ? 0 : 260);
   }
   lever.addEventListener('animationend', () => lever.classList.remove('pull'));
@@ -2139,12 +2156,13 @@ button { font: inherit; color: inherit; }
       if (!reduce) strip.style.filter = v > 6 ? 'blur(' + Math.min(2.6, (v / h) * 2).toFixed(2) + 'px)' : 'none';
       const center = Math.floor(1.5 - y / h);
       if (center !== lastCenter) {
-        if (lastCenter !== null) Sound.tick('slot');
+        if (lastCenter !== null) { Sound.tick('slot'); Haptics.tick(); }
         lastCenter = center;
       }
     });
     strip.style.filter = 'none';
     Sound.thunk();
+    Haptics.thunk();
     await animate(reduce ? 80 : 240, (t) => {
       const y = y1 + over * (1 - easeInOutSine(t));
       strip.style.transform = 'translate3d(0,' + y.toFixed(2) + 'px,0)';
@@ -2226,6 +2244,7 @@ button { font: inherit; color: inherit; }
     setSpinning(true);
     const win = pickWeighted();
     spinCount++;
+    Haptics.start();
     try {
       if (state.mode === 'wheel') {
         await spinWheel(win);
@@ -2233,6 +2252,7 @@ button { font: inherit; color: inherit; }
         await pullLever();
         await spinSlot(win);
       }
+      Haptics.end();
       app.classList.add('is-won');
       state.history.unshift({ text: win.text, t: Date.now() });
       state.history = state.history.slice(0, MAX_HISTORY);
@@ -2265,6 +2285,7 @@ button { font: inherit; color: inherit; }
     resultEl.hidden = false;
     $('#okBtn').focus();
     Sound.win();
+    Haptics.win();
     launchConfetti([win.color, ...PALETTE]);
   }
 
@@ -2677,7 +2698,6 @@ button { font: inherit; color: inherit; }
     document.querySelectorAll('[data-i18n-aria]').forEach((el) => { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
     langSelect.value = lang;
     hubBtn.style.setProperty('--hub-scale', Math.min(1, 5.5 / Array.from(t('hub')).length).toFixed(3));
-    ensureFont(lang);
     renderPresets();
     renderSound();
   }
