@@ -23,6 +23,8 @@ const drop = [
   /<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*>\n/
 ];
 for (const re of drop) page = page.replace(re, '');
+// Use the operating system's built-in typefaces in the shipped app.
+page = page.replace(/Yeseva One/g, 'Georgia').replace(/Manrope/g, '-apple-system');
 if (/fonts\.googleapis\.com|https?:\/\/(?!www\.w3\.org)/.test(page.replace(/<!--[\s\S]*?-->/g, ''))) {
   // Uygulama internetsiz çalışmalı: sayfada dış adres kalmamalı
   const left = page.match(/https?:\/\/(?!www\.w3\.org)[^\s"'<>)]+/g);
@@ -32,25 +34,6 @@ const styleMatch = page.match(/<style>[\s\S]*?<\/style>/);
 if (!styleMatch) throw new Error('Kaynakta <style> bulunamadı');
 const style = styleMatch[0];
 const body = page.replace(style, '').trim();
-
-// 2) Yazı tipleri: Manrope ve Yeseva One, yalnızca Latin + Latin genişletilmiş (Türkçe, Almanca, Fransızca, Portekizce).
-//    Japonca ve Korece iPhone'un kendi yazı tipleriyle (Hiragino, Apple SD Gothic Neo) gösterilir.
-function fontFaces(pkg, weights) {
-  const faces = [];
-  for (const w of weights) {
-    const css = readFileSync(join(APP, 'node_modules', '@fontsource', pkg, `${w}.css`), 'utf8');
-    for (const block of css.split('/* ').slice(1)) {
-      const name = block.slice(0, block.indexOf(' */'));
-      if (!/-(latin|latin-ext)-\d+-normal$/.test(name)) continue;
-      const face = block.slice(block.indexOf('@font-face'))
-        .replace(/url\(\.\/files\/([^)]+\.woff2)\) format\('woff2'\), url\([^)]+\.woff\) format\('woff'\)/, 'url(files/$1) format(\'woff2\')')
-        .trim();
-      faces.push({ file: name + '.woff2', pkg, css: face });
-    }
-  }
-  return faces;
-}
-const faces = [...fontFaces('manrope', [400, 500, 600, 700, 800]), ...fontFaces('yeseva-one', [400])];
 
 // 3) Tam HTML belgesi
 const html = `<!doctype html>
@@ -63,7 +46,6 @@ const html = `<!doctype html>
 <title>Çini Ustası</title>
 <link rel="icon" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
-<link rel="stylesheet" href="fonts/fonts.css">
 <script>window.CINI_PROD = true;</script>
 <style>
 /* Çentik ve ana ekran çubuğu için güvenli alan; uygulama hissi için seçim ve büyütme kapalı */
@@ -81,12 +63,10 @@ ${body}
 // 4) Yaz
 for (const out of OUTPUTS) {
   rmSync(out, { recursive: true, force: true });
-  mkdirSync(join(out, 'fonts', 'files'), { recursive: true });
+  mkdirSync(out, { recursive: true });
   writeFileSync(join(out, 'index.html'), html);
-  writeFileSync(join(out, 'fonts', 'fonts.css'), faces.map(f => f.css).join('\n\n') + '\n');
-  for (const f of faces) copyFileSync(join(APP, 'node_modules', '@fontsource', f.pkg, 'files', f.file), join(out, 'fonts', 'files', f.file));
   if (existsSync(ICON)) copyFileSync(ICON, join(out, 'icon.png'));
   copyFileSync(join(APP, '..', 'site', 'gizlilik.html'), join(out, 'privacy.html'));
   console.log('yazıldı:', out);
 }
-console.log(`index.html ${(html.length / 1024).toFixed(0)} KB, ${faces.length} yazı tipi dosyası`);
+console.log(`index.html ${(html.length / 1024).toFixed(0)} KB; system fonts`);

@@ -21,6 +21,9 @@ jobs:
       IOS_DISTRIBUTION_P12: ${{ secrets.IOS_DISTRIBUTION_P12 }}
       IOS_P12_PASSWORD: ${{ secrets.IOS_P12_PASSWORD }}
       IOS_PROFILE_B64: ${{ secrets.IOS_PROFILE_B64 }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,7 +61,7 @@ jobs:
           xcodebuild -quiet -project ios/App/App.xcodeproj -scheme App -configuration Release \
             -destination 'generic/platform=iOS' -archivePath "$PWD/build/ios/App.xcarchive" \
             DEVELOPMENT_TEAM="$APPLE_TEAM_ID" CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='iPhone Distribution' \
-            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" PRODUCT_BUNDLE_IDENTIFIER=com.evrenaltindal.ciniustasi CURRENT_PROJECT_VERSION=1 archive
+            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" PRODUCT_BUNDLE_IDENTIFIER=com.evrenaltindal.ciniustasi CURRENT_PROJECT_VERSION=2 archive
           cat > build/ios/ExportOptions.plist <<PLIST
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -87,6 +90,7 @@ jobs:
           test "$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$APP/Info.plist")" = 'com.evrenaltindal.ciniustasi'
           test -f "$APP/embedded.mobileprovision"
           test -f "$APP/public/privacy.html"
+          test -z "$(find "$APP/public" -name '*.woff*' -print -quit)"
           codesign --verify --deep --strict --verbose=2 "$APP"
           security cms -D -i "$APP/embedded.mobileprovision" > "$RUNNER_TEMP/embedded-profile.plist"
           test "$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' "$RUNNER_TEMP/embedded-profile.plist")" = "$APPLE_TEAM_ID.com.evrenaltindal.ciniustasi"
@@ -97,3 +101,14 @@ jobs:
           path: prototypes/cini-ustasi/app/build/ios/export/*.ipa
           if-no-files-found: error
           retention-days: 7
+      - name: Upload verified IPA to App Store Connect
+        run: |
+          set -euo pipefail
+          : "${ASC_KEY_ID:?missing key ID}" "${ASC_ISSUER_ID:?missing issuer ID}" "${ASC_KEY_P8:?missing key}"
+          umask 077
+          mkdir -p "$HOME/.appstoreconnect/private_keys"
+          KEY_PATH="$HOME/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8"
+          printf '%s\n' "$ASC_KEY_P8" > "$KEY_PATH"
+          trap 'rm -f "$KEY_PATH"' EXIT
+          IPA="$(find build/ios/export -maxdepth 1 -name '*.ipa' -print -quit)"
+          xcrun altool --upload-app --type ios --file "$IPA" --apiKey "$ASC_KEY_ID" --apiIssuer "$ASC_ISSUER_ID"

@@ -8,7 +8,6 @@
 <title>Çini Ustası</title>
 <link rel="icon" href="icon.png">
 <link rel="apple-touch-icon" href="icon.png">
-<link rel="stylesheet" href="fonts/fonts.css">
 <script>window.CINI_PROD = true;</script>
 <style>
 /* Çentik ve ana ekran çubuğu için güvenli alan; uygulama hissi için seçim ve büyütme kapalı */
@@ -52,8 +51,8 @@ body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-
   --adsim-ink:#F1F4F9;
   --adsim-a:#1B2B49;
   --adsim-b:#15233D;
-  --font-display:"Yeseva One", "Iowan Old Style", Georgia, serif;
-  --font-ui:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display:"Georgia", "Iowan Old Style", Georgia, serif;
+  --font-ui:"-apple-system", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark){
@@ -80,8 +79,8 @@ body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-
 }
 
 /* Japonca ve Korece: Latin harfler ve rakamlar markanın yazı tipinde kalır, diğer karakterler yerel yazı tipine düşer */
-:root:lang(ja){--font-display:"Yeseva One", "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;--font-ui:"Manrope", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif}
-:root:lang(ko){--font-display:"Yeseva One", "Gowun Batang", "AppleMyungjo", "Nanum Myeongjo", serif;--font-ui:"Manrope", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif}
+:root:lang(ja){--font-display:"Georgia", "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;--font-ui:"-apple-system", "Noto Sans JP", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif}
+:root:lang(ko){--font-display:"Georgia", "Gowun Batang", "AppleMyungjo", "Nanum Myeongjo", serif;--font-ui:"-apple-system", "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif}
 [hidden]{display:none !important}
 html{height:100%;box-sizing:border-box}
 *,*::before,*::after{box-sizing:inherit}
@@ -249,8 +248,8 @@ summary{font-weight:700;font-size:.88rem;cursor:pointer;padding-block:2px}
 :lang(ja) .toast,:lang(ja) .dialog{word-break:auto-phrase}
 
 /* Geliştirici paneli Türkçe kalır; oyun dili ne olursa olsun Latin yazı tipini kullanır */
-.panel{font-family:"Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif}
-.panel h2{font-family:"Yeseva One", Georgia, serif}
+.panel{font-family:"-apple-system", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif}
+.panel h2{font-family:"Georgia", Georgia, serif}
 
 @media (prefers-reduced-motion: reduce){*{transition:none !important;animation:none !important}}
 </style>
@@ -854,7 +853,7 @@ const STR = {
     booster_aria_0_coins: "{name}, 남은 횟수 없음. 코인으로 구매할 수 있습니다", shop_body_noads: "테스트 모드라 실제 결제는 되지 않습니다."
   }
 };
-let FONTS = { display: '"Yeseva One", Georgia, serif', ui: 'Manrope, system-ui, sans-serif' };
+let FONTS = { display: '"Georgia", Georgia, serif', ui: '-apple-system, system-ui, sans-serif' };
 
 function t(key, vars) {
   let s = (STR[LANG] && STR[LANG][key]) ?? STR.en[key] ?? key;
