@@ -59,7 +59,9 @@ jobs:
         id: ready
         run: |
           missing=""
-          for k in ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8 APPLE_TEAM_ID; do [ -n "${!k}" ] || missing="$missing $k"; done
+          need="ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8"
+          [ "${{ steps.lane.outputs.lane }}" = build ] && need="$need APPLE_TEAM_ID"
+          for k in $need; do [ -n "${!k}" ] || missing="$missing $k"; done
           if [ -n "$missing" ]; then
             echo "::notice::GitHub secret'lari henuz eklenmemis:$missing. Is atlandi."
             echo "ok=false" >> "$GITHUB_OUTPUT"

@@ -6,3 +6,4 @@ status
 #   build     derle, imzala, App Store Connect'e yükle
 #   metadata  7 dilde metinleri ve ekran görüntülerini yükle
 #   submit    incelemeye gönder (yalnızca onaydan sonra)
+# son istek: 2026-11-10T14:40:18Z status

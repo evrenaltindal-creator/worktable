@@ -30,10 +30,19 @@ def settings
   JSON.parse(File.read(File.join(MAGAZA, 'ayarlar.json')))
 end
 
+# Paket kimliği: capacitor.config.json'daki appId; yer tutucuysa App Store Connect kaydından
+# (magaza/ayarlar.json içindeki apple_id ile) okunur. api_key çağrıldıktan sonra kullanılmalı.
 def app_id
   id = JSON.parse(File.read(File.join(APP_DIR, 'capacitor.config.json')))['appId']
-  UI.user_error!("capacitor.config.json içindeki appId hâlâ yer tutucu (#{id}). Kendi paket kimliğinizi yazın.") if id.include?('yourcompany')
-  id
+  return id unless id.include?('yourcompany')
+  apple_id = settings['apple_id'].to_s.strip
+  UI.user_error!("capacitor.config.json içindeki appId yer tutucu (#{id}) ve magaza/ayarlar.json'da apple_id yok.") if apple_id.empty?
+  @resolved_app_id ||= begin
+    app = Spaceship::ConnectAPI::App.get(app_id: apple_id)
+    UI.user_error!("Apple ID #{apple_id} ile uygulama bulunamadı.") unless app
+    UI.message("Paket kimliği App Store Connect kaydından alındı: #{app.bundle_id}")
+    app.bundle_id
+  end
 end
 
 def placeholder?(value)
@@ -96,7 +105,13 @@ platform :ios do
     UI.message("Paket kimliği #{id}: #{Spaceship::ConnectAPI::BundleId.find(id) ? 'kayıtlı' : 'kayıtlı değil'}")
     app = Spaceship::ConnectAPI::App.find(id)
     if app
-      UI.success("Uygulama kaydı var: #{app.name} (Apple ID #{app.id})")
+      UI.success("Uygulama kaydı var: #{app.name} (Apple ID #{app.id}, ana dil #{app.primary_locale})")
+      begin
+        v = app.get_edit_app_store_version(platform: Spaceship::ConnectAPI::Platform::IOS)
+        UI.message(v ? "Düzenlenebilir sürüm: #{v.version_string} (#{v.app_store_state})" : 'Düzenlenebilir sürüm yok')
+      rescue StandardError => e
+        UI.message("Sürüm bilgisi okunamadı (#{e.message})")
+      end
       begin
         UI.message("TestFlight'taki son derleme: #{latest_testflight_build_number(app_identifier: id)}")
       rescue StandardError => e
