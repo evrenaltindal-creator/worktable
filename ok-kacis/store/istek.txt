@@ -1,4 +1,4 @@
-register
+build
 # Bu dosyanın ilk satırı, GitHub Actions'ta çalışacak App Store işini seçer.
 # Dosya değişip claude/festive-wright-wotpi5 dalına gönderilince iş başlar.
 #   status    durum raporu (paket kimliği, uygulama kaydı, son derleme)
@@ -6,4 +6,4 @@ register
 #   build     derle, imzala, App Store Connect'e (TestFlight) yükle
 #   metadata  7 dilde metinleri, tanıtım görsellerini ve kategoriyi yükle
 #   submit    incelemeye gönder; onaylanınca kendiliğinden yayınlanır
-# son istek: 2026-11-10T15:04:48Z register
+# son istek: 2026-11-10T15:06:30Z build
