@@ -1,4 +1,4 @@
-build
+testers
 # Bu dosyanın ilk satırı, GitHub Actions'ta çalışacak App Store işini seçer.
 # Dosya değişip claude/pensive-curie-vvewve dalına gönderilince iş başlar.
 #   status    durum raporu
@@ -10,4 +10,4 @@ build
 #   text      yalnızca metinleri ve adresleri güncelle
 #   fix_shots işlenmesi takılan ekran görüntülerini yeniden yükle
 #   submit    incelemeye gönder (yalnızca onaydan sonra)
-# son istek: 2026-11-10T20:23:41Z build
+# son istek: 2026-11-10T20:26:12Z testers

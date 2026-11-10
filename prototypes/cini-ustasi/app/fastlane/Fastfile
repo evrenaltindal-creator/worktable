@@ -236,7 +236,12 @@ platform :ios do
     if group
       UI.message("İç test grubu zaten var: #{name}")
     else
-      group = app.create_beta_group(group_name: name, is_internal_group: true, has_access_to_all_builds: true)
+      # fastlane'in create_beta_group'u iç gruplara public link alanlarını da gönderiyor ve Apple
+      # bunu reddediyor (fastlane#29556); grup doğrudan API'ye yalnızca gerekli alanlarla açılır
+      body = { data: { type: 'betaGroups',
+                       attributes: { name: name, isInternalGroup: true, hasAccessToAllBuilds: true },
+                       relationships: { app: { data: { type: 'apps', id: app.id } } } } }
+      group = Spaceship::ConnectAPI.test_flight_request_client.post('betaGroups', body).to_models.first
       UI.success("İç test grubu oluşturuldu: #{name} (bütün derlemeleri otomatik alır)")
     end
     users = Spaceship::ConnectAPI::User.all
