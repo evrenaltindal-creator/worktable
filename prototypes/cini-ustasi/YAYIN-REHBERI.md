@@ -1,6 +1,6 @@
 # Çini Ustası yayın rehberi
 
-> **10 Kasım 2026 hazırlık durumu:** App Store Connect'te Çini Ustası için taslak kayıt ve `com.evrenaltindal.ciniustasi` paket kimliği oluşturuldu. Bu kaynak paketinde gizlilik metni ve destek sayfası taslaktır; genel kullanıma açılmış bir adres doğrulanmadı. iPhone ve simülatör için imzasız derleme önceki proje sürümünde başarılı oldu. İmzalı IPA ve Apple'a yükleme henüz doğrulanmadı. Aşağıdaki otomatik yayın yönergeleri kullanılmadan önce Apple erişimi ve mevcut iş akışı gözden geçirilmelidir; yeni bir yönetici anahtarı oluşturmak şart varsayılmamalıdır.
+> **10 Kasım 2026 hazırlık durumu:** App Store Connect'te Çini Ustası taslağı ve `com.evrenaltindal.ciniustasi` paket kimliği oluşturuldu. Destek ve gizlilik sayfaları yayımlandı. İmzalı IPA üretildi; Apple'a yükleme ve gerçek iPhone üzerinde test ayrıca yapılmalıdır.
 
 Bu rehber iki işi anlatır: oyunu **App Store'a yüklemek** ve **sitenizde tanıtmak**. Hazır olan her şey bu klasörde. Sizin yapmanız gereken adımlar aşağıda sırayla.
 
@@ -16,59 +16,16 @@ Bu rehber iki işi anlatır: oyunu **App Store'a yüklemek** ve **sitenizde tan�
 | `site/` | Sitenize yüklenecek klasör: tanıtım sayfası, tarayıcıda oynanan sürüm, gizlilik politikası, görseller. |
 | `site/tanitim-bolumu.html` | Ana sayfanıza yapıştıracağınız tanıtım kutusu. |
 
-## Doldurmanız gereken boşluklar
+## Mevcut yayın durumu
 
-Yayından önce şu yer tutucuları kendi bilgilerinizle değiştirin:
+- App Store Connect taslağı: https://appstoreconnect.apple.com/apps/6832990354/distribution
+- Destek: https://evrenaltindal-creator.github.io/vardiox-legal/cini-ustasi/
+- Gizlilik: https://evrenaltindal-creator.github.io/vardiox-legal/cini-ustasi/gizlilik.html
+- GitHub dalı: `codex/cini-ustasi-release-prep`. İmzalı IPA, `Cini Ustasi signed IPA` iş akışıyla üretilir. Bu iş akışı Apple'a yükleme veya inceleme başlatmaz.
+- Apple hesabındaki gizlilik anketi, yaş derecelendirmesi, içerik hakları, fiyatlandırma ve mağaza ekran görüntüleri gönderimden önce tamamlanmalıdır. Gerçek cihaz testi de yapılmalıdır.
+- Dağıtım sertifikası ve Apple API anahtarı GitHub Actions gizli alanında tutulur. Yeni veya daha geniş yetkili bir anahtar oluşturmak otomatik olarak gerekli değildir.
 
-| Nerede | Ne yazacaksınız |
-|---|---|
-| `app/capacitor.config.json` → `appId` | Paket kimliği (Bundle ID), örneğin `com.sirketadi.ciniustasi`. Xcode'daki ile aynı olmalı. |
-| `site/index.html`, `site/gizlilik.html` | `[iletişim e-postanız]`, `[your contact email]`, `[Adınız ya da şirketiniz]` |
-
----
-
-## Otomatik yol (önerilen): Mac gerekmez
-
-Derleme, imzalama, yükleme, metinler, ekran görüntüleri ve incelemeye gönderme GitHub Actions'ta, Apple'ın kendi API anahtarıyla yapılır. Sizin web arayüzünde birkaç kez tıklamanız yeterli. Şifreniz ve anahtarınız sohbete ya da depoya hiç girmez; yalnızca GitHub'ın şifreli "secret" kasasında durur.
-
-### Sizin yapacaklarınız (yaklaşık 10 dakika)
-
-1. **API anahtarı oluşturun.** App Store Connect → **Users and Access → Integrations → App Store Connect API → Team Keys → +**.
-   - Ad: `GitHub`
-   - Erişim: **Admin**. Bulut imzalama için gerekli.
-   - **Generate**'e basın, ardından **Download API Key** ile `.p8` dosyasını indirin. Bu dosya yalnızca bir kez indirilebilir.
-   - Sayfadaki **Issuer ID** ve anahtarın **Key ID** değerini not edin.
-2. **Team ID'yi bulun.** developer.apple.com → Account → **Membership details → Team ID**.
-3. **GitHub'a dört secret ekleyin.** github.com/evrenaltindal-creator/worktable → **Settings → Secrets and variables → Actions → New repository secret**:
-
-   | Ad | Değer |
-   |---|---|
-   | `ASC_KEY_ID` | Key ID |
-   | `ASC_ISSUER_ID` | Issuer ID |
-   | `ASC_KEY_P8` | `.p8` dosyasının tüm içeriği (Not Defteri ile açıp kopyalayın, BEGIN/END satırları dahil) |
-   | `APPLE_TEAM_ID` | Team ID |
-
-   İsteğe bağlı: `REVIEW_FIRST_NAME`, `REVIEW_LAST_NAME`, `REVIEW_PHONE`, `REVIEW_EMAIL`. App Review ekibinin size ulaşacağı bilgiler. Eklemezseniz bunları App Store Connect'te bir kez elle yazarsınız.
-4. **Paket kimliğini (Bundle ID) seçin** ve Claude'a söyleyin. Örneğin `com.sirketadi.ciniustasi`. Claude kaydeder.
-5. **Uygulama kaydını oluşturun.** Apple bunu API'ye açmıyor, yalnızca web arayüzünden yapılıyor. Adımlar aşağıda, 1. Bölüm Adım 5'te.
-6. **Web arayüzündeki üç kısa ayarı yapın:**
-   - **App Privacy:** Uygulamanın ve kullanılan tüm SDK'ların veri işlemesini kontrol edip doğru cevapları girin; herkese açık gizlilik politikası adresini ekleyin.
-   - **Age Rating:** Soruları oyunun gerçek içeriğine göre cevaplayın.
-   - **Pricing:** Yayıncı tarafından seçilen fiyatı belirleyin.
-
-### Claude'un yaptıkları
-
-`app/release/istek.txt` dosyasının ilk satırı değiştirilip gönderilince GitHub Actions o işi çalıştırır. Sonuç Actions sekmesinde görünür, Claude da kayıtları okuyup size bildirir.
-
-| İş | Ne yapar |
-|---|---|
-| `status` | Paket kimliği ve uygulama kaydı var mı, son derleme numarası kaç |
-| `register` | Paket kimliğini Apple hesabınıza kaydeder |
-| `build` | Apple'ın Mac sunucusunda derler, imzalar, App Store Connect'e yükler |
-| `metadata` | 7 dilde metinleri ve ekran görüntülerini yükler, kategoriyi ayarlar |
-| `submit` | İncelemeye gönderir. Yalnızca sizin onayınızdan sonra çalıştırılır. |
-
-Mac'iniz varsa aşağıdaki elle yol da aynı sonuca götürür.
+Mac'iniz varsa aşağıdaki elle yol da kullanılabilir. Aşağıdaki bazı adımlar mevcut taslak için önceden tamamlanmıştır.
 
 ---
 
@@ -86,7 +43,7 @@ Mac'iniz varsa aşağıdaki elle yol da aynı sonuca götürür.
 ```bash
 git clone https://github.com/evrenaltindal-creator/worktable.git
 cd worktable
-git checkout claude/pensive-curie-vvewve
+git checkout codex/cini-ustasi-release-prep
 cd prototypes/cini-ustasi/app
 npm install        # gerekli paketler
 npm run sync       # oyunu derler ve Xcode projesine kopyalar
