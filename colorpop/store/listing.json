@@ -1,0 +1,75 @@
+{
+  "appName": "Huzur Color Pop",
+  "bundleId": "com.evrenaltindal.huzurcolorpop",
+  "category": "Games → Puzzle",
+  "category2": "Games → Casual",
+  "screenshots": ["1-home", "2-start", "3-play", "4-win"],
+  "reviewNotes": "Huzur Color Pop is an offline single-player tile popping puzzle with endless levels and a daily game. There is no timer. No account, sign-in, network connection, in-app purchases or ads. All progress is stored only on the device. Tap a group of two or more touching tiles of the same colour to pop it. Rules are available via the \"How to play\" button.",
+  "faq": {
+    "tr": [
+      ["Nasıl oynanır?", "Aynı renkte yan yana en az 2 karoya dokunun; hepsi birlikte patlar. Üstteki karolar düşer, boşalan sütunlar ortada birleşir."],
+      ["Seviyeyi nasıl kazanırım?", "Patlatılacak grup kalmadığında, üstte yazan hedef sayısından fazla karo kalmamış olmalı. Her seviye kazanılabilir; süre sınırı yoktur."],
+      ["Yanlış hamle yaptım, ne yapabilirim?", "\"Geri al\" ile son hamlenizi geri alabilirsiniz. \"Çekiç\" tek bir karoyu kaldırır."],
+      ["Dili nasıl değiştiririm?", "Ana sayfa → Ayarlar → Dil."],
+      ["İlerlemem nerede saklanır?", "Sadece telefonunuzda. Uygulamayı silerseniz ilerleme de silinir."]
+    ],
+    "en": [
+      ["How do I play?", "Tap at least 2 touching tiles of the same colour and they all pop together. Tiles above fall and empty columns close up in the middle."],
+      ["How do I win a level?", "When no group is left, no more tiles than the goal shown at the top may remain. Every level can be won; there is no time limit."],
+      ["I made a wrong move. What can I do?", "\"Undo\" takes back your last move. \"Hammer\" removes a single tile."],
+      ["How do I change the language?", "Home → Settings → Language."],
+      ["Where is my progress stored?", "Only on your phone. Deleting the app also deletes your progress."]
+    ]
+  },
+  "langs": {
+    "tr": {
+      "name": "Huzur Renk Patlatma",
+      "subtitle": "Dokun, aynı renkleri patlat",
+      "promo": "Büyük, sembollü karolar ve sakin sahnelerle süresiz renk patlatma. Her seviye kazanılabilir; her gün yeni bir oyun.",
+      "keywords": "renk,patlatma,karo,blok,eşleştirme,bulmaca,temizle,zeka,rahatlatıcı,kolay,çevrimdışı,günlük",
+      "description": "Huzur Renk Patlatma, sevilen renk temizleme oyununu büyük karolar ve sakin, hareketli sahnelerle sunar. Süre baskısı yok, reklam yok; dilediğiniz hızda düşünün.\n\nNASIL OYNANIR\nAynı renkte yan yana en az 2 karoya dokunun; hepsi birlikte patlar. Üstteki karolar düşer, boşalan sütunlar ortada birleşir. Patlatılacak grup kalmayınca seviye biter: hedef sayısından fazla karo bırakmayın.\n\nGÖZ DOSTU\n• Büyük karolar\n• Her rengin kendi sembolü var: kalp, damla, yaprak, güneş, ay\n• Renkleri ayırt etmekte zorlananlar için de kolay\n\nHER SEVİYE KAZANILABİLİR\nHer seviyenin hedefi, yerleşik bir çözücünün bulduğu sonuca göre konur.\n\nYARDIM HER ZAMAN YAKIN\n• Geri al: son hamleyi geri alır\n• İpucu: iyi bir grubu gösterir\n• Çekiç: tek bir karoyu kaldırır\n\nBOL BOL OYUN\n• Sınırsız seviye; renkler yavaş yavaş artar\n• Her gün yeni bir Günün Oyunu\n• Bitirince konfeti ve 1-3 yıldız\n\nİNTERNET GEREKMEZ\nÇevrimdışı çalışır, hiçbir kişisel veri toplamaz ve 7 dilde oynanabilir."
+    },
+    "en": {
+      "name": "Huzur Color Pop: Tile Puzzle",
+      "subtitle": "Tap and pop matching colours",
+      "promo": "Untimed colour popping with big, symbol-marked tiles and calm scenes. Every level can be won; a new game every day.",
+      "keywords": "color,colour,pop,tile,tiles,block,match,puzzle,clear,brain,relaxing,easy,offline,daily",
+      "description": "Huzur Color Pop brings the much-loved colour clearing game to you with big tiles and calm, animated scenes. No timer, no ads: think at your own pace.\n\nHOW TO PLAY\nTap at least 2 touching tiles of the same colour and they all pop together. Tiles above fall down and empty columns close up in the middle. When no group is left, the level ends: leave no more tiles than the goal.\n\nEASY ON THE EYES\n• Big tiles\n• Every colour has its own symbol: heart, drop, leaf, sun, moon\n• Easy to play even if you find some colours hard to tell apart\n\nEVERY LEVEL CAN BE WON\nEach level's goal is set from the result of a built-in solver.\n\nHELP IS ALWAYS CLOSE\n• Undo: takes back your last move\n• Hint: shows a good group\n• Hammer: removes a single tile\n\nPLENTY TO PLAY\n• Endless levels; colours increase gently\n• A new Daily Game every day\n• Confetti and 1-3 stars when you finish\n\nNO INTERNET NEEDED\nWorks offline, collects no personal data and can be played in 7 languages."
+    },
+    "pt": {
+      "name": "Huzur Estoura Cores",
+      "subtitle": "Toque e estoure cores iguais",
+      "promo": "Estoure cores sem relógio, com peças grandes com símbolos e cenários calmos. Todo nível pode ser vencido; um jogo novo por dia.",
+      "keywords": "cor,cores,estourar,peças,bloco,combinar,quebra-cabeça,limpar,raciocínio,relaxante,fácil,offline",
+      "description": "Huzur Estoura Cores traz o querido jogo de limpar cores com peças grandes e cenários calmos e animados. Sem relógio, sem anúncios: pense no seu ritmo.\n\nCOMO JOGAR\nToque em pelo menos 2 peças vizinhas da mesma cor e todas estouram juntas. As peças de cima caem e as colunas vazias se juntam no meio. Quando não há mais grupos, o nível acaba: não deixe mais peças do que a meta.\n\nFÁCIL DE VER\n• Peças grandes\n• Cada cor tem seu símbolo: coração, gota, folha, sol, lua\n• Fácil mesmo para quem confunde algumas cores\n\nTODO NÍVEL PODE SER VENCIDO\nA meta de cada nível é definida pelo resultado de um solucionador embutido.\n\nAJUDA SEMPRE POR PERTO\n• Desfazer: volta a última jogada\n• Dica: mostra um bom grupo\n• Martelo: remove uma peça\n\nMUITO PARA JOGAR\n• Níveis sem fim; as cores aumentam aos poucos\n• Um Jogo do Dia novo todo dia\n• Confete e 1-3 estrelas ao terminar\n\nSEM INTERNET\nFunciona offline, não coleta dados pessoais e pode ser jogado em 7 idiomas."
+    },
+    "de": {
+      "name": "Huzur Farbenplatzer",
+      "subtitle": "Gleiche Farben antippen",
+      "promo": "Farben platzen lassen ohne Zeitdruck, mit großen Feldern mit Symbolen und ruhigen Szenen. Jedes Level ist lösbar.",
+      "keywords": "farbe,farben,platzen,felder,block,verbinden,rätsel,räumen,denken,entspannend,leicht,offline,täglich",
+      "description": "Huzur Farbenplatzer bringt das beliebte Farbräumspiel mit großen Feldern und ruhigen, bewegten Szenen. Keine Uhr, keine Werbung: Denk in deinem eigenen Tempo.\n\nSO WIRD GESPIELT\nTippe auf mindestens 2 benachbarte Felder gleicher Farbe, dann platzen alle zusammen. Felder darüber fallen nach unten, leere Spalten rücken in der Mitte zusammen. Gibt es keine Gruppe mehr, endet das Level: Lass nicht mehr Felder übrig als das Ziel.\n\nANGENEHM FÜR DIE AUGEN\n• Große Felder\n• Jede Farbe hat ihr Symbol: Herz, Tropfen, Blatt, Sonne, Mond\n• Leicht zu spielen, auch wenn manche Farben schwer zu unterscheiden sind\n\nJEDES LEVEL IST LÖSBAR\nDas Ziel jedes Levels richtet sich nach dem Ergebnis eines eingebauten Lösers.\n\nHILFE IMMER NAH\n• Rückgängig: nimmt den letzten Zug zurück\n• Tipp: zeigt eine gute Gruppe\n• Hammer: entfernt ein einzelnes Feld\n\nVIEL ZU SPIELEN\n• Endlose Level; die Farben nehmen sanft zu\n• Jeden Tag ein neues Tagesspiel\n• Konfetti und 1-3 Sterne zum Abschluss\n\nKEIN INTERNET NÖTIG\nFunktioniert offline, sammelt keine persönlichen Daten und ist in 7 Sprachen spielbar."
+    },
+    "fr": {
+      "name": "Huzur Pop Couleurs",
+      "subtitle": "Touchez les couleurs voisines",
+      "promo": "Faites éclater les couleurs sans chrono, avec de grandes cases à symboles et des décors apaisants. Chaque niveau est gagnable.",
+      "keywords": "couleur,couleurs,éclater,cases,bloc,assortir,casse-tête,vider,réflexion,relaxant,facile,hors ligne",
+      "description": "Huzur Pop Couleurs vous propose le jeu de couleurs à vider bien-aimé avec de grandes cases et des décors calmes et animés. Pas de chrono, pas de publicité : réfléchissez à votre rythme.\n\nCOMMENT JOUER\nTouchez au moins 2 cases voisines de la même couleur : elles éclatent ensemble. Les cases du dessus tombent et les colonnes vides se resserrent au centre. Quand il ne reste aucun groupe, le niveau se termine : ne laissez pas plus de cases que le but.\n\nAGRÉABLE POUR LES YEUX\n• Grandes cases\n• Chaque couleur a son symbole : cœur, goutte, feuille, soleil, lune\n• Facile même si vous distinguez mal certaines couleurs\n\nCHAQUE NIVEAU EST GAGNABLE\nLe but de chaque niveau est fixé d’après le résultat d’un solveur intégré.\n\nDE L’AIDE TOUJOURS PROCHE\n• Annuler : reprend le dernier coup\n• Indice : montre un bon groupe\n• Marteau : retire une case\n\nDE QUOI JOUER LONGTEMPS\n• Niveaux sans fin ; les couleurs augmentent doucement\n• Une nouvelle Partie du jour chaque jour\n• Confettis et 1 à 3 étoiles à la fin\n\nSANS INTERNET\nFonctionne hors ligne, ne collecte aucune donnée personnelle et se joue en 7 langues."
+    },
+    "ja": {
+      "name": "Huzur カラーポップ",
+      "subtitle": "同じ色をタップして消すパズル",
+      "promo": "マーク付きの大きなタイルと穏やかな風景で、時間制限なしの色消しパズル。どのレベルもクリア可能、毎日新しいゲーム。",
+      "keywords": "色,カラー,消す,タイル,ブロック,そろえる,パズル,脳トレ,のんびり,かんたん,オフライン,毎日",
+      "description": "Huzur カラーポップは、おなじみの色消しパズルを大きなタイルと穏やかで動きのある風景で楽しめます。時間制限も広告もありません。自分のペースで考えられます。\n\n遊び方\n同じ色でとなり合う2つ以上のタイルをタップすると、まとめて消えます。上のタイルは下に落ち、からになった列は真ん中に寄ります。消せるかたまりがなくなるとレベル終了です。目標の数より多く残さないようにしましょう。\n\n目にやさしい\n• 大きなタイル\n• 色ごとにマーク：ハート、しずく、葉、太陽、月\n• 色の見分けが苦手な方でも遊びやすい\n\nどのレベルもクリアできる\n各レベルの目標は、内蔵のソルバーの結果をもとに決めています。\n\nいつでも手助け\n• 取り消し：最後の手を戻します\n• ヒント：良いかたまりを教えます\n• ハンマー：タイルを1つ取りのぞきます\n\nたっぷり遊べる\n• レベルは無限。色はゆっくり増えます\n• 毎日新しい「今日のゲーム」\n• クリアすると紙吹雪と1〜3つ星\n\nインターネット不要\nオフラインで遊べ、個人データは一切集めません。7言語に対応。"
+    },
+    "ko": {
+      "name": "Huzur 컬러팝",
+      "subtitle": "같은 색을 눌러 터뜨리는 퍼즐",
+      "promo": "모양이 그려진 큰 타일과 잔잔한 풍경으로 시간 제한 없이 즐기는 색 터뜨리기. 모든 레벨을 깰 수 있어요.",
+      "keywords": "색깔,컬러,터뜨리기,타일,블록,맞추기,퍼즐,지우기,두뇌,힐링,쉬운,오프라인,매일",
+      "description": "Huzur 컬러팝은 사랑받는 색 지우기 퍼즐을 큰 타일과 잔잔하게 움직이는 풍경으로 선보입니다. 시간 제한도, 광고도 없어요. 내 속도대로 생각하세요.\n\n플레이 방법\n같은 색으로 붙어 있는 타일 2개 이상을 누르면 함께 터져요. 위의 타일은 아래로 떨어지고 빈 줄은 가운데로 모여요. 터뜨릴 덩어리가 없으면 레벨이 끝나요. 목표보다 많이 남기지 마세요.\n\n눈이 편한 디자인\n• 큰 타일\n• 색마다 모양: 하트, 물방울, 잎, 해, 달\n• 색 구별이 어려운 분도 쉽게 즐길 수 있어요\n\n모든 레벨을 깰 수 있어요\n각 레벨의 목표는 내장된 풀이 프로그램의 결과를 바탕으로 정해져요.\n\n언제나 가까운 도움\n• 되돌리기: 마지막 수를 되돌려요\n• 힌트: 좋은 덩어리를 보여 줘요\n• 망치: 타일 하나를 없애요\n\n즐길 거리 가득\n• 끝없는 레벨, 색은 천천히 늘어나요\n• 매일 새로운 오늘의 게임\n• 완료하면 축하 꽃가루와 별 1~3개\n\n인터넷 필요 없음\n오프라인으로 작동하고 개인 정보를 전혀 수집하지 않으며 7개 언어로 즐길 수 있어요."
+    }
+  }
+}
