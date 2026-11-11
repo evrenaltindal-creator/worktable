@@ -134,15 +134,19 @@ def ensure_review_detail(app)
   v = versions['data'].find { |x| editable.include?(x.dig('attributes', 'appStoreState') || x.dig('attributes', 'appVersionState')) } ||
       versions['data'].first
   UI.user_error!('Duzenlenebilir surum yok') unless v
-  code, detail = asc_request(:get, "/v1/appStoreVersions/#{v['id']}/appStoreReviewDetail")
-  if code == 200 && detail['data']
-    UI.message('App Review kaydi zaten var')
-    return
-  end
   s = settings['review'] || {}
   attrs = { contactFirstName: s['first_name'], contactLastName: s['last_name'], contactEmail: s['email'],
             contactPhone: ENV['REVIEW_PHONE'].to_s.strip, demoAccountRequired: false, notes: REVIEW_NOTES }
   attrs.reject! { |_, val| val.nil? || val == '' }
+  code, detail = asc_request(:get, "/v1/appStoreVersions/#{v['id']}/appStoreReviewDetail")
+  if code == 200 && detail['data']
+    id = detail['data']['id']
+    code, res = asc_request(:patch, "/v1/appStoreReviewDetails/#{id}",
+                            { data: { type: 'appStoreReviewDetails', id: id, attributes: attrs } })
+    UI.user_error!("App Review kaydi guncellenemedi (#{code}): #{res.to_json[0, 600]}") unless code == 200
+    UI.success("App Review kaydi guncellendi (#{attrs.keys.join(', ')})")
+    return
+  end
   code, res = asc_request(:post, '/v1/appStoreReviewDetails',
                           { data: { type: 'appStoreReviewDetails', attributes: attrs,
                                     relationships: { appStoreVersion: { data: { type: 'appStoreVersions', id: v['id'] } } } } })
