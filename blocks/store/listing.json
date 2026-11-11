@@ -1,0 +1,75 @@
+{
+  "appName": "Huzur Blocks",
+  "bundleId": "com.evrenaltindal.huzurblocks",
+  "category": "Games → Puzzle",
+  "category2": "Games → Board",
+  "screenshots": ["1-home", "2-start", "3-play", "4-win"],
+  "reviewNotes": "Huzur Blocks is an offline single-player block puzzle game with endless levels, a classic endless mode and a daily game. There is no timer. No account, sign-in, network connection, in-app purchases or ads. All progress is stored only on the device. Drag a piece from the tray onto the board (or tap a piece and then the board). Rules are available via the \"How to play\" button.",
+  "faq": {
+    "tr": [
+      ["Nasıl oynanır?", "Alttaki parçalardan birini sürükleyip tahtaya bırakın ya da önce parçaya, sonra tahtaya dokunun. Dolan satır, sütun ve 3x3 kutular temizlenir."],
+      ["Seviyeyi nasıl kazanırım?", "Seviyede yazan hedef puana ulaşın. Hiçbir parça sığmazsa seviye biter; tekrar deneyebilirsiniz. Süre sınırı yoktur."],
+      ["Klasik oyun nedir?", "Hedefsiz, bitene kadar süren oyundur. En yüksek puanınız ana sayfada görünür."],
+      ["Dili nasıl değiştiririm?", "Ana sayfa → Ayarlar → Dil."],
+      ["İlerlemem nerede saklanır?", "Sadece telefonunuzda. Uygulamayı silerseniz ilerleme de silinir."]
+    ],
+    "en": [
+      ["How do I play?", "Drag one of the pieces below onto the board, or tap a piece and then the board. Full rows, columns and 3x3 boxes clear."],
+      ["How do I win a level?", "Reach the level's target score. If no piece fits, the level ends and you can try again. There is no time limit."],
+      ["What is Classic?", "An endless game without a target that lasts until no piece fits. Your best score is shown on the home screen."],
+      ["How do I change the language?", "Home → Settings → Language."],
+      ["Where is my progress stored?", "Only on your phone. Deleting the app also deletes your progress."]
+    ]
+  },
+  "langs": {
+    "tr": {
+      "name": "Huzur Blok Bulmaca",
+      "subtitle": "Yerleştir, doldur, temizle",
+      "promo": "Büyük kareler ve sakin sahnelerle süresiz blok bulmaca. Seviyeler, Klasik oyun ve her gün yeni bir Günün Oyunu.",
+      "keywords": "blok,bulmaca,küp,kare,yerleştirme,satır,sütun,zeka,mantık,rahatlatıcı,kolay,çevrimdışı",
+      "description": "Huzur Blok Bulmaca, sevilen blok yerleştirme oyununu büyük kareler ve sakin, hareketli sahnelerle sunar. Süre baskısı yok, reklam yok; dilediğiniz hızda düşünün.\n\nNASIL OYNANIR\nAlttaki üç parçadan birini sürükleyip 9x9 tahtaya bırakın ya da önce parçaya, sonra tahtaya dokunun. Bir satır, sütun ya da kalın çizgili 3x3 kutu tamamen dolunca temizlenir.\n\nKOLAY KULLANIM\n• Sürüklerken parçanın nereye düşeceği soluk olarak görünür\n• Temizlenecek satırlar önceden parlar\n• Parça parmağınızın üstünde durur, görüşünüzü kapatmaz\n• İpucu iyi bir yeri gösterir, \"Yenile\" üç parçayı değiştirir\n\nÜÇ OYUN BİÇİMİ\n• Seviyeler: hedef puana ulaşın; tahtada duran taşlarla yavaş yavaş zorlaşır\n• Klasik: sonsuz oyun, en yüksek puanınızı geçin\n• Her gün yeni bir Günün Oyunu\n\nADİL\nVerilen üç parçadan en az biri her zaman tahtaya sığar.\n\nİNTERNET GEREKMEZ\nÇevrimdışı çalışır, hiçbir kişisel veri toplamaz ve 7 dilde oynanabilir."
+    },
+    "en": {
+      "name": "Huzur Blocks: Calm Puzzle",
+      "subtitle": "Place, fill and clear lines",
+      "promo": "An untimed block puzzle with big squares and calm scenes. Levels, Classic play and a new Daily Game every day.",
+      "keywords": "block,blocks,puzzle,cube,grid,lines,fit,brain,logic,relaxing,easy,offline,daily,classic",
+      "description": "Huzur Blocks brings the much-loved block placing game to you with big squares and calm, animated scenes. No timer, no ads: think at your own pace.\n\nHOW TO PLAY\nDrag one of the three pieces below onto the 9x9 board, or tap a piece and then the board. When a row, a column or a 3x3 box (thick lines) is completely full, it clears.\n\nEASY TO USE\n• While dragging, a faint preview shows where the piece will land\n• Lines about to clear light up in advance\n• The piece floats above your finger so it never hides the board\n• Hint shows a good spot, \"New pieces\" swaps the three pieces\n\nTHREE WAYS TO PLAY\n• Levels: reach the target score; stones on the board make them gently harder\n• Classic: an endless game, beat your best score\n• A new Daily Game every day\n\nFAIR\nAt least one of the three pieces you are given always fits on the board.\n\nNO INTERNET NEEDED\nWorks offline, collects no personal data and can be played in 7 languages."
+    },
+    "pt": {
+      "name": "Huzur Blocos: Quebra-Cabeça",
+      "subtitle": "Encaixe, complete e limpe",
+      "promo": "Quebra-cabeça de blocos sem relógio, com quadrados grandes e cenários calmos. Níveis, Clássico e um Jogo do Dia novo.",
+      "keywords": "bloco,blocos,quebra-cabeça,cubo,encaixar,linhas,grade,raciocínio,lógica,relaxante,fácil,offline",
+      "description": "Huzur Blocos traz o querido jogo de encaixar blocos com quadrados grandes e cenários calmos e animados. Sem relógio, sem anúncios: pense no seu ritmo.\n\nCOMO JOGAR\nArraste uma das três peças de baixo até o tabuleiro 9x9, ou toque na peça e depois no tabuleiro. Quando uma linha, uma coluna ou um quadro 3x3 (linhas grossas) fica cheio, ele é limpo.\n\nFÁCIL DE USAR\n• Ao arrastar, uma prévia clara mostra onde a peça vai cair\n• As linhas que vão ser limpas brilham antes\n• A peça fica acima do dedo e não cobre o tabuleiro\n• A dica mostra um bom lugar, \"Trocar peças\" troca as três peças\n\nTRÊS MODOS\n• Níveis: alcance a meta; pedras no tabuleiro deixam tudo aos poucos mais difícil\n• Clássico: jogo sem fim, supere seu recorde\n• Um Jogo do Dia novo todo dia\n\nJUSTO\nPelo menos uma das três peças sempre cabe no tabuleiro.\n\nSEM INTERNET\nFunciona offline, não coleta dados pessoais e pode ser jogado em 7 idiomas."
+    },
+    "de": {
+      "name": "Huzur Blöcke: Ruhiges Rätsel",
+      "subtitle": "Setzen, füllen, räumen",
+      "promo": "Blockrätsel ohne Zeitdruck mit großen Feldern und ruhigen Szenen. Levels, klassisches Spiel und jeden Tag ein Tagesspiel.",
+      "keywords": "block,blöcke,rätsel,würfel,raster,reihen,denken,logik,entspannend,leicht,offline,täglich,klassisch",
+      "description": "Huzur Blöcke bringt das beliebte Blocklegespiel mit großen Feldern und ruhigen, bewegten Szenen. Keine Uhr, keine Werbung: Denk in deinem eigenen Tempo.\n\nSO WIRD GESPIELT\nZiehe eines der drei Teile unten auf das 9x9-Feld, oder tippe auf ein Teil und dann auf das Feld. Ist eine Reihe, eine Spalte oder ein 3x3-Kasten (dicke Linien) ganz voll, wird sie geräumt.\n\nEINFACH ZU BEDIENEN\n• Beim Ziehen zeigt eine blasse Vorschau, wo das Teil landet\n• Reihen, die gleich geräumt werden, leuchten vorher auf\n• Das Teil schwebt über dem Finger und verdeckt nichts\n• Der Tipp zeigt eine gute Stelle, „Neue Teile“ tauscht die drei Teile\n\nDREI SPIELARTEN\n• Levels: Erreiche die Zielpunktzahl; Steine auf dem Feld machen es sanft schwerer\n• Klassisch: endloses Spiel, schlage deinen Rekord\n• Jeden Tag ein neues Tagesspiel\n\nFAIR\nMindestens eines der drei Teile passt immer auf das Feld.\n\nKEIN INTERNET NÖTIG\nFunktioniert offline, sammelt keine persönlichen Daten und ist in 7 Sprachen spielbar."
+    },
+    "fr": {
+      "name": "Huzur Blocs : Casse-tête",
+      "subtitle": "Placez, remplissez, effacez",
+      "promo": "Un casse-tête de blocs sans chrono, avec de grandes cases et des décors apaisants. Niveaux, Classique et une Partie du jour.",
+      "keywords": "bloc,blocs,casse-tête,cube,grille,lignes,placer,réflexion,logique,relaxant,facile,hors ligne",
+      "description": "Huzur Blocs vous propose le jeu de placement de blocs bien-aimé avec de grandes cases et des décors calmes et animés. Pas de chrono, pas de publicité : réfléchissez à votre rythme.\n\nCOMMENT JOUER\nFaites glisser une des trois pièces du bas sur le plateau 9x9, ou touchez une pièce puis le plateau. Quand une ligne, une colonne ou un carré 3x3 (traits épais) est plein, il s’efface.\n\nFACILE À UTILISER\n• Pendant le glissement, un aperçu pâle montre où la pièce se posera\n• Les lignes sur le point de s’effacer s’illuminent à l’avance\n• La pièce flotte au-dessus du doigt et ne cache rien\n• L’indice montre un bon emplacement, « Nouvelles pièces » remplace les trois pièces\n\nTROIS FAÇONS DE JOUER\n• Niveaux : atteignez le score visé ; des pierres sur le plateau corsent doucement le jeu\n• Classique : une partie sans fin, battez votre record\n• Une nouvelle Partie du jour chaque jour\n\nÉQUITABLE\nAu moins une des trois pièces proposées rentre toujours sur le plateau.\n\nSANS INTERNET\nFonctionne hors ligne, ne collecte aucune donnée personnelle et se joue en 7 langues."
+    },
+    "ja": {
+      "name": "Huzur ブロック",
+      "subtitle": "置いて、そろえて、消すパズル",
+      "promo": "大きなマスと穏やかな風景で、時間制限なしのブロックパズル。レベル、クラシック、毎日の「今日のゲーム」。",
+      "keywords": "ブロック,パズル,キューブ,マス,列,消す,置く,脳トレ,ロジック,のんびり,かんたん,オフライン",
+      "description": "Huzur ブロックは、おなじみのブロック置きパズルを大きなマスと穏やかで動きのある風景で楽しめます。時間制限も広告もありません。自分のペースで考えられます。\n\n遊び方\n下の3つのピースから1つを9×9の盤面までドラッグするか、ピースをタップしてから盤面をタップします。横の列、縦の列、太線の3×3マスがすべて埋まると消えます。\n\nかんたん操作\n• ドラッグ中は、置かれる場所がうすく表示されます\n• 消える列は前もって光ります\n• ピースは指の少し上に表示され、盤面をかくしません\n• ヒントは良い場所を教え、「ピース交換」で3つのピースを入れ替えます\n\n3つの遊び方\n• レベル：目標スコアをめざします。盤面の石でゆっくり難しくなります\n• クラシック：終わりのないゲームでベストスコアに挑戦\n• 毎日新しい「今日のゲーム」\n\n公平\n配られる3つのピースのうち、少なくとも1つは必ず置けます。\n\nインターネット不要\nオフラインで遊べ、個人データは一切集めません。7言語に対応。"
+    },
+    "ko": {
+      "name": "Huzur 블록",
+      "subtitle": "놓고, 채우고, 지우는 퍼즐",
+      "promo": "큰 칸과 잔잔한 풍경으로 시간 제한 없이 즐기는 블록 퍼즐. 레벨, 클래식, 매일 새로운 오늘의 게임.",
+      "keywords": "블록,퍼즐,큐브,칸,줄,지우기,놓기,두뇌,논리,힐링,쉬운,오프라인,매일,클래식",
+      "description": "Huzur 블록은 사랑받는 블록 놓기 퍼즐을 큰 칸과 잔잔하게 움직이는 풍경으로 선보입니다. 시간 제한도, 광고도 없어요. 내 속도대로 생각하세요.\n\n플레이 방법\n아래 세 조각 중 하나를 9×9 판으로 끌어다 놓거나, 조각을 누른 뒤 판을 누르세요. 가로줄, 세로줄 또는 굵은 선의 3×3 칸이 가득 차면 지워져요.\n\n쉬운 조작\n• 끄는 동안 조각이 놓일 자리가 흐리게 보여요\n• 지워질 줄은 미리 빛나요\n• 조각이 손가락 위에 떠 있어서 판을 가리지 않아요\n• 힌트는 좋은 자리를 보여 주고, \"새 조각\"은 세 조각을 바꿔요\n\n세 가지 방식\n• 레벨: 목표 점수에 도달하세요. 판 위의 돌로 천천히 어려워져요\n• 클래식: 끝없는 게임, 최고 기록에 도전하세요\n• 매일 새로운 오늘의 게임\n\n공정함\n주어지는 세 조각 중 적어도 하나는 항상 판에 들어가요.\n\n인터넷 필요 없음\n오프라인으로 작동하고 개인 정보를 전혀 수집하지 않으며 7개 언어로 즐길 수 있어요."
+    }
+  }
+}
