@@ -145,13 +145,19 @@ def ensure_review_detail(app)
                             { data: { type: 'appStoreReviewDetails', id: id, attributes: attrs } })
     UI.user_error!("App Review kaydi guncellenemedi (#{code}): #{res.to_json[0, 600]}") unless code == 200
     UI.success("App Review kaydi guncellendi (#{attrs.keys.join(', ')})")
-    return
+    return true
+  end
+  unless attrs[:contactPhone]
+    UI.important('App Review kaydi yok ve telefon (REVIEW_PHONE) verilmedi: Apple telefonu zorunlu tutuyor. ' \
+                 'Iletisim bilgilerini App Store Connect > surum sayfasi > App Review Information kismina gir.')
+    return false
   end
   code, res = asc_request(:post, '/v1/appStoreReviewDetails',
                           { data: { type: 'appStoreReviewDetails', attributes: attrs,
                                     relationships: { appStoreVersion: { data: { type: 'appStoreVersions', id: v['id'] } } } } })
   if code == 201
     UI.success("App Review kaydi olusturuldu (#{attrs.keys.join(', ')})")
+    true
   else
     UI.user_error!("App Review kaydi olusturulamadi (#{code}): #{res.to_json[0, 600]}")
   end
@@ -285,11 +291,22 @@ platform :ios do
       opts[:marketing_url] = LOCALE_TO_LANG.to_h { |loc, lang| [loc, "#{web_url}/##{lang}"] }
     end
     opts[:copyright] = s['copyright'] unless s['copyright'].to_s.strip.empty?
-    ensure_review_detail(find_app!)
+    has_review = ensure_review_detail(find_app!)
     review = review_info
-    opts[:app_review_information] = review if review
-    UI.important('REVIEW_* secret\'lari yok; App Review iletisim bilgilerini App Store Connect\'te elle gir.') unless review
-    deliver(opts)
+    opts[:app_review_information] = review if review && has_review
+    if has_review
+      deliver(opts)
+    else
+      # App Review kaydi yokken deliver metinleri yukledikten sonra "No data" hatasiyla durur
+      # (fastlane #20538) ve ekran goruntulerine gecemez. Iki adimda yukle.
+      begin
+        deliver(opts.merge(skip_screenshots: true))
+      rescue StandardError => e
+        raise unless e.message.include?('No data')
+        UI.important('Metinler yuklendi; App Review kaydi olmadigi icin deliver burada durdu (beklenen).')
+      end
+      deliver(opts.merge(skip_metadata: true))
+    end
     set_age_rating(find_app!)
   end
 end
