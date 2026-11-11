@@ -16,9 +16,11 @@ import { BigButton, RoundIconButton, ToolButton } from '../components/Buttons';
 import { Confetti, StarRow } from '../components/Effects';
 import { Overlay } from '../components/Overlay';
 import { haptic, playSound } from '../feedback';
-import { availablePairs, computeRelations, dealSolvable, findHint, freeTiles, isFree, reshuffle } from '../game/engine';
+import { CLASSIC_RULE, availablePairs, computeRelations, dealSolvable, findHint, freeTiles, isFree, reshuffle } from '../game/engine';
+import { Layout } from '../game/layouts';
+import { SUM10_RULE } from '../game/sum10';
+import { mt } from '../i18nModes';
 import { LEVEL_COUNT, getLevel } from '../game/levels';
-import { canMatch } from '../game/tiles';
 import { FX } from '../images';
 import { formatTime, t } from '../i18n';
 import { SavedGame, Settings } from '../storage';
@@ -43,7 +45,21 @@ interface Props {
   onWin: (result: WinResult) => void;
   onNext: () => void;
   onHome: () => void;
+  /** Klasik dışındaki modlar: Zamana Karşı, Günün Bulmacası, Toplam 10 */
+  variant?: GameVariant;
+  /** Dizilim ve dağıtımı dışarıdan vermek için (ör. günün bulmacası) */
+  override?: { layout: Layout; seed: number };
+  /** Başlık (verilmezse "Seviye N") */
+  title?: string;
+  /** Tüm oyunlar ekranına dön */
+  onGames?: () => void;
 }
+
+export type GameVariant = 'classic' | 'timed' | 'daily' | 'sum10';
+
+/** Zamana Karşı: başlangıç süresi ve eşleşme başına eklenen saniye */
+export const timeLimitFor = (tiles: number) => 20 + tiles * 2;
+const TIME_BONUS = 3;
 
 interface State {
   faces: string[];
@@ -68,9 +84,15 @@ interface State {
 const native = Platform.OS !== 'web';
 
 export function GameScreen(props: Props) {
-  const { level, saved, settings, boosters, onUseBooster, onSave, onWin, onNext, onHome } = props;
+  const { level, saved, settings, boosters, onUseBooster, onSave, onWin, onNext, onHome, variant = 'classic', override, title, onGames } = props;
+  const rule = variant === 'sum10' ? SUM10_RULE : CLASSIC_RULE;
   const insets = useSafeAreaInsets();
-  const info = useMemo(() => getLevel(level), [level]);
+  const info = useMemo(() => {
+    if (override) return { level, ...override };
+    const base = getLevel(level);
+    // Modlar aynı dizilimi farklı bir dağıtımla kullanır
+    return variant === 'classic' ? base : { ...base, seed: base.seed + (variant === 'sum10' ? 7 : 13) };
+  }, [level, override, variant]);
   const positions = info.layout.positions;
   const rel = useMemo(() => computeRelations(positions), [positions]);
   // Ödül bilgisi açılışta sabitlenir (kazanınca ilerleme güncellense de değişmesin)
@@ -78,7 +100,7 @@ export function GameScreen(props: Props) {
 
   const freshState = useCallback(
     (dealKey: number): State => ({
-      faces: dealSolvable(positions, rel, info.seed),
+      faces: dealSolvable(positions, rel, info.seed, rule),
       present: positions.map(() => true),
       history: [],
       shuffles: 0,
@@ -95,7 +117,7 @@ export function GameScreen(props: Props) {
       stars: 0,
       dealKey,
     }),
-    [positions, rel, info.seed],
+    [positions, rel, info.seed, rule],
   );
 
   const [state, setState] = useState<State>(() => {
@@ -125,7 +147,23 @@ export function GameScreen(props: Props) {
   const free = useMemo(() => new Set(freeTiles(state.present, rel)), [state.present, rel]);
   const remaining = useMemo(() => state.present.filter(Boolean).length, [state.present]);
   const won = state.wonSeconds !== null;
-  const stuck = !won && remaining > 0 && availablePairs(state.faces, state.present, rel).length === 0;
+  // Zamana Karşı: kalan süre (saniye)
+  const [timeLeft, setTimeLeft] = useState(() => timeLimitFor(positions.length));
+  const timedOut = variant === 'timed' && timeLeft <= 0 && !won;
+  const stuck = !won && !timedOut && remaining > 0 && availablePairs(state.faces, state.present, rel, rule).length === 0;
+
+  useEffect(() => {
+    if (variant !== 'timed' || won || timedOut) return;
+    let active = AppState.currentState === 'active';
+    const sub = AppState.addEventListener('change', (st) => (active = st === 'active'));
+    const id = setInterval(() => {
+      if (active) setTimeLeft((v) => Math.max(0, v - 1));
+    }, 1000);
+    return () => {
+      clearInterval(id);
+      sub.remove();
+    };
+  }, [variant, won, timedOut]);
 
   // Süre sayacı (uygulama arka plandayken durur)
   useEffect(() => {
@@ -176,6 +214,10 @@ export function GameScreen(props: Props) {
 
   // Tüm durum değişiklikleri commit'ten geçer; işleyiciler yan etkileri bir kez çalıştırır.
   const stateRef = useRef(state);
+  const timeLeftRef = useRef(timeLeft);
+  useEffect(() => {
+    timeLeftRef.current = timeLeft;
+  }, [timeLeft]);
   const commit = useCallback((next: State) => {
     stateRef.current = next;
     setState(next);
@@ -184,7 +226,7 @@ export function GameScreen(props: Props) {
   const onTilePress = useCallback(
     (i: number) => {
       const s = stateRef.current;
-      if (!s.present[i] || s.wonSeconds !== null) return;
+      if (!s.present[i] || s.wonSeconds !== null || (variant === 'timed' && timeLeftRef.current <= 0)) return;
       if (!isFree(i, s.present, rel)) {
         playSound('wrong');
         haptic('warning');
@@ -201,7 +243,7 @@ export function GameScreen(props: Props) {
         commit({ ...s, selected: null });
         return;
       }
-      if (!canMatch(s.faces[s.selected], s.faces[i])) {
+      if (!rule.canMatch(s.faces[s.selected], s.faces[i])) {
         playSound('tap');
         haptic('select');
         commit({ ...s, selected: i });
@@ -231,6 +273,7 @@ export function GameScreen(props: Props) {
       } else {
         playSound('match');
         haptic(combo >= 3 ? 'success' : 'light');
+        if (variant === 'timed') setTimeLeft((v) => v + TIME_BONUS);
       }
       commit({
         ...s,
@@ -246,7 +289,7 @@ export function GameScreen(props: Props) {
         stars,
       });
     },
-    [rel, commit, level, onSave, onWin],
+    [rel, rule, variant, commit, level, onSave, onWin],
   );
 
   const undo = useCallback(() => {
@@ -279,7 +322,7 @@ export function GameScreen(props: Props) {
   const showHint = useCallback(() => {
     const s = stateRef.current;
     if (s.hint || s.wonSeconds !== null) return;
-    const h = findHint(positions, s.faces, s.present, rel);
+    const h = findHint(positions, s.faces, s.present, rel, rule);
     if (!h) {
       showToast(t.noHint);
       return;
@@ -293,15 +336,15 @@ export function GameScreen(props: Props) {
     playSound('hint');
     haptic('select');
     commit({ ...s, hint: h, selected: null, hintsUsed: s.hintsUsed + 1 });
-  }, [positions, rel, commit, boosters.hint, onUseBooster, showToast]);
+  }, [positions, rel, rule, commit, boosters.hint, onUseBooster, showToast]);
 
   const doShuffle = useCallback(() => {
     const s = stateRef.current;
-    const faces = reshuffle(positions, rel, s.faces, s.present, info.seed + 1000 * (s.shuffles + 1));
+    const faces = reshuffle(positions, rel, s.faces, s.present, info.seed + 1000 * (s.shuffles + 1), rule);
     playSound('shuffle');
     haptic('light');
     commit({ ...s, faces, shuffles: s.shuffles + 1, shufflesUsed: s.shufflesUsed + 1, selected: null, hint: null });
-  }, [positions, rel, info.seed, commit]);
+  }, [positions, rel, info.seed, rule, commit]);
 
   const shuffle = useCallback(() => {
     if (stateRef.current.wonSeconds !== null) return;
@@ -318,28 +361,33 @@ export function GameScreen(props: Props) {
     elapsed.current = 0;
     lastMatchAt.current = 0;
     setShowWin(false);
+    setTimeLeft(timeLimitFor(positions.length));
     commit(freshState(stateRef.current.dealKey + 1));
-  }, [freshState, commit]);
+  }, [freshState, commit, positions.length]);
 
   const onBoardLayout = useCallback((e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout;
     setBoardSize((old) => (old.width === width && old.height === height ? old : { width, height }));
   }, []);
 
-  const rewards = firstTime && won ? levelRewards(level, state.stars) : null;
-  const isLast = level >= LEVEL_COUNT;
+  const rewards = variant === 'classic' && firstTime && won ? levelRewards(level, state.stars) : null;
+  const isLast = variant === 'daily' || level >= LEVEL_COUNT;
 
   return (
     <View style={[styles.root, { paddingTop: insets.top + 6, paddingBottom: Math.max(insets.bottom, 10) }]}>
       <View style={styles.topBar}>
         <RoundIconButton icon="home" label={t.home} onPress={onHome} />
         <View style={styles.hud}>
-          <Text style={styles.title} accessibilityRole="header">
-            {t.level(level)}
+          <Text style={styles.title} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7} accessibilityRole="header">
+            {title ?? t.level(level)}
           </Text>
           <View style={styles.hudRow}>
             <ScoreBadge score={state.score} />
-            <Text style={styles.tilesLeft}>{t.tilesLeft(remaining)}</Text>
+            {variant === 'timed' ? (
+              <Text style={[styles.tilesLeft, styles.timer, timeLeft <= 10 && styles.timerLow]}>{mt().timeLeft(formatTime(timeLeft))}</Text>
+            ) : (
+              <Text style={styles.tilesLeft}>{t.tilesLeft(remaining)}</Text>
+            )}
           </View>
         </View>
         <RoundIconButton icon="restart" label={t.restart} onPress={restart} />
@@ -384,16 +432,24 @@ export function GameScreen(props: Props) {
         footer={
           <>
             {isLast ? null : <BigButton variant="primary" icon="play" label={t.nextLevel} onPress={onNext} />}
-            <BigButton icon="home" label={t.home} onPress={onHome} />
+            {onGames ? (
+              <BigButton icon="games" label={mt().allGames} onPress={onGames} />
+            ) : (
+              <BigButton icon="home" label={t.home} onPress={onHome} />
+            )}
           </>
         }
       >
         <StarRow stars={state.stars} size={54} />
         <Text style={styles.bigScore}>{t.points(state.score)}</Text>
         <Text style={styles.bodySoft}>
-          {t.winBody(level)} · {t.time(formatTime(state.wonSeconds ?? 0))}
+          {variant === 'daily' ? mt().dailyDone : t.winBody(level)} · {t.time(formatTime(state.wonSeconds ?? 0))}
         </Text>
-        {rewards ? (
+        {variant === 'daily' ? (
+          <Text lineBreakStrategyIOS="hangul-word" style={styles.body}>
+            {mt().dailyTomorrow}
+          </Text>
+        ) : variant !== 'classic' ? null : rewards ? (
           <View style={styles.rewardBox}>
             <Text style={styles.rewardTitle}>{t.reward}</Text>
             <View style={styles.rewardRow}>
@@ -409,7 +465,22 @@ export function GameScreen(props: Props) {
         ) : (
           <Text style={styles.bodySoft}>{t.replayNoReward}</Text>
         )}
-        {isLast ? <Text style={styles.body}>{t.allDone}</Text> : null}
+        {variant === 'classic' && isLast ? <Text style={styles.body}>{t.allDone}</Text> : null}
+      </Overlay>
+
+      <Overlay
+        visible={timedOut}
+        title={mt().timeUpTitle}
+        footer={
+          <>
+            <BigButton variant="primary" icon="restart" label={mt().tryAgain} onPress={restart} />
+            {onGames ? <BigButton icon="games" label={mt().allGames} onPress={onGames} /> : null}
+          </>
+        }
+      >
+        <Text lineBreakStrategyIOS="hangul-word" style={styles.body}>
+          {mt().timeUpBody}
+        </Text>
       </Overlay>
 
       <Overlay
@@ -481,6 +552,8 @@ const styles = StyleSheet.create({
     paddingVertical: 1,
   },
   scoreStar: { width: 20, height: 20 },
+  timer: { color: '#FFFFFF', fontVariant: ['tabular-nums'] },
+  timerLow: { color: '#FF8A80' },
   scoreText: { color: '#FFE066', fontSize: font.small, fontWeight: '900', ...shadowText, fontVariant: ['tabular-nums'] },
   boardArea: { flex: 1, marginVertical: 4 },
   toolbar: { flexDirection: 'row', marginTop: 10 },

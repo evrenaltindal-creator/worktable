@@ -260,6 +260,11 @@ const ui = {
   grid: icon(`${[0, 1, 2].map((r) => [0, 1, 2].map((c) => `<rect x="${6 + c * 13}" y="${6 + r * 13}" width="10" height="10" rx="2.5" fill="${W}"/>`).join('')).join('')}`),
   play: icon(`<path d="M14 8 L40 24 L14 40 Z" fill="${W}" stroke="${W}" stroke-width="3" stroke-linejoin="round"/>`),
   back: icon(`<path d="M30 8 L14 24 L30 40" stroke="${W}" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`),
+  games: icon(`<rect x="5" y="9" width="20" height="27" rx="4" fill="${W}" transform="rotate(-10 15 22)"/>
+              <rect x="22" y="11" width="20" height="27" rx="4" fill="${W}" opacity="0.75" transform="rotate(8 32 24)"/>`),
+  help: icon(`<circle cx="24" cy="24" r="19" fill="none" stroke="${W}" stroke-width="4.5"/>
+              <path d="M17 18 C17 12, 31 11, 31 18 C31 23, 24 23, 24 29" stroke="${W}" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+              <circle cx="24" cy="36" r="3" fill="${W}"/>`),
   close: icon(`<path d="M12 12 L36 36 M36 12 L12 36" stroke="${W}" stroke-width="6" stroke-linecap="round"/>`),
 };
 
@@ -344,6 +349,7 @@ async function main() {
     await render(s, path.join(OUT_FX, `${id}.png`), Math.round(+m[1] * 2), Math.round(+m[2] * 2));
   }
   await render(extra.tileBody, path.join(OUT_TILES, 'body.png'), Math.round((88 + 12.32) * 3), Math.round((116 + 12.32) * 3));
+  await render(extra.tileBack, path.join(OUT_TILES, 'back.png'), Math.round((88 + 12.32) * 3), Math.round((116 + 12.32) * 3));
 
   await browser.close();
   console.log(`Üretildi: ${Object.keys(tiles).length} taş, ${Object.keys(ui).length} simge, uygulama ikonları.`);

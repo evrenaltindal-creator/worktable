@@ -43,6 +43,7 @@ ACELE YOK
 • Her seviye çözülebilir olarak hazırlanır
 
 BOL BOL OYUN
+• 8 farklı oyun: Klasik, Zamana Karşı, Günün Bulmacası, Toplam 10, Üçlü Toplama, Bağlantı, Hafıza ve Zirve
 • 200 seviye, 16 farklı dizilim: kalp, ev, kelebek, kale, piramit ve daha fazlası
 • Oyun otomatik kaydedilir, kaldığınız yerden devam edersiniz
 
@@ -87,6 +88,7 @@ NO RUSH
 • Every level is guaranteed solvable
 
 PLENTY TO PLAY
+• 8 games in one: Classic, Time Attack, Daily Puzzle, Sum 10, Triple Collect, Connect, Memory and Peaks
 • 200 levels across 16 layouts: heart, house, butterfly, castle, pyramid and more
 • Your game is saved automatically
 
@@ -129,6 +131,7 @@ SEM PRESSA
 • Todo nível tem solução garantida
 
 MUITO PARA JOGAR
+• 8 jogos em um: Clássico, Contra o Tempo, Desafio do Dia, Soma 10, Coleta Tripla, Conexão, Memória e Picos
 • 200 níveis em 16 formatos: coração, casa, borboleta, castelo, pirâmide e mais
 • Seu jogo é salvo automaticamente
 
@@ -171,6 +174,7 @@ KEINE EILE
 • Jedes Level ist garantiert lösbar
 
 VIEL ZU SPIELEN
+• 8 Spiele in einem: Klassisch, Gegen die Zeit, Tagesrätsel, Summe 10, Dreier sammeln, Verbinden, Gedächtnis und Gipfel
 • 200 Level in 16 Formen: Herz, Haus, Schmetterling, Burg, Pyramide und mehr
 • Dein Spiel wird automatisch gespeichert
 
@@ -213,6 +217,7 @@ SANS STRESS
 • Chaque niveau a forcément une solution
 
 DE QUOI JOUER LONGTEMPS
+• 8 jeux en un : Classique, Contre la montre, Défi du jour, Somme 10, Triple collecte, Connexion, Mémoire et Sommets
 • 200 niveaux sur 16 formes : cœur, maison, papillon, château, pyramide et plus
 • Votre partie est enregistrée automatiquement
 
@@ -255,6 +260,7 @@ Huzur Mahjong は、定番の牌合わせゲームを、目にやさしい落ち
 ・どのレベルも必ず解ける配置
 
 たっぷり遊べる
+・クラシック、タイムアタック、今日のパズル、合計10、3つそろえ、つなげて、神経衰弱、ピークスの8種類のゲーム
 ・ハート、家、ちょうちょ、お城、ピラミッドなど16種類の形で200レベル
 ・ゲームは自動で保存
 
@@ -297,6 +303,7 @@ Huzur Mahjong은 클래식한 타일 짝 맞추기 게임을 눈이 편안한 �
 • 모든 레벨은 반드시 풀 수 있도록 만들어졌어요
 
 즐길 거리가 가득
+• 클래식, 타임 어택, 오늘의 퍼즐, 합계 10, 세 개 모으기, 연결, 기억력, 봉우리까지 8가지 게임
 • 하트, 집, 나비, 성, 피라미드 등 16가지 모양, 200개 레벨
 • 게임은 자동으로 저장돼요
 

@@ -272,7 +272,29 @@ function tileBody() {
     <rect x="0.75" y="0.75" width="86.5" height="114.5" rx="${r - 0.5}" fill="none" stroke="#D6B47A" stroke-width="1.5"/>`);
 }
 
+// ------------------------------------------------------------------ kapalı taş (arka yüz)
+function tileBack() {
+  const d = 12.32;
+  const w = 88 + d;
+  const h = 116 + d;
+  const r = 10.56;
+  const petal = (a) => `<ellipse cx="44" cy="40" rx="7" ry="15" fill="#E8D7A8" opacity="0.9" transform="rotate(${a} 44 58)"/>`;
+  return sp(w, h, `<defs>
+      <linearGradient id="side" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0C878"/><stop offset="1" stop-color="#A86F2C"/></linearGradient>
+      <linearGradient id="back" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="#2FA38F"/><stop offset="1" stop-color="#14695D"/></linearGradient>
+      <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF" stop-opacity="0.6"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>
+    </defs>
+    <rect x="${d * 0.25}" y="${d * 0.25}" width="${88 + d * 0.75}" height="${116 + d * 0.75}" rx="${r}" fill="url(#side)"/>
+    <rect x="${d * 0.55}" y="${d * 0.55}" width="${88 + d * 0.45}" height="${116 + d * 0.45}" rx="${r}" fill="#8E5A22" opacity="0.55"/>
+    <rect x="0" y="0" width="88" height="116" rx="${r}" fill="url(#back)"/>
+    <rect x="7" y="7" width="74" height="102" rx="7" fill="none" stroke="#E8D7A8" stroke-width="2.5" opacity="0.85"/>
+    ${[0, 45, 90, 135, 180, 225, 270, 315].map(petal).join('')}
+    <circle cx="44" cy="58" r="8" fill="#F2B84B"/>
+    <rect x="3" y="3" width="82" height="30" rx="${r - 2}" fill="url(#gloss)" opacity="0.6"/>`);
+}
+
 module.exports = {
+  tileBack: tileBack(),
   scenes: { spring: spring(), sunset: sunset(), dawn: dawn(), sea: sea() },
   sprites,
   tileBody: tileBody(),

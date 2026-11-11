@@ -24,6 +24,10 @@ oyunu. iPhone ve iPad için hazırlandı; aynı kod Android'de de çalışır.
   Yeni bir seviyeyi ilk kez bitirince ödül kazanılır: her seviye +1 geri al, 3 yıldız +1 ipucu,
   her 5. seviye +1 karıştır ve +1 ipucu. Hamle kalmazsa karıştırma ücretsizdir (oyun kilitlenmez).
 - **Yıldızlar:** hiç ipucu/karıştırma kullanmadan bitirmek 3 yıldız; süre baskısı yok.
+- **8 oyun, aynı taşlarla:** Klasik, Zamana Karşı, Günün Bulmacası, Toplam 10 (toplamı 10 olan
+  iki taş), Üçlü Toplama (7'lik rafa 3 aynı taş), Bağlantı (en fazla iki dönüşlü çizgiyle birleştir),
+  Hafıza (kapalı taşları çevir) ve Zirve (bir büyük ya da bir küçük taşı seç). Ana sayfadaki
+  "Tüm oyunlar" düğmesinden açılır; her modun kendi seviyesi ve yıldızları vardır.
 - **200 seviye**, 16 özgün dizilim (kalp, ev, kelebek, kale, piramit…).
 - **Otomatik kayıt:** uygulama kapansa da oyun kaldığı yerden devam eder.
 - **7 dil:** Türkçe, İngilizce, Portekizce (Brezilya), Almanca, Fransızca, Japonca, Korece.

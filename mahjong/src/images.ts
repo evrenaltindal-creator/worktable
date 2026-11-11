@@ -59,12 +59,17 @@ export const UI_ICONS = {
   play: require('../assets/ui/play.png'),
   back: require('../assets/ui/back.png'),
   close: require('../assets/ui/close.png'),
+  games: require('../assets/ui/games.png'),
+  help: require('../assets/ui/help.png'),
 } satisfies Record<string, ImageSourcePropType>;
 
 export type IconName = keyof typeof UI_ICONS;
 
 /** Cilalı taş gövdesi (yüz + kalınlık), tüm taşlarda ortak */
 export const TILE_BODY: ImageSourcePropType = require('../assets/tiles/body.png');
+
+/** Kapalı taş (arka yüz): Hafıza ve Zirve oyunlarında */
+export const TILE_BACK: ImageSourcePropType = require('../assets/tiles/back.png');
 
 export const SCENES = {
   spring: require('../assets/scenes/spring.png'),

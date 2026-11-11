@@ -5,6 +5,7 @@ import { BigButton } from '../components/Buttons';
 import { Overlay } from '../components/Overlay';
 import { TILE_BODY, TILE_IMAGES } from '../images';
 import { LANGUAGES, LangSetting, t } from '../i18n';
+import { mt } from '../i18nModes';
 import { Settings } from '../storage';
 import { colors, font } from '../theme';
 
@@ -13,6 +14,7 @@ interface Props {
   settings: Settings;
   onPlay: () => void;
   onLevels: () => void;
+  onGames: () => void;
   onSettingsChange: (s: Settings) => void;
 }
 
@@ -69,7 +71,7 @@ function Pulse({ children }: { children: React.ReactNode }) {
   return <Animated.View style={{ transform: [{ scale: v.interpolate({ inputRange: [0, 1], outputRange: [1, 1.045] }) }] }}>{children}</Animated.View>;
 }
 
-export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsChange }: Props) {
+export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onGames, onSettingsChange }: Props) {
   const insets = useSafeAreaInsets();
   const [showSettings, setShowSettings] = useState(false);
   const [showRules, setShowRules] = useState(false);
@@ -94,6 +96,7 @@ export function HomeScreen({ nextLevel, settings, onPlay, onLevels, onSettingsCh
         <Pulse>
           <BigButton variant="primary" icon="play" label={t.play} sublabel={t.continueLevel(nextLevel)} onPress={onPlay} />
         </Pulse>
+        <BigButton icon="games" label={mt().allGames} onPress={onGames} style={styles.gamesButton} />
         <BigButton icon="grid" label={t.levels} onPress={onLevels} />
         <BigButton icon="hint" label={t.howToPlay} onPress={() => setShowRules(true)} />
         <BigButton icon="settings" label={t.settings} onPress={() => setShowSettings(true)} />
@@ -194,6 +197,7 @@ const styles = StyleSheet.create({
     textShadowRadius: 6,
   },
   buttons: { width: '100%', maxWidth: 440, gap: 16 },
+  gamesButton: { backgroundColor: '#7A5AC8', borderBottomColor: '#563B93' },
   ruleRow: { flexDirection: 'row', gap: 12, alignItems: 'flex-start' },
   ruleNum: {
     color: '#3A2A08',

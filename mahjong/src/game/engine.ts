@@ -59,18 +59,52 @@ export function freeTiles(present: boolean[], rel: Relations): number[] {
   return out;
 }
 
-/** Oynanabilir tüm eşleşmeler (çiftler). */
-export function availablePairs(faces: FaceId[], present: boolean[], rel: Relations): [number, number][] {
-  const byGroup = new Map<string, number[]>();
-  for (const i of freeTiles(present, rel)) {
-    const g = matchGroup(faces[i]);
+/**
+ * Eşleşme kuralı. Klasik oyunda aynı taşlar eşleşir; "Toplam 10" gibi
+ * modlarda başka bir kural kullanılır.
+ */
+export interface MatchRule {
+  canMatch(a: FaceId, b: FaceId): boolean;
+  /** Kalan taşları birbiriyle eşleşebilen çiftlere ayırır (karıştırma için) */
+  pairUp(faces: FaceId[]): [FaceId, FaceId][];
+  /** n taşlık tahta için dağıtılacak çiftler */
+  choosePairs(tileCount: number, rng: Rng): [FaceId, FaceId][];
+}
+
+function pairByGroup(faces: FaceId[]): [FaceId, FaceId][] {
+  const byGroup = new Map<string, FaceId[]>();
+  for (const f of faces) {
+    const g = matchGroup(f);
     const list = byGroup.get(g);
-    if (list) list.push(i);
-    else byGroup.set(g, [i]);
+    if (list) list.push(f);
+    else byGroup.set(g, [f]);
   }
-  const pairs: [number, number][] = [];
+  const pairs: [FaceId, FaceId][] = [];
   for (const list of byGroup.values()) {
-    for (let a = 0; a < list.length; a++) for (let b = a + 1; b < list.length; b++) pairs.push([list[a], list[b]]);
+    for (let k = 0; k + 1 < list.length; k += 2) pairs.push([list[k], list[k + 1]]);
+  }
+  return pairs;
+}
+
+export const CLASSIC_RULE: MatchRule = {
+  canMatch: (a, b) => matchGroup(a) === matchGroup(b),
+  pairUp: pairByGroup,
+  choosePairs: (n, rng) => choosePairs(n, rng),
+};
+
+/** Oynanabilir tüm eşleşmeler (çiftler). */
+export function availablePairs(
+  faces: FaceId[],
+  present: boolean[],
+  rel: Relations,
+  rule: MatchRule = CLASSIC_RULE,
+): [number, number][] {
+  const free = freeTiles(present, rel);
+  const pairs: [number, number][] = [];
+  for (let a = 0; a < free.length; a++) {
+    for (let b = a + 1; b < free.length; b++) {
+      if (rule.canMatch(faces[free[a]], faces[free[b]])) pairs.push([free[a], free[b]]);
+    }
   }
   return pairs;
 }
@@ -159,10 +193,10 @@ export function choosePairs(tileCount: number, rng: Rng): [FaceId, FaceId][] {
   return pairs;
 }
 
-export function dealWithSolution(positions: Pos[], rel: Relations, seed: number) {
+export function dealWithSolution(positions: Pos[], rel: Relations, seed: number, rule: MatchRule = CLASSIC_RULE) {
   if (positions.length % 2 !== 0) throw new Error('Taş sayısı çift olmalı');
   const rng = createRng(seed);
-  const pairs = choosePairs(positions.length, rng);
+  const pairs = rule.choosePairs(positions.length, rng);
   const active = positions.map(() => true);
   for (let attempt = 0; attempt < 500; attempt++) {
     const placed = placePairs(rel, active, pairs, rng, positions);
@@ -171,8 +205,8 @@ export function dealWithSolution(positions: Pos[], rel: Relations, seed: number)
   throw new Error('Çözülebilir dağıtım üretilemedi');
 }
 
-export function dealSolvable(positions: Pos[], rel: Relations, seed: number): FaceId[] {
-  return dealWithSolution(positions, rel, seed).faces;
+export function dealSolvable(positions: Pos[], rel: Relations, seed: number, rule: MatchRule = CLASSIC_RULE): FaceId[] {
+  return dealWithSolution(positions, rel, seed, rule).faces;
 }
 
 /**
@@ -185,8 +219,9 @@ export function reshuffle(
   faces: FaceId[],
   present: boolean[],
   seed: number,
+  rule: MatchRule = CLASSIC_RULE,
 ): FaceId[] {
-  return reshuffleWithSolution(positions, rel, faces, present, seed).faces;
+  return reshuffleWithSolution(positions, rel, faces, present, seed, rule).faces;
 }
 
 export function reshuffleWithSolution(
@@ -195,20 +230,10 @@ export function reshuffleWithSolution(
   faces: FaceId[],
   present: boolean[],
   seed: number,
+  rule: MatchRule = CLASSIC_RULE,
 ): { faces: FaceId[]; solution: [number, number][] | null } {
   const rng = createRng(seed);
-  const byGroup = new Map<string, FaceId[]>();
-  present.forEach((p, i) => {
-    if (!p) return;
-    const g = matchGroup(faces[i]);
-    const list = byGroup.get(g);
-    if (list) list.push(faces[i]);
-    else byGroup.set(g, [faces[i]]);
-  });
-  const pairs: [FaceId, FaceId][] = [];
-  for (const list of byGroup.values()) {
-    for (let k = 0; k + 1 < list.length; k += 2) pairs.push([list[k], list[k + 1]]);
-  }
+  const pairs = rule.pairUp(faces.filter((_, i) => present[i]));
 
   const next = faces.slice();
   for (let attempt = 0; attempt < 300; attempt++) {
@@ -232,8 +257,9 @@ export function findHint(
   faces: FaceId[],
   present: boolean[],
   rel: Relations,
+  rule: MatchRule = CLASSIC_RULE,
 ): [number, number] | null {
-  const pairs = availablePairs(faces, present, rel);
+  const pairs = availablePairs(faces, present, rel, rule);
   if (pairs.length === 0) return null;
   let best = pairs[0];
   let bestScore = -Infinity;

@@ -2,6 +2,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Boosters, START_BOOSTERS } from './boosters';
 import { FaceId } from './game/tiles';
 import { LangSetting } from './i18n';
+import type { ModeId } from './modes';
+
+export interface ModeProgress {
+  /** Oynanacak sıradaki seviye */
+  level: number;
+  /** Bitirilen seviyelerin en iyi yıldızı */
+  stars: Record<number, number>;
+}
 
 export interface Settings {
   sound: boolean;
@@ -20,6 +28,10 @@ export interface Progress {
   stars: Record<number, number>;
   boosters: Boosters;
   settings: Settings;
+  /** Diğer oyun modlarının ilerlemesi */
+  modes: Partial<Record<ModeId, ModeProgress>>;
+  /** Günün bulmacası: tarih (YYYY-AA-GG) -> yıldız */
+  daily: Record<string, number>;
 }
 
 /** Yarım kalan oyun: uygulama kapansa bile kaldığı yerden devam eder. */
@@ -46,6 +58,8 @@ export const DEFAULT_PROGRESS: Progress = {
   stars: {},
   boosters: START_BOOSTERS,
   settings: { sound: true, haptics: true, highlightFree: true, language: 'auto' },
+  modes: {},
+  daily: {},
 };
 
 export async function loadProgress(): Promise<Progress> {
@@ -59,6 +73,8 @@ export async function loadProgress(): Promise<Progress> {
       stars: p.stars ?? {},
       boosters: { ...START_BOOSTERS, ...(p.boosters ?? {}) },
       settings: { ...DEFAULT_PROGRESS.settings, ...(p.settings ?? {}) },
+      modes: p.modes ?? {},
+      daily: p.daily ?? {},
     };
   } catch {
     return DEFAULT_PROGRESS;
