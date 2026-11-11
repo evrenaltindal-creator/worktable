@@ -17,7 +17,7 @@ const DEVICES = {
 const LOCALES = { tr: 'tr-TR', en: 'en-US', pt: 'pt-BR', de: 'de-DE', fr: 'fr-FR', ja: 'ja-JP', ko: 'ko-KR' };
 const FONTS = { ja: ['noto-sans-jp', 'Noto Sans JP'], ko: ['noto-sans-kr', 'Noto Sans KR'] };
 
-async function useCjkFont(ctx, lang) {
+async function applyCjkFont(ctx, lang) {
   const font = FONTS[lang];
   if (!font || !process.env.CJK_FONTS) return;
   const [pkg, family] = font;
@@ -52,7 +52,7 @@ async function run(opts) {
     const devs = lang === 'tr' || lang === 'en' ? [DEVICES.iphone, DEVICES.iphone63, DEVICES.ipad] : [DEVICES.iphone];
     for (const dev of devs) {
       const ctx = await browser.newContext({ viewport: dev.viewport, deviceScaleFactor: dev.scale, isMobile: true, hasTouch: true, locale: LOCALES[lang] });
-      await useCjkFont(ctx, lang);
+      await applyCjkFont(ctx, lang);
       const page = await ctx.newPage();
       const dir = path.join(opts.appDir, 'store', 'screenshots', lang, dev.name);
       fs.mkdirSync(dir, { recursive: true });

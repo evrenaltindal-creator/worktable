@@ -18,7 +18,8 @@ interface Props {
   /** Kazanınca yıldız (1-3); null = oyun sürüyor */
   wonStars: number | null;
   wonLines?: string[];
-  reward?: boolean;
+  /** true: ortak "+1 ipucu" metni; metin verilirse o gösterilir */
+  reward?: boolean | string;
   onNext?: () => void;
   lost: { title: string; body: string } | null;
   toast?: { text: string; id: number } | null;
@@ -127,7 +128,7 @@ export function GameFrame(props: Props) {
             {l}
           </Text>
         ))}
-        {reward ? <Text style={styles.reward}>{c.reward}</Text> : null}
+        {reward ? <Text style={styles.reward}>{typeof reward === 'string' ? reward : c.reward}</Text> : null}
       </Overlay>
 
       <Overlay

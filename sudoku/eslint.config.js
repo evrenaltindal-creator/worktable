@@ -7,4 +7,9 @@ module.exports = defineConfig([
   {
     ignores: ['dist/*'],
   },
+  {
+    // Node betikleri (çizim, ekran görüntüsü)
+    files: ['scripts/**/*.cjs'],
+    languageOptions: { globals: { __dirname: 'readonly', require: 'readonly', module: 'writable', process: 'readonly', console: 'readonly', Buffer: 'readonly' } },
+  },
 ]);

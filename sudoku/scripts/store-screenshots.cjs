@@ -35,7 +35,7 @@ const LANGS = {
 const progress = (lang, next = { easy: 4, medium: 7, hard: 3, expert: 1 }) =>
   JSON.stringify({ next, stars: {}, hints: 99, daily: {}, settings: { sound: true, haptics: true, showMistakes: true, highlightSame: true, language: lang } });
 
-async function useCjkFont(ctx, font) {
+async function applyCjkFont(ctx, font) {
   if (!font || !CJK_FONTS) return;
   const [pkg, family] = font;
   const dir = path.join(CJK_FONTS, pkg);
@@ -61,7 +61,7 @@ async function useCjkFont(ctx, font) {
 async function shoot(browser, lang, dev) {
   const L = LANGS[lang];
   const ctx = await browser.newContext({ viewport: dev.viewport, deviceScaleFactor: dev.scale, isMobile: true, hasTouch: true, locale: L.locale });
-  await useCjkFont(ctx, L.font);
+  await applyCjkFont(ctx, L.font);
   const page = await ctx.newPage();
   const dir = path.join(OUT, lang, dev.name);
   fs.mkdirSync(dir, { recursive: true });

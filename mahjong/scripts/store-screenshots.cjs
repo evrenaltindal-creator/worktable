@@ -57,7 +57,7 @@ const progress = (lang, unlocked, stars = {}) =>
   });
 
 /** Japonca/Korece için yazı tipini sayfaya ekler (CJK_FONTS verilmişse). */
-async function useCjkFont(ctx, font) {
+async function applyCjkFont(ctx, font) {
   if (!font || !CJK_FONTS) return;
   const [pkg, family] = font;
   const dir = path.join(CJK_FONTS, pkg);
@@ -90,7 +90,7 @@ async function shoot(browser, lang, dev) {
     hasTouch: true,
     locale: L.locale,
   });
-  await useCjkFont(ctx, L.font);
+  await applyCjkFont(ctx, L.font);
   const page = await ctx.newPage();
   const dir = path.join(OUT, lang, dev.name);
   fs.mkdirSync(dir, { recursive: true });
