@@ -191,6 +191,7 @@ platform :ios do
       metadata_path: File.join(STORE, 'fastlane', 'metadata'),
       screenshots_path: File.join(STORE, 'fastlane', 'screenshots'),
       skip_binary_upload: true, overwrite_screenshots: true, force: true, submit_for_review: false,
+      screenshot_processing_timeout: 600, automatic_release: true,
       run_precheck_before_submit: false, precheck_include_in_app_purchases: false,
       ignore_language_directory_validation: true,
       primary_category: 'GAMES', primary_first_sub_category: 'GAMES_PUZZLE', primary_second_sub_category: 'GAMES_CASUAL'
@@ -227,16 +228,22 @@ platform :ios do
     already = 0
     failed = 0
     Spaceship::ConnectAPI::User.all.each do |u|
-      UI.message("Kullanıcı rolleri: #{Array(u.roles).join(', ')}")
+      # API anahtarıyla e-posta alanı boş gelir; Apple ID'si username alanındadır
+      email = [u.email, u.username].map(&:to_s).find { |v| v.include?('@') }
+      unless email
+        UI.important('Bir kullanıcının Apple ID e-postası okunamadı, atlandı')
+        failed += 1
+        next
+      end
       begin
         Spaceship::ConnectAPI.post_beta_tester_assignment(
           beta_group_ids: [group.id],
-          attributes: { email: u.email, firstName: u.first_name.to_s, lastName: u.last_name.to_s }
+          attributes: { email: email, firstName: u.first_name.to_s, lastName: u.last_name.to_s }
         )
         added += 1
       rescue StandardError => e
         UI.message("Yeni test kullanıcısı olarak eklenemedi: #{scrub(e.message)}")
-        tester = Spaceship::ConnectAPI::BetaTester.find(email: u.email)
+        tester = Spaceship::ConnectAPI::BetaTester.find(email: email)
         if tester
           UI.message("Var olan test kaydı: davet türü #{tester.invite_type}")
           begin
