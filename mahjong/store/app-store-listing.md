@@ -15,7 +15,7 @@ anahtar kelimeler 100, tanıtım metni 170, açıklama 4000.
 **Alt başlık:** Büyük taşlı, sakin eşleştirme
 
 **Tanıtım metni (Promotional Text):**
-Büyük taşlar, hareketli sahneler: lale bahçesinden Kapadokya balonlarına. Eşleştirin, kombo yapın, yıldızları toplayın.
+8 oyun bir arada: Klasik, Üçlü Toplama, Bağlantı, Hafıza, Zirve ve daha fazlası. Büyük taşlar, hareketli sahneler, sakin bir mola.
 
 **Anahtar kelimeler:**
 mahjong,taş,eşleştirme,bulmaca,solitaire,zeka,beyin,klasik,büyük,kolay,rahatlatıcı,çevrimdışı

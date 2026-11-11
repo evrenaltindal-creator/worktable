@@ -27,14 +27,16 @@ const CJK_FONTS = process.env.CJK_FONTS;
 const DEVICES = {
   // 6.9" iPhone: 1320 x 2868
   iphone: { name: 'iphone-6.9', viewport: { width: 440, height: 956 }, scale: 3 },
+  // 6.3" iPhone (Dynamic Island orta boy): 1206 x 2622
+  iphone63: { name: 'iphone-6.3', viewport: { width: 402, height: 874 }, scale: 3 },
   // 13" iPad: 2064 x 2752
   ipad: { name: 'ipad-13', viewport: { width: 1032, height: 1376 }, scale: 2 },
 };
 
 /** Ekranda tıklanacak yazılar (uygulamadaki çevirilerle aynı) */
 const LANGS = {
-  tr: { locale: 'tr-TR', ipad: true, levels: 'Seviyeler', level: (n) => `Seviye ${n}`, hint: 'İpucu' },
-  en: { locale: 'en-US', ipad: true, levels: 'Levels', level: (n) => `Level ${n}`, hint: 'Hint' },
+  tr: { locale: 'tr-TR', ipad: true, levels: 'Seviyeler', level: (n) => `Seviye ${n}`, hint: 'İpucu', games: 'Tüm oyunlar', home: 'Ana sayfa', modes: ['Üçlü Toplama', 'Bağlantı', 'Zirve'] },
+  en: { locale: 'en-US', ipad: true, levels: 'Levels', level: (n) => `Level ${n}`, hint: 'Hint', games: 'All games', home: 'Home', modes: ['Triple Collect', 'Connect', 'Peaks'] },
   pt: { locale: 'pt-BR', levels: 'Níveis', level: (n) => `Nível ${n}`, hint: 'Dica' },
   de: { locale: 'de-DE', levels: 'Levelauswahl', level: (n) => `Level ${n}`, hint: 'Tipp' },
   fr: { locale: 'fr-FR', levels: 'Niveaux', level: (n) => `Niveau ${n}`, hint: 'Indice' },
@@ -49,6 +51,9 @@ const progress = (lang, unlocked, stars = {}) =>
     stars,
     boosters: { hint: 3, shuffle: 2, undo: 5 },
     settings: { sound: true, haptics: true, highlightFree: true, language: lang },
+    // Yeni oyunlarda orta seviyeler (tahta daha dolu görünsün)
+    modes: { triple: { level: 6, stars: {} }, connect: { level: 9, stars: {} }, peaks: { level: 4, stars: {} }, memory: { level: 5, stars: {} } },
+    daily: {},
   });
 
 /** Japonca/Korece için yazı tipini sayfaya ekler (CJK_FONTS verilmişse). */
@@ -113,22 +118,38 @@ async function shoot(browser, lang, dev) {
   await setProgress(progress(lang, 1));
   await save('1-home.jpg');
 
+  // Yeni oyunlar (sadece dili tanımlanmışsa)
+  if (L.games) {
+    await setProgress(progress(lang, 12));
+    await page.getByText(L.games, { exact: true }).click();
+    await page.waitForTimeout(900);
+    await save('2-games.jpg');
+    for (const [k, name] of L.modes.entries()) {
+      await setProgress(progress(lang, 12));
+      await page.getByText(L.games, { exact: true }).click();
+      await page.waitForTimeout(500);
+      await page.getByText(name, { exact: true }).first().click();
+      await page.waitForTimeout(2200);
+      await save(`${4 + k}-${['triple', 'connect', 'peaks'][k]}.jpg`);
+    }
+  }
+
   await openLevel(12);
   await page.getByText(L.hint, { exact: true }).click();
   await page.waitForTimeout(500);
-  await save('2-sunset-hint.jpg');
+  await save('3-classic-hint.jpg');
 
   await openLevel(23);
-  await save('3-dawn.jpg');
+  await save('7-dawn.jpg');
 
   await openLevel(34);
-  await save('4-sea.jpg');
+  await save('8-sea.jpg');
 
   const stars = { 1: 3, 2: 3, 3: 2, 4: 3, 5: 1, 6: 3, 7: 2, 8: 3, 9: 3, 10: 2, 11: 3 };
   await setProgress(progress(lang, 12, stars));
   await page.getByText(L.levels, { exact: true }).click();
   await page.waitForTimeout(800);
-  await save('5-levels.jpg');
+  await save('9-levels.jpg');
   await ctx.close();
 }
 
@@ -139,7 +160,10 @@ async function shoot(browser, lang, dev) {
   for (const lang of langs) {
     if (!LANGS[lang]) throw new Error(`Bilinmeyen dil: ${lang}`);
     await shoot(browser, lang, DEVICES.iphone);
-    if (LANGS[lang].ipad) await shoot(browser, lang, DEVICES.ipad);
+    if (LANGS[lang].ipad) {
+      await shoot(browser, lang, DEVICES.iphone63);
+      await shoot(browser, lang, DEVICES.ipad);
+    }
     console.log('tamam:', lang);
   }
   await browser.close();
