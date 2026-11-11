@@ -1,4 +1,9 @@
 {
   "web_url": "",
-  "copyright": "2026 Evren Altındal"
+  "copyright": "2026 Evren Altındal",
+  "review": {
+    "first_name": "Evren",
+    "last_name": "Altındal",
+    "email": "evrenaltindal@gmail.com"
+  }
 }
