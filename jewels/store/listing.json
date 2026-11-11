@@ -1,0 +1,75 @@
+{
+  "appName": "Huzur Jewels",
+  "bundleId": "com.evrenaltindal.huzurjewels",
+  "category": "Games → Puzzle",
+  "category2": "Games → Casual",
+  "screenshots": ["1-home", "2-start", "3-play", "4-win"],
+  "reviewNotes": "Huzur Jewels is an offline single-player match-three puzzle game with endless levels and a daily game. There is no timer. No account, sign-in, network connection, in-app purchases or ads. All progress is stored only on the device. Tap a jewel and then a neighbouring one (or swipe) to swap them. Rules are available via the \"How to play\" button.",
+  "faq": {
+    "tr": [
+      ["Nasıl oynanır?", "Yan yana iki taşı yer değiştirin: önce birine, sonra yanındakine dokunun ya da parmağınızı kaydırın. Aynı taştan 3 veya daha fazlası sıralanınca patlar."],
+      ["Seviyeyi nasıl kazanırım?", "Üstteki hedefte gösterilen taşları, hamleleriniz bitmeden toplayın. Süre sınırı yoktur."],
+      ["Özel taşlar nelerdir?", "4'lü sıra ok taşı (satır ya da sütunu temizler), L ya da T şekli bomba taşı (çevresini temizler), 5'li sıra gökkuşağı yıldızı (bir rengin tamamını temizler) verir."],
+      ["Dili nasıl değiştiririm?", "Ana sayfa → Ayarlar → Dil."],
+      ["İlerlemem nerede saklanır?", "Sadece telefonunuzda. Uygulamayı silerseniz ilerleme de silinir."]
+    ],
+    "en": [
+      ["How do I play?", "Swap two neighbouring jewels: tap one, then the one next to it, or swipe. Three or more of the same jewel in a row pop."],
+      ["How do I win a level?", "Collect the jewels shown in the goal before you run out of moves. There is no time limit."],
+      ["What are the special jewels?", "Four in a row makes an arrow jewel (clears a row or column), an L or T shape makes a bomb jewel (clears around it) and five in a row makes a rainbow star (clears one whole colour)."],
+      ["How do I change the language?", "Home → Settings → Language."],
+      ["Where is my progress stored?", "Only on your phone. Deleting the app also deletes your progress."]
+    ]
+  },
+  "langs": {
+    "tr": {
+      "name": "Huzur Mücevher",
+      "subtitle": "Sakin üçlü eşleştirme bulmaca",
+      "promo": "Büyük, biçimleri farklı mücevherler ve sakin sahnelerle süresiz üçlü eşleştirme. Sınırsız seviye ve her gün yeni bir oyun.",
+      "keywords": "mücevher,taş,üçlü,eşleştirme,elmas,bulmaca,patlatma,zeka,rahatlatıcı,kolay,çevrimdışı,günlük",
+      "description": "Huzur Mücevher, sevilen üçlü eşleştirme oyununu büyük, parlak mücevherler ve sakin, hareketli sahnelerle sunar. Süre baskısı yok, reklam yok; dilediğiniz hızda oynayın.\n\nNASIL OYNANIR\nYan yana iki taşı yer değiştirin: önce birine, sonra yanındakine dokunun ya da parmağınızı kaydırın. Aynı taştan 3 veya daha fazlası yatay ya da dikey sıralanınca patlar, üstteki taşlar düşer ve zincirleme patlamalar başlar.\n\nGÖZ DOSTU\n• Büyük mücevherler\n• Her rengin kendi biçimi var: yuvarlak, kare, üçgen, eşkenar dörtgen, altıgen, kalp\n• Renkleri ayırt etmekte zorlananlar için de kolay\n\nGÜÇLÜ TAŞLAR\n• 4'lü sıra: satırı ya da sütunu temizleyen ok taşı\n• L ya da T şekli: çevresini temizleyen bomba taşı\n• 5'li sıra: bir rengin tamamını temizleyen gökkuşağı yıldızı\n\nYARDIM HER ZAMAN YAKIN\n• İpucu, hedefe en çok yarayan hamleyi gösterir\n• Çekiç, hamle harcamadan tek taş kırar\n• Hamle kalmazsa taşlar kendiliğinden karışır\n\nBOL BOL OYUN\n• Sınırsız seviye; hedefler yavaş yavaş büyür\n• Her gün yeni bir Günün Oyunu\n• Bitirince konfeti ve 1-3 yıldız\n\nİNTERNET GEREKMEZ\nÇevrimdışı çalışır, hiçbir kişisel veri toplamaz ve 7 dilde oynanabilir."
+    },
+    "en": {
+      "name": "Huzur Jewels: Calm Match 3",
+      "subtitle": "Relaxing jewel swap puzzle",
+      "promo": "Untimed match-three with big jewels in distinct shapes and calm scenes. Endless levels and a new game every day.",
+      "keywords": "jewel,gem,match,three,swap,puzzle,diamond,crystal,relaxing,easy,offline,daily,brain,classic",
+      "description": "Huzur Jewels brings the much-loved match-three game to you with big, glossy jewels and calm, animated scenes. No timer, no ads: play at your own pace.\n\nHOW TO PLAY\nSwap two neighbouring jewels: tap one, then the one next to it, or swipe. Three or more of the same jewel in a row or column pop, the jewels above fall down and chain reactions begin.\n\nEASY ON THE EYES\n• Big jewels\n• Every colour has its own shape: round, square, triangle, diamond, hexagon, heart\n• Easy to play even if you find some colours hard to tell apart\n\nPOWERFUL JEWELS\n• Four in a row: an arrow jewel that clears a row or column\n• L or T shape: a bomb jewel that clears around it\n• Five in a row: a rainbow star that clears one whole colour\n\nHELP IS ALWAYS CLOSE\n• Hint shows the move that helps your goal most\n• Hammer breaks one jewel without using a move\n• If no moves are left, the jewels shuffle by themselves\n\nPLENTY TO PLAY\n• Endless levels; goals grow gently\n• A new Daily Game every day\n• Confetti and 1-3 stars when you finish\n\nNO INTERNET NEEDED\nWorks offline, collects no personal data and can be played in 7 languages."
+    },
+    "pt": {
+      "name": "Huzur Joias: Combine 3",
+      "subtitle": "Quebra-cabeça de joias calmo",
+      "promo": "Combine três sem relógio, com joias grandes de formas diferentes e cenários tranquilos. Níveis sem fim e um jogo novo por dia.",
+      "keywords": "joia,joias,gema,combinar,três,trocar,quebra-cabeça,diamante,relaxante,fácil,offline,diário",
+      "description": "Huzur Joias traz o querido jogo de combinar três com joias grandes e brilhantes e cenários calmos e animados. Sem relógio, sem anúncios: jogue no seu ritmo.\n\nCOMO JOGAR\nTroque duas joias vizinhas: toque em uma e depois na do lado, ou deslize. Três ou mais joias iguais em linha ou coluna estouram, as de cima caem e começam as reações em cadeia.\n\nFÁCIL DE VER\n• Joias grandes\n• Cada cor tem sua forma: redonda, quadrada, triângulo, losango, hexágono, coração\n• Fácil mesmo para quem confunde algumas cores\n\nJOIAS PODEROSAS\n• Quatro em linha: joia de seta que limpa uma linha ou coluna\n• Forma de L ou T: joia bomba que limpa ao redor\n• Cinco em linha: estrela arco-íris que limpa uma cor inteira\n\nAJUDA SEMPRE POR PERTO\n• A dica mostra a jogada que mais ajuda na meta\n• O martelo quebra uma joia sem gastar jogada\n• Sem jogadas possíveis, as joias se embaralham sozinhas\n\nMUITO PARA JOGAR\n• Níveis sem fim; as metas crescem aos poucos\n• Um Jogo do Dia novo todo dia\n• Confete e 1-3 estrelas ao terminar\n\nSEM INTERNET\nFunciona offline, não coleta dados pessoais e pode ser jogado em 7 idiomas."
+    },
+    "de": {
+      "name": "Huzur Juwelen: Drei Gewinnt",
+      "subtitle": "Entspanntes Juwelen-Rätsel",
+      "promo": "Drei verbinden ohne Zeitdruck, mit großen Juwelen in eigenen Formen und ruhigen Szenen. Endlose Level, jeden Tag ein neues Spiel.",
+      "keywords": "juwelen,edelstein,drei,verbinden,tauschen,rätsel,diamant,kristall,entspannend,leicht,offline,täglich",
+      "description": "Huzur Juwelen bringt das beliebte Drei-gewinnt-Spiel mit großen, glänzenden Juwelen und ruhigen, bewegten Szenen. Keine Uhr, keine Werbung: Spiel in deinem eigenen Tempo.\n\nSO WIRD GESPIELT\nTausche zwei benachbarte Juwelen: Tippe auf eines und dann auf das daneben, oder wische. Drei oder mehr gleiche Juwelen in einer Reihe oder Spalte platzen, die Juwelen darüber fallen nach und Kettenreaktionen beginnen.\n\nANGENEHM FÜR DIE AUGEN\n• Große Juwelen\n• Jede Farbe hat ihre Form: rund, quadratisch, Dreieck, Raute, Sechseck, Herz\n• Leicht zu spielen, auch wenn manche Farben schwer zu unterscheiden sind\n\nSTARKE JUWELEN\n• Vier in einer Reihe: ein Pfeil-Juwel, das eine Reihe oder Spalte räumt\n• L- oder T-Form: ein Bomben-Juwel, das die Umgebung räumt\n• Fünf in einer Reihe: ein Regenbogenstern, der eine ganze Farbe räumt\n\nHILFE IMMER NAH\n• Der Tipp zeigt den Zug, der deinem Ziel am meisten hilft\n• Der Hammer zerschlägt ein Juwel ohne Zug\n• Gibt es keinen Zug mehr, werden die Juwelen von selbst gemischt\n\nVIEL ZU SPIELEN\n• Endlose Level; die Ziele wachsen sanft\n• Jeden Tag ein neues Tagesspiel\n• Konfetti und 1-3 Sterne zum Abschluss\n\nKEIN INTERNET NÖTIG\nFunktioniert offline, sammelt keine persönlichen Daten und ist in 7 Sprachen spielbar."
+    },
+    "fr": {
+      "name": "Huzur Joyaux : Aligne 3",
+      "subtitle": "Puzzle de joyaux apaisant",
+      "promo": "Alignez trois joyaux sans chrono : grands joyaux aux formes distinctes et décors apaisants. Niveaux sans fin, une partie par jour.",
+      "keywords": "joyau,joyaux,gemme,aligner,trois,échanger,casse-tête,diamant,relaxant,facile,hors ligne,jour",
+      "description": "Huzur Joyaux vous propose le jeu d’alignement de trois bien-aimé avec de grands joyaux brillants et des décors calmes et animés. Pas de chrono, pas de publicité : jouez à votre rythme.\n\nCOMMENT JOUER\nÉchangez deux joyaux voisins : touchez-en un puis celui d’à côté, ou faites glisser. Trois joyaux identiques ou plus alignés éclatent, ceux du dessus tombent et les réactions en chaîne commencent.\n\nAGRÉABLE POUR LES YEUX\n• Grands joyaux\n• Chaque couleur a sa forme : rond, carré, triangle, losange, hexagone, cœur\n• Facile même si vous distinguez mal certaines couleurs\n\nJOYAUX PUISSANTS\n• Quatre alignés : un joyau flèche qui vide une ligne ou une colonne\n• Forme en L ou en T : un joyau bombe qui vide les alentours\n• Cinq alignés : une étoile arc-en-ciel qui retire toute une couleur\n\nDE L’AIDE TOUJOURS PROCHE\n• L’indice montre le coup le plus utile pour l’objectif\n• Le marteau brise un joyau sans utiliser de coup\n• S’il n’y a plus de coup possible, les joyaux se mélangent tout seuls\n\nDE QUOI JOUER LONGTEMPS\n• Niveaux sans fin ; les objectifs grandissent doucement\n• Une nouvelle Partie du jour chaque jour\n• Confettis et 1 à 3 étoiles à la fin\n\nSANS INTERNET\nFonctionne hors ligne, ne collecte aucune donnée personnelle et se joue en 7 langues."
+    },
+    "ja": {
+      "name": "Huzur ジュエル",
+      "subtitle": "のんびり3つそろえパズル",
+      "promo": "形の違う大きな宝石と穏やかな風景で、時間制限なしの3マッチ。レベルは無限、毎日新しいゲームも。",
+      "keywords": "宝石,ジュエル,3マッチ,そろえる,入れ替え,パズル,ダイヤ,のんびり,かんたん,オフライン,毎日,脳トレ",
+      "description": "Huzur ジュエルは、おなじみの3つそろえパズルを大きくつややかな宝石と穏やかで動きのある風景で楽しめます。時間制限も広告もありません。自分のペースで遊べます。\n\n遊び方\nとなり合う2つの宝石を入れ替えます。1つをタップしてからとなりをタップするか、スワイプします。同じ宝石が縦か横に3つ以上並ぶと消え、上の宝石が落ちて連鎖が始まります。\n\n目にやさしい\n• 大きな宝石\n• 色ごとに形がちがいます：丸、四角、三角、ひし形、六角形、ハート\n• 色の見分けが苦手な方でも遊びやすい\n\n強い宝石\n• 4つ並べる：横一列か縦一列を消す矢印の宝石\n• L字・T字：まわりを消すボムの宝石\n• 5つ並べる：1色をまるごと消すにじの星\n\nいつでも手助け\n• ヒントは目標にいちばん役立つ手を教えます\n• ハンマーは手数を使わずに宝石を1つこわします\n• 動かせる手がなくなると自動で混ぜます\n\nたっぷり遊べる\n• レベルは無限。目標はゆっくり大きくなります\n• 毎日新しい「今日のゲーム」\n• クリアすると紙吹雪と1〜3つ星\n\nインターネット不要\nオフラインで遊べ、個人データは一切集めません。7言語に対応。"
+    },
+    "ko": {
+      "name": "Huzur 보석",
+      "subtitle": "여유로운 보석 맞추기 퍼즐",
+      "promo": "모양이 다른 큰 보석과 잔잔한 풍경으로 시간 제한 없이 즐기는 3매치. 끝없는 레벨과 매일 새로운 게임.",
+      "keywords": "보석,주얼,3매치,맞추기,바꾸기,퍼즐,다이아몬드,힐링,쉬운,오프라인,매일,두뇌,클래식",
+      "description": "Huzur 보석은 사랑받는 3매치 퍼즐을 크고 반짝이는 보석과 잔잔하게 움직이는 풍경으로 선보입니다. 시간 제한도, 광고도 없어요. 내 속도대로 즐기세요.\n\n플레이 방법\n이웃한 두 보석을 바꾸세요. 하나를 누르고 옆의 보석을 누르거나 밀어 주세요. 같은 보석이 가로나 세로로 3개 이상 이어지면 터지고, 위의 보석이 떨어지며 연쇄가 시작돼요.\n\n눈이 편한 디자인\n• 큰 보석\n• 색마다 모양이 달라요: 원, 사각형, 삼각형, 마름모, 육각형, 하트\n• 색 구별이 어려운 분도 쉽게 즐길 수 있어요\n\n강한 보석\n• 4개 맞추기: 한 줄을 지우는 화살표 보석\n• L자·T자: 주변을 지우는 폭탄 보석\n• 5개 맞추기: 한 색을 모두 지우는 무지개 별\n\n언제나 가까운 도움\n• 힌트는 목표에 가장 도움이 되는 수를 보여 줘요\n• 망치는 이동 횟수를 쓰지 않고 보석 하나를 깨요\n• 움직일 수가 없으면 보석이 저절로 섞여요\n\n즐길 거리 가득\n• 끝없는 레벨, 목표는 천천히 커져요\n• 매일 새로운 오늘의 게임\n• 완료하면 축하 꽃가루와 별 1~3개\n\n인터넷 필요 없음\n오프라인으로 작동하고 개인 정보를 전혀 수집하지 않으며 7개 언어로 즐길 수 있어요."
+    }
+  }
+}
