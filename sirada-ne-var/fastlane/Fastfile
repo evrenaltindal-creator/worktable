@@ -99,6 +99,62 @@ def app_store_profile(cert)
   profile.uuid
 end
 
+def review_info
+  keys = { first_name: 'REVIEW_FIRST_NAME', last_name: 'REVIEW_LAST_NAME', phone_number: 'REVIEW_PHONE', email_address: 'REVIEW_EMAIL' }
+  vals = keys.transform_values { |k| ENV[k].to_s.strip }
+  return nil if vals.values.any?(&:empty?)
+  vals.merge(demo_user: '', demo_password: '',
+             notes: 'Offline decision wheel and slot-style picker. Users type their own options and spin; ' \
+                    'there is no betting, no coins, no prizes, no real-money gambling, no ads, no in-app purchases ' \
+                    'and no data collection. No account or login needed. 7 languages (menu at top right).')
+end
+
+# App Store Connect API'ye dogrudan istek (fastlane'in token'i ile)
+def asc_request(method, path, body = nil)
+  require 'net/http'
+  uri = URI("https://api.appstoreconnect.apple.com#{path}")
+  req = { get: Net::HTTP::Get, patch: Net::HTTP::Patch }.fetch(method).new(uri)
+  req['Authorization'] = "Bearer #{Spaceship::ConnectAPI.token.text}"
+  req['Content-Type'] = 'application/json'
+  req.body = JSON.generate(body) if body
+  res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) { |h| h.request(req) }
+  [res.code.to_i, res.body.to_s.empty? ? {} : JSON.parse(res.body)]
+end
+
+# Yas derecelendirmesi: hicbir hassas icerik yok. Slot makinesi gorunumu nedeniyle
+# "simulated gambling" hafif/seyrek isaretlenir (bahis, jeton, odul yok).
+AGE_BOOLEANS = %w[gambling unrestrictedWebAccess seventeenPlus advertising ageAssurance
+                  healthOrWellnessTopics lootBox messagingAndChat parentalControls userGeneratedContent].freeze
+AGE_SKIP = %w[kidsAgeBand ageRatingOverride ageRatingOverrideV2 koreaAgeRatingOverride
+              developerAgeRatingInfoUrl gamblingAndContests].freeze
+
+def set_age_rating(app)
+  code, infos = asc_request(:get, "/v1/apps/#{app.id}/appInfos")
+  UI.user_error!("appInfos okunamadi (#{code})") unless code == 200
+  info = infos['data'].find { |i| !%w[READY_FOR_DISTRIBUTION READY_FOR_SALE].include?(i.dig('attributes', 'state') || i.dig('attributes', 'appStoreState')) } || infos['data'].first
+  code, decl = asc_request(:get, "/v1/appInfos/#{info['id']}/ageRatingDeclaration")
+  UI.user_error!("Yas derecelendirmesi okunamadi (#{code})") unless code == 200
+  current = decl.dig('data', 'attributes') || {}
+  attrs = {}
+  current.each do |key, value|
+    next if AGE_SKIP.include?(key)
+    attrs[key] = if AGE_BOOLEANS.include?(key) || value == true || value == false
+                   false
+                 elsif key == 'gamblingSimulated'
+                   'INFREQUENT_OR_MILD'
+                 else
+                   'NONE'
+                 end
+  end
+  code, res = asc_request(:patch, "/v1/ageRatingDeclarations/#{decl.dig('data', 'id')}",
+                          { data: { type: 'ageRatingDeclarations', id: decl.dig('data', 'id'), attributes: attrs } })
+  if code == 200
+    UI.success("Yas derecelendirmesi dolduruldu (#{attrs.size} soru)")
+  else
+    UI.important("Yas derecelendirmesi kaydedilemedi (#{code}): #{res.to_json[0, 600]}")
+  end
+end
+
 platform :ios do
   desc 'Paket kimligi ve uygulama kaydinin durumunu yazar'
   lane :status do
@@ -193,6 +249,10 @@ platform :ios do
       opts[:marketing_url] = LOCALE_TO_LANG.to_h { |loc, lang| [loc, "#{web_url}/##{lang}"] }
     end
     opts[:copyright] = s['copyright'] unless s['copyright'].to_s.strip.empty?
+    review = review_info
+    opts[:app_review_information] = review if review
+    UI.important('REVIEW_* secret\'lari yok; App Review iletisim bilgilerini App Store Connect\'te elle gir.') unless review
     deliver(opts)
+    set_age_rating(find_app!)
   end
 end

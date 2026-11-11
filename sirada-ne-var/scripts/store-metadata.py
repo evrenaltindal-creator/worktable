@@ -7,7 +7,7 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'fastlane'
 
 LOCALES = {
     'tr': {
-        'name': 'Sırada Ne Var?',
+        'name': 'Sırada Ne Var? Karar Çarkı',
         'subtitle': 'Çark ve slot ile karar verin',
         'keywords': 'karar,çark,çarkıfelek,şans,slot,rastgele,seçim,kura,çekiliş,ne yesek,plan,oyun,eğlence,arkadaş',
         'promotional_text': 'Ne yapacağınıza karar veremiyor musunuz? Seçenekleri yazın, çarkı çevirin ya da kolu çekin. Ne çıkarsa onu yapıyorsunuz!',

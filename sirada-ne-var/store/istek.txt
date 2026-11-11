@@ -1,3 +1,3 @@
-build
+metadata
 
 # Ilk satira yapilacak isi yazip bu dala gonderin: status, register, build, testers, metadata
