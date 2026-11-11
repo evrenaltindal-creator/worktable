@@ -168,7 +168,7 @@ end
 AGE_BOOLEANS = %w[gambling unrestrictedWebAccess seventeenPlus advertising ageAssurance
                   healthOrWellnessTopics lootBox messagingAndChat parentalControls userGeneratedContent].freeze
 AGE_SKIP = %w[kidsAgeBand ageRatingOverride ageRatingOverrideV2 koreaAgeRatingOverride
-              developerAgeRatingInfoUrl gamblingAndContests].freeze
+              developerAgeRatingInfoUrl gamblingAndContests gracRatingClassificationNumber].freeze
 
 def set_age_rating(app)
   code, infos = asc_request(:get, "/v1/apps/#{app.id}/appInfos")
@@ -197,7 +197,11 @@ def set_age_rating(app)
     fixed = false
     (res['errors'] || []).each do |err|
       key = err.dig('source', 'pointer').to_s.split('/').last
-      next unless key && attrs.key?(key)
+      unless key && attrs.key?(key)
+        # Isaretci yoksa mesajda tirnak icinde gecen ve gonderdigimiz alanlari cikar
+        err['detail'].to_s.scan(/'([A-Za-z]+)'/).flatten.each { |k| fixed = true if attrs.delete(k) }
+        next
+      end
       if err['detail'].to_s.include?('Expected a BOOLEAN')
         attrs[key] = false
       else
@@ -284,6 +288,12 @@ platform :ios do
     UI.user_error!('App Store Connect kullanici listesi bos geldi') if testers.empty?
     Spaceship::ConnectAPI.post_bulk_beta_tester_assignments(beta_group_id: group.id, beta_testers: testers)
     UI.success("#{testers.size} App Store Connect kullanicisi ic test grubuna eklendi")
+  end
+
+  desc 'Yas derecelendirmesi anketini yanitlar'
+  lane :age_rating do
+    api_key
+    set_age_rating(find_app!)
   end
 
   desc '7 dilde magaza metinlerini ve ekran goruntulerini yukler (incelemeye gondermez)'

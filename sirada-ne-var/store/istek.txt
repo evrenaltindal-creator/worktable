@@ -1,4 +1,4 @@
-metadata
+age_rating
 
 # Ilk satira yapilacak isi yazip bu dala gonderin: status, register, build, testers, metadata
-# 2026-11-11T09:10:24Z yas derecelendirmesi tip duzeltmesi
+# 2026-11-11T09:13:02Z yalnizca yas derecelendirmesi
