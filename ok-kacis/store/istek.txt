@@ -1,4 +1,4 @@
-testflight
+metadata
 # Bu dosyanın ilk satırı, GitHub Actions'ta çalışacak App Store işini seçer.
 # Dosya değişip claude/festive-wright-wotpi5 dalına gönderilince iş başlar.
 #   status    durum raporu (paket kimliği, uygulama kaydı, son derleme)
@@ -7,4 +7,4 @@ testflight
 #   metadata  7 dilde metinleri, tanıtım görsellerini ve kategoriyi yükle
 #   testflight  TestFlight iç test grubu kur, hesap kullanıcılarını test kullanıcısı yap
 #   submit    incelemeye gönder; onaylanınca kendiliğinden yayınlanır
-# son istek: 2026-11-11T08:39:05Z testflight
+# son istek: 2026-11-11T08:40:10Z metadata
