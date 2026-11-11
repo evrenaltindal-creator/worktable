@@ -188,8 +188,25 @@ def set_age_rating(app)
                    'NONE'
                  end
   end
-  code, res = asc_request(:patch, "/v1/ageRatingDeclarations/#{decl.dig('data', 'id')}",
-                          { data: { type: 'ageRatingDeclarations', id: decl.dig('data', 'id'), attributes: attrs } })
+  code = res = nil
+  # Apple yeni sorular ekledikce tipleri degisebilir: hata mesajina gore duzeltip yeniden dene
+  6.times do
+    code, res = asc_request(:patch, "/v1/ageRatingDeclarations/#{decl.dig('data', 'id')}",
+                            { data: { type: 'ageRatingDeclarations', id: decl.dig('data', 'id'), attributes: attrs } })
+    break if code == 200 || code != 409
+    fixed = false
+    (res['errors'] || []).each do |err|
+      key = err.dig('source', 'pointer').to_s.split('/').last
+      next unless key && attrs.key?(key)
+      if err['detail'].to_s.include?('Expected a BOOLEAN')
+        attrs[key] = false
+      else
+        attrs.delete(key)
+      end
+      fixed = true
+    end
+    break unless fixed
+  end
   if code == 200
     UI.success("Yas derecelendirmesi dolduruldu (#{attrs.size} soru)")
   else

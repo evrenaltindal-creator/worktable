@@ -1,4 +1,4 @@
 metadata
 
 # Ilk satira yapilacak isi yazip bu dala gonderin: status, register, build, testers, metadata
-# 2026-11-11T08:48:29Z telefonsuz iki adimli yukleme
+# 2026-11-11T09:10:24Z yas derecelendirmesi tip duzeltmesi
