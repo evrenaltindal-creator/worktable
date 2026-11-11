@@ -1,0 +1,75 @@
+{
+  "appName": "Huzur Mines",
+  "bundleId": "com.evrenaltindal.huzurmines",
+  "category": "Games → Puzzle",
+  "category2": "Games → Board",
+  "screenshots": ["1-home", "2-start", "3-play", "4-win"],
+  "reviewNotes": "Huzur Mines is an offline single-player minesweeper game with three difficulty levels and a daily game. No account, sign-in, network connection, in-app purchases or ads. All progress is stored only on the device. Rules are available via the \"How to play\" button.",
+  "faq": {
+    "tr": [
+      ["Nasıl oynanır?", "Mayın olmayan tüm kareleri açın. Sayılar, çevredeki 8 karede kaç mayın olduğunu gösterir. Mayın olduğundan emin olduğunuz kareye bayrak koyun."],
+      ["Bayrağı nasıl koyarım?", "Alttaki \"Bayrak\" düğmesini açın ya da kareye parmağınızı basılı tutun."],
+      ["Şansa mı bağlı?", "Hayır. İlk dokunuş her zaman güvenlidir ve her tahta tahmin gerektirmeden, sadece mantıkla çözülebilir."],
+      ["Dili nasıl değiştiririm?", "Ana sayfa → Ayarlar → Dil."],
+      ["İlerlemem nerede saklanır?", "Sadece telefonunuzda. Uygulamayı silerseniz ilerleme de silinir."]
+    ],
+    "en": [
+      ["How do I play?", "Open every square that is not a mine. Numbers show how many mines are in the 8 squares around them. Flag the squares you are sure are mines."],
+      ["How do I place a flag?", "Turn on the \"Flag\" button at the bottom, or press and hold a square."],
+      ["Is it luck?", "No. Your first tap is always safe, and every board can be solved by logic alone, without guessing."],
+      ["How do I change the language?", "Home → Settings → Language."],
+      ["Where is my progress stored?", "Only on your phone. Deleting the app also deletes your progress."]
+    ]
+  },
+  "langs": {
+    "tr": {
+      "name": "Huzur Mayın Tarlası",
+      "subtitle": "Tahminsiz, sakin mayın tarlası",
+      "promo": "İlk dokunuş her zaman güvenli, her tahta sadece mantıkla çözülür. Büyük kareler, sakin sahneler, her gün yeni bir oyun.",
+      "keywords": "mayın,tarlası,bulmaca,mantık,zeka,klasik,beyin,büyük,kolay,rahatlatıcı,çevrimdışı,günlük",
+      "description": "Huzur Mayın Tarlası, klasik mantık oyununu büyük kareler ve sakin, hareketli sahnelerle sunar. Şansa yer yok: her tahta sadece mantıkla çözülebilir.\n\nNASIL OYNANIR\nMayın olmayan tüm kareleri açın. Her sayı, çevresindeki 8 karede kaç mayın olduğunu gösterir. Mayın olduğundan emin olduğunuz karelere bayrak koyun.\n\nADİL VE SAKİN\n• İlk dokunuş her zaman güvenlidir\n• Her tahta tahmin gerektirmeden çözülebilir\n• Süre baskısı yok\n\nKOLAY KULLANIM\n• Büyük, rahat dokunulan kareler\n• Bayrak düğmesi ya da basılı tutarak bayrak\n• Bayrakları tamam olan sayıya dokununca çevresi açılır\n• İpucu: güvenli bir kareyi gösterir; her kazandığınız oyun yeni ipucu kazandırır\n\nBOL BOL OYUN\n• Kolay, Orta ve Zor; her birinde sınırsız oyun\n• Her gün yeni bir Günün Oyunu\n• Bitirince konfeti ve 1-3 yıldız\n\nİNTERNET GEREKMEZ\nÇevrimdışı çalışır, hiçbir kişisel veri toplamaz ve 7 dilde oynanabilir."
+    },
+    "en": {
+      "name": "Huzur Mines",
+      "subtitle": "Calm minesweeper, no guessing",
+      "promo": "The first tap is always safe and every board is solvable by logic alone. Big squares, calm scenes and a new game every day.",
+      "keywords": "minesweeper,mines,puzzle,logic,brain,classic,board,big,easy,relaxing,offline,daily",
+      "description": "Huzur Mines brings the classic logic game to your device with big squares and calm, animated scenes. No luck needed: every board can be solved by logic alone.\n\nHOW TO PLAY\nOpen every square that is not a mine. Each number shows how many mines are in the 8 squares around it. Flag the squares you are sure are mines.\n\nFAIR AND CALM\n• Your first tap is always safe\n• Every board can be solved without guessing\n• No timer pressure\n\nEASY TO USE\n• Big squares that are easy to tap\n• Flag button, or press and hold to flag\n• Tap a fully flagged number to open the squares around it\n• Hint: shows a safe square; every win earns a new hint\n\nPLENTY TO PLAY\n• Easy, Medium and Hard, with unlimited games\n• A new Daily Game every day\n• Confetti and 1 to 3 stars when you win\n\nNO INTERNET NEEDED\nWorks offline, collects no personal data and is available in 7 languages."
+    },
+    "pt": {
+      "name": "Huzur Campo Minado",
+      "subtitle": "Campo minado calmo, sem chutes",
+      "promo": "O primeiro toque é sempre seguro e todo campo se resolve só com lógica. Quadrados grandes, cenários tranquilos e um jogo novo por dia.",
+      "keywords": "campo minado,minas,quebra-cabeça,lógica,cérebro,clássico,grande,fácil,relaxante,offline",
+      "description": "Huzur Campo Minado traz o clássico jogo de lógica com quadrados grandes e cenários animados e tranquilos. Sem sorte: todo campo pode ser resolvido só com lógica.\n\nCOMO JOGAR\nAbra todos os quadrados sem mina. Cada número mostra quantas minas há nos 8 quadrados ao redor. Marque com bandeira os quadrados que você sabe que são minas.\n\nJUSTO E TRANQUILO\n• O primeiro toque é sempre seguro\n• Todo campo pode ser resolvido sem chutar\n• Sem pressão de tempo\n\nFÁCIL DE USAR\n• Quadrados grandes, fáceis de tocar\n• Botão de bandeira ou segure o dedo para marcar\n• Toque em um número com todas as minas marcadas para abrir os quadrados ao redor\n• Dica: mostra um quadrado seguro; cada vitória dá uma nova dica\n\nMUITO PARA JOGAR\n• Fácil, Médio e Difícil, com jogos ilimitados\n• Um novo Jogo do Dia todos os dias\n• Confetes e de 1 a 3 estrelas ao vencer\n\nNÃO PRECISA DE INTERNET\nFunciona offline, não coleta nenhum dado pessoal e está disponível em 7 idiomas."
+    },
+    "de": {
+      "name": "Huzur Minensuche",
+      "subtitle": "Ruhige Minensuche ohne Raten",
+      "promo": "Der erste Tipp ist immer sicher und jedes Spielfeld ist allein mit Logik lösbar. Große Felder, ruhige Szenen und jeden Tag ein neues Spiel.",
+      "keywords": "minensuche,minen,rätsel,logik,denkspiel,klassisch,groß,leicht,entspannend,offline,täglich",
+      "description": "Huzur Minensuche bringt das klassische Logikspiel mit großen Feldern und ruhigen, bewegten Szenen auf dein Gerät. Kein Glück nötig: Jedes Spielfeld ist allein mit Logik lösbar.\n\nSO WIRD GESPIELT\nDecke alle Felder ohne Mine auf. Jede Zahl zeigt, wie viele Minen in den 8 Nachbarfeldern liegen. Markiere Felder mit einer Flagge, wenn du sicher bist, dass dort eine Mine liegt.\n\nFAIR UND ENTSPANNT\n• Der erste Tipp ist immer sicher\n• Jedes Spielfeld ist ohne Raten lösbar\n• Kein Zeitdruck\n\nEINFACH ZU BEDIENEN\n• Große Felder, leicht zu treffen\n• Flaggen-Taste oder Feld gedrückt halten\n• Tippe eine fertig markierte Zahl an, um die Nachbarfelder aufzudecken\n• Tipp: zeigt ein sicheres Feld; jeder Sieg bringt einen neuen Tipp\n\nVIEL ZU SPIELEN\n• Leicht, Mittel und Schwer mit unbegrenzt vielen Spielen\n• Jeden Tag ein neues Tagesspiel\n• Konfetti und 1 bis 3 Sterne beim Sieg\n\nKEIN INTERNET NÖTIG\nFunktioniert offline, sammelt keine persönlichen Daten und ist in 7 Sprachen verfügbar."
+    },
+    "fr": {
+      "name": "Huzur Démineur",
+      "subtitle": "Démineur apaisant, sans hasard",
+      "promo": "La première case est toujours sûre et chaque grille se résout par la logique. De grandes cases, des décors apaisants et une partie par jour.",
+      "keywords": "démineur,mines,casse-tête,logique,cerveau,classique,grand,facile,relaxant,hors ligne",
+      "description": "Huzur Démineur vous propose le grand classique de la logique avec de grandes cases et des décors animés apaisants. Aucun hasard : chaque grille se résout par la seule logique.\n\nCOMMENT JOUER\nOuvrez toutes les cases sans mine. Chaque chiffre indique combien de mines se trouvent dans les 8 cases voisines. Posez un drapeau sur les cases que vous savez minées.\n\nJUSTE ET APAISANT\n• La première case touchée est toujours sûre\n• Chaque grille se résout sans deviner\n• Aucune pression de temps\n\nFACILE À UTILISER\n• De grandes cases faciles à toucher\n• Bouton drapeau, ou appui long sur une case\n• Touchez un chiffre dont toutes les mines sont marquées pour ouvrir les cases voisines\n• Indice : montre une case sûre ; chaque victoire rapporte un indice\n\nDE QUOI JOUER LONGTEMPS\n• Facile, Moyen et Difficile, parties illimitées\n• Un nouveau Jeu du jour chaque jour\n• Des confettis et de 1 à 3 étoiles à la victoire\n\nSANS CONNEXION\nFonctionne hors ligne, ne collecte aucune donnée personnelle et existe en 7 langues."
+    },
+    "ja": {
+      "name": "Huzur マインスイーパー",
+      "subtitle": "運まかせなしのマインスイーパー",
+      "promo": "最初のタップは必ず安全、どの盤面も推理だけで解けます。大きなマス、穏やかな景色、毎日新しいゲーム。",
+      "keywords": "マインスイーパー,地雷,パズル,ロジック,脳トレ,定番,大きい,簡単,オフライン,シニア,毎日",
+      "description": "Huzur マインスイーパーは、定番の推理ゲームを大きなマスと穏やかに動く景色の中で楽しめるアプリです。運は不要、どの盤面も推理だけで解けます。\n\n遊び方\n地雷のないマスをすべて開けましょう。数字はまわり8マスにある地雷の数です。地雷だとわかったマスには旗を立てます。\n\n公平でゆったり\n・最初のタップは必ず安全\n・どの盤面も当て推量なしで解けます\n・時間に追われません\n\nかんたん操作\n・大きくて押しやすいマス\n・旗ボタン、またはマスの長押しで旗\n・旗がそろった数字をタップするとまわりが開きます\n・ヒント：安全なマスを教えます。勝つたびに1回増えます\n\nたっぷり遊べる\n・かんたん、ふつう、むずかしい、ゲームは無制限\n・毎日新しい「今日のゲーム」\n・クリアで紙吹雪と星1〜3つ\n\nインターネット不要\nオフラインで遊べ、個人情報を一切集めません。7か国語に対応しています。"
+    },
+    "ko": {
+      "name": "Huzur 지뢰찾기",
+      "subtitle": "찍지 않아도 되는 편안한 지뢰찾기",
+      "promo": "첫 칸은 항상 안전하고, 모든 판은 논리만으로 풀려요. 큰 칸, 잔잔한 풍경, 매일 새로운 게임.",
+      "keywords": "지뢰찾기,지뢰,퍼즐,논리,두뇌,클래식,큰글씨,쉬운,오프라인,매일,힐링",
+      "description": "Huzur 지뢰찾기는 클래식 논리 게임을 큰 칸과 잔잔하게 움직이는 풍경 속에서 즐길 수 있는 게임이에요. 운은 필요 없어요. 모든 판은 논리만으로 풀 수 있어요.\n\n게임 방법\n지뢰가 없는 칸을 모두 여세요. 숫자는 주변 8칸에 있는 지뢰 수예요. 지뢰가 확실한 칸에는 깃발을 꽂으세요.\n\n공정하고 편안하게\n• 첫 칸은 항상 안전해요\n• 모든 판은 찍지 않고 풀 수 있어요\n• 시간 압박이 없어요\n\n쉬운 조작\n• 크고 누르기 쉬운 칸\n• 깃발 버튼 또는 길게 눌러 깃발\n• 깃발이 다 꽂힌 숫자를 누르면 주변 칸이 열려요\n• 힌트: 안전한 칸을 알려 줘요. 이길 때마다 1개씩 늘어나요\n\n즐길 거리가 가득\n• 쉬움, 보통, 어려움, 게임은 무제한\n• 매일 새로운 오늘의 게임\n• 이기면 색종이와 별 1~3개\n\n인터넷이 필요 없어요\n오프라인으로 즐길 수 있고, 개인 정보를 수집하지 않으며, 7개 언어를 지원해요."
+    }
+  }
+}
