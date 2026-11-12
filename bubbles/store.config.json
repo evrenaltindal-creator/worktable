@@ -1,0 +1,178 @@
+{
+  "configVersion": 0,
+  "apple": {
+    "copyright": "2026 EVREN ALTINDAL",
+    "categories": [
+      [
+        "GAMES",
+        "GAMES_PUZZLE",
+        "GAMES_CASUAL"
+      ]
+    ],
+    "info": {
+      "tr": {
+        "title": "Huzur Balon Patlatma",
+        "subtitle": "Nişan al, eşleştir, patlat",
+        "promoText": "Büyük, sembollü balonlar ve sakin sahnelerle rahatlatıcı balon patlatma. Sınırsız seviye ve her gün yeni bir oyun.",
+        "description": "Huzur Balon Patlatma, sevilen balon oyununu büyük balonlar ve sakin, hareketli sahnelerle sunar. Acele yok, reklam yok; sadece nişan alın ve patlatın.\n\nNASIL OYNANIR\nParmağınızı tahtada gezdirerek nişan alın; noktalı çizgi balonun nereye gideceğini gösterir. Bırakınca balon fırlar ve duvarlardan seker. Aynı renkten en az 3 balon bir araya gelince patlar, askıda kalanlar da düşer.\n\nGÖZ DOSTU\n• Büyük, parlak balonlar\n• Her rengin kendi sembolü var: kalp, yıldız, yaprak, güneş, elmas, çiçek\n• Renkleri ayırt etmekte zorlananlar için de kolay\n\nKOLAY KULLANIM\n• Nişan çizgisi seken atışları da gösterir\n• \"Değiştir\" ile sıradaki balonu seçin\n• Gökkuşağı balonu her renge uyar; her kazandığınız seviye 1 tane kazandırır\n\nBOL BOL OYUN\n• Sınırsız seviye; renkler ve satırlar yavaş yavaş artar\n• Her gün yeni bir Günün Oyunu\n• Bitirince konfeti ve 1-3 yıldız\n\nİNTERNET GEREKMEZ\nÇevrimdışı çalışır, hiçbir kişisel veri toplamaz ve 7 dilde oynanabilir.",
+        "keywords": [
+          "balon",
+          "patlatma",
+          "renk",
+          "eşleştirme",
+          "nişan",
+          "bulmaca",
+          "klasik",
+          "rahatlatıcı",
+          "kolay",
+          "çevrimdışı",
+          "günlük",
+          "zeka"
+        ]
+      },
+      "en-US": {
+        "title": "Huzur Bubbles: Pop & Match",
+        "subtitle": "Aim, match and pop calmly",
+        "promoText": "Relaxing bubble popping with big, symbol-marked bubbles and calm scenes. Endless levels and a new game every day.",
+        "description": "Huzur Bubbles brings the much-loved bubble game to you with big bubbles and calm, animated scenes. No rush, no ads: just aim and pop.\n\nHOW TO PLAY\nMove your finger over the board to aim; the dotted line shows where the bubble will go. Lift your finger to shoot, and the bubble bounces off the walls. Three or more bubbles of the same colour pop, and bubbles left hanging fall too.\n\nEASY ON THE EYES\n• Big, glossy bubbles\n• Every colour has its own symbol: heart, star, leaf, sun, diamond, flower\n• Easy to play even if you find some colours hard to tell apart\n\nEASY TO USE\n• The aiming line also shows bank shots\n• \"Swap\" lets you choose the next bubble\n• A rainbow bubble matches any colour; every level you win earns one\n\nPLENTY TO PLAY\n• Endless levels; colours and rows increase gently\n• A new Daily Game every day\n• Confetti and 1-3 stars when you finish\n\nNO INTERNET NEEDED\nWorks offline, collects no personal data and can be played in 7 languages.",
+        "keywords": [
+          "bubble",
+          "pop",
+          "popping",
+          "match",
+          "colour",
+          "color",
+          "aim",
+          "puzzle",
+          "classic",
+          "relaxing",
+          "easy",
+          "offline",
+          "daily",
+          "brain"
+        ]
+      },
+      "pt-BR": {
+        "title": "Huzur Bolhas: Estoure Cores",
+        "subtitle": "Mire, combine e estoure",
+        "promoText": "Estoure bolhas com calma: bolhas grandes com símbolos e cenários tranquilos. Níveis sem fim e um jogo novo todo dia.",
+        "description": "Huzur Bolhas traz o querido jogo de bolhas com bolhas grandes e cenários calmos e animados. Sem pressa, sem anúncios: é só mirar e estourar.\n\nCOMO JOGAR\nPasse o dedo pelo tabuleiro para mirar; a linha pontilhada mostra para onde a bolha vai. Solte para atirar; a bolha quica nas paredes. Três ou mais bolhas da mesma cor estouram, e as que ficarem soltas também caem.\n\nFÁCIL DE VER\n• Bolhas grandes e brilhantes\n• Cada cor tem seu símbolo: coração, estrela, folha, sol, diamante, flor\n• Fácil mesmo para quem confunde algumas cores\n\nFÁCIL DE USAR\n• A linha de mira mostra também os tiros com tabela\n• \"Trocar\" escolhe a próxima bolha\n• A bolha arco-íris combina com qualquer cor; cada nível vencido dá uma\n\nMUITO PARA JOGAR\n• Níveis sem fim; cores e fileiras aumentam aos poucos\n• Um Jogo do Dia novo todo dia\n• Confete e 1-3 estrelas ao terminar\n\nSEM INTERNET\nFunciona offline, não coleta dados pessoais e pode ser jogado em 7 idiomas.",
+        "keywords": [
+          "bolha",
+          "bolhas",
+          "estourar",
+          "cores",
+          "combinar",
+          "mirar",
+          "quebra-cabeça",
+          "clássico",
+          "relaxante",
+          "fácil",
+          "offline",
+          "diário"
+        ]
+      },
+      "de-DE": {
+        "title": "Huzur Blasen: Farben Platzen",
+        "subtitle": "Zielen, verbinden, platzen",
+        "promoText": "Entspanntes Blasenplatzen mit großen Blasen mit Symbolen und ruhigen Szenen. Endlose Level und jeden Tag ein neues Spiel.",
+        "description": "Huzur Blasen bringt das beliebte Blasenspiel mit großen Blasen und ruhigen, bewegten Szenen. Keine Eile, keine Werbung: einfach zielen und platzen lassen.\n\nSO WIRD GESPIELT\nBewege den Finger über das Spielfeld zum Zielen; die gepunktete Linie zeigt, wohin die Blase fliegt. Lass los zum Schießen; die Blase prallt von den Wänden ab. Drei oder mehr gleichfarbige Blasen platzen, und Blasen ohne Halt fallen ebenfalls herunter.\n\nANGENEHM FÜR DIE AUGEN\n• Große, glänzende Blasen\n• Jede Farbe hat ihr Symbol: Herz, Stern, Blatt, Sonne, Raute, Blume\n• Leicht zu spielen, auch wenn manche Farben schwer zu unterscheiden sind\n\nEINFACH ZU BEDIENEN\n• Die Ziellinie zeigt auch Bandenschüsse\n• Mit „Tauschen“ wählst du die nächste Blase\n• Die Regenbogenblase passt zu jeder Farbe; jedes gewonnene Level bringt eine\n\nVIEL ZU SPIELEN\n• Endlose Level; Farben und Reihen nehmen sanft zu\n• Jeden Tag ein neues Tagesspiel\n• Konfetti und 1-3 Sterne zum Abschluss\n\nKEIN INTERNET NÖTIG\nFunktioniert offline, sammelt keine persönlichen Daten und ist in 7 Sprachen spielbar.",
+        "keywords": [
+          "blasen",
+          "platzen",
+          "farben",
+          "verbinden",
+          "zielen",
+          "rätsel",
+          "klassisch",
+          "entspannend",
+          "leicht",
+          "offline",
+          "täglich",
+          "denken"
+        ]
+      },
+      "fr-FR": {
+        "title": "Huzur Bulles",
+        "subtitle": "Visez, assortissez, éclatez",
+        "promoText": "Éclatez des bulles en douceur : grandes bulles à symboles et décors apaisants. Niveaux sans fin et une nouvelle partie chaque jour.",
+        "description": "Huzur Bulles vous propose le jeu de bulles bien-aimé avec de grandes bulles et des décors calmes et animés. Pas de hâte, pas de publicité : visez et éclatez.\n\nCOMMENT JOUER\nFaites glisser le doigt sur le plateau pour viser ; la ligne pointillée montre où ira la bulle. Relâchez pour tirer ; la bulle rebondit sur les murs. Trois bulles de même couleur ou plus éclatent, et les bulles qui ne tiennent plus tombent aussi.\n\nAGRÉABLE POUR LES YEUX\n• Grandes bulles brillantes\n• Chaque couleur a son symbole : cœur, étoile, feuille, soleil, losange, fleur\n• Facile même si vous distinguez mal certaines couleurs\n\nFACILE À UTILISER\n• La ligne de visée montre aussi les tirs par la bande\n• « Échanger » permet de choisir la bulle suivante\n• La bulle arc-en-ciel va avec toutes les couleurs ; chaque niveau gagné en rapporte une\n\nDE QUOI JOUER LONGTEMPS\n• Niveaux sans fin ; les couleurs et les rangées augmentent doucement\n• Une nouvelle Partie du jour chaque jour\n• Confettis et 1 à 3 étoiles à la fin\n\nSANS INTERNET\nFonctionne hors ligne, ne collecte aucune donnée personnelle et se joue en 7 langues.",
+        "keywords": [
+          "bulle",
+          "bulles",
+          "éclater",
+          "couleurs",
+          "assortir",
+          "viser",
+          "casse-tête",
+          "classique",
+          "relaxant",
+          "facile",
+          "hors ligne",
+          "jour"
+        ]
+      },
+      "ja": {
+        "title": "Huzur バブル",
+        "subtitle": "ねらって、そろえて、パチン",
+        "promoText": "大きなマーク付きバブルと穏やかな風景でのんびりバブル消し。レベルは無限、毎日新しいゲームも。",
+        "description": "Huzur バブルは、おなじみのバブルゲームを大きなバブルと穏やかで動きのある風景で楽しめます。急ぐ必要も広告もありません。ねらって消すだけ。\n\n遊び方\n盤面の上で指を動かしてねらいます。点線がバブルの行き先を示します。指を離すと発射し、バブルは壁で跳ね返ります。同じ色のバブルが3つ以上つながると消え、ぶら下がったバブルも落ちます。\n\n目にやさしい\n• 大きくつやのあるバブル\n• 色ごとにマーク付き：ハート、星、葉、太陽、ダイヤ、花\n• 色の見分けが苦手な方でも遊びやすい\n\nかんたん操作\n• ねらいの線は跳ね返りも表示\n• 「入れ替え」で次のバブルを選べます\n• にじ玉はどの色ともつながります。クリアするたびに1つもらえます\n\nたっぷり遊べる\n• レベルは無限。色と列はゆっくり増えます\n• 毎日新しい「今日のゲーム」\n• クリアすると紙吹雪と1〜3つ星\n\nインターネット不要\nオフラインで遊べ、個人データは一切集めません。7言語に対応。",
+        "keywords": [
+          "バブル",
+          "泡",
+          "消す",
+          "色",
+          "そろえる",
+          "ねらう",
+          "パズル",
+          "定番",
+          "のんびり",
+          "かんたん",
+          "オフライン",
+          "毎日",
+          "脳トレ"
+        ]
+      },
+      "ko": {
+        "title": "Huzur 버블",
+        "subtitle": "조준하고, 맞추고, 터뜨려요",
+        "promoText": "큰 모양 버블과 잔잔한 풍경으로 여유롭게 즐기는 버블 터뜨리기. 끝없는 레벨과 매일 새로운 게임.",
+        "description": "Huzur 버블은 사랑받는 버블 게임을 큰 버블과 잔잔하게 움직이는 풍경으로 선보입니다. 서두를 필요도, 광고도 없어요. 조준하고 터뜨리기만 하세요.\n\n플레이 방법\n판 위에서 손가락을 움직여 조준하세요. 점선이 버블이 갈 곳을 보여 줘요. 손을 떼면 발사되고 버블은 벽에 튕겨요. 같은 색 버블이 3개 이상 모이면 터지고, 매달린 버블도 떨어져요.\n\n눈이 편한 디자인\n• 크고 반짝이는 버블\n• 색마다 고유한 모양: 하트, 별, 잎, 해, 다이아몬드, 꽃\n• 색 구별이 어려운 분도 쉽게 즐길 수 있어요\n\n쉬운 조작\n• 조준선이 벽에 튕기는 경로도 보여 줘요\n• \"바꾸기\"로 다음 버블을 고를 수 있어요\n• 무지개 버블은 모든 색과 맞아요. 레벨을 이길 때마다 1개를 받아요\n\n즐길 거리 가득\n• 끝없는 레벨, 색과 줄은 천천히 늘어나요\n• 매일 새로운 오늘의 게임\n• 완료하면 축하 꽃가루와 별 1~3개\n\n인터넷 필요 없음\n오프라인으로 작동하고 개인 정보를 전혀 수집하지 않으며 7개 언어로 즐길 수 있어요.",
+        "keywords": [
+          "버블",
+          "풍선",
+          "터뜨리기",
+          "색깔",
+          "맞추기",
+          "조준",
+          "퍼즐",
+          "클래식",
+          "힐링",
+          "쉬운",
+          "오프라인",
+          "매일",
+          "두뇌"
+        ]
+      }
+    },
+    "advisory": {
+      "alcoholTobaccoOrDrugUseOrReferences": "NONE",
+      "contests": "NONE",
+      "gamblingSimulated": "NONE",
+      "horrorOrFearThemes": "NONE",
+      "matureOrSuggestiveThemes": "NONE",
+      "medicalOrTreatmentInformation": "NONE",
+      "profanityOrCrudeHumor": "NONE",
+      "sexualContentGraphicAndNudity": "NONE",
+      "sexualContentOrNudity": "NONE",
+      "violenceCartoonOrFantasy": "NONE",
+      "violenceRealistic": "NONE",
+      "violenceRealisticProlongedGraphicOrSadistic": "NONE",
+      "gambling": false,
+      "unrestrictedWebAccess": false,
+      "kidsAgeBand": null,
+      "ageRatingOverride": "NONE",
+      "koreaAgeRatingOverride": "NONE"
+    }
+  }
+}

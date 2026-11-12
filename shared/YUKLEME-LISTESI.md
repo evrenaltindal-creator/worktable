@@ -25,8 +25,11 @@ Tek bir oyun için sonuna adını yazın, örneğin `shared\yukle.ps1 sudoku`.
 ## Her oyun için App Store Connect'te
 
 1. Build TestFlight'ta görünene kadar bekleyin (derleme + Apple işlemesi, yaklaşık 30-60 dakika).
-2. App Store Connect'te uygulamayı açın ve `<klasör>\store\APP-STORE-CONNECT.md` dosyasındaki adımları izleyin:
-   ad, alt başlık, açıklama, anahtar kelimeler (7 dil), yaş derecelendirmesi, gizlilik, destek URL'si, telif.
+2. Metinler kendiliğinden yüklenir: betik her oyunda `store.config.json` dosyasını (7 dilde ad, alt başlık,
+   tanıtım, açıklama, anahtar kelimeler; kategoriler; 4+ yaş derecelendirmesi; telif) App Store Connect'e gönderir.
+   Tek bir oyun için elle: o oyunun klasöründe `npx eas-cli@latest metadata:push`.
+   Elle kalanlar (`<klasör>\store\APP-STORE-CONNECT.md`): App Privacy ("Data Not Collected"), Destek URL'si,
+   Gizlilik Politikası URL'si, iletişim bilgileri.
 3. Ekran görüntülerini `<klasör>\store\screenshots\<dil>\` klasörlerinden yükleyin
    (iPhone 6.9", iPhone 6.3", iPad 13").
 4. Build'i seçip **İncelemeye Gönder**.

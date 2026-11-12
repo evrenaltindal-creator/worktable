@@ -35,6 +35,12 @@ function Yukle($ad) {
     $app = Get-Content (Join-Path $klasor 'app.json') -Raw | ConvertFrom-Json
     if (-not $app.expo.extra.eas.projectId) { Adim "$ad : Expo projesi" 'npx --yes eas-cli@latest init' }
     Adim "$ad : iOS derlemesi sıraya alınıyor" 'npx --yes eas-cli@latest build --platform ios --profile production --auto-submit --no-wait'
+    # Mağaza metinleri (7 dil), kategoriler ve yaş derecelendirmesi: store.config.json -> App Store Connect
+    Write-Host "`n-- $ad : mağaza metinleri yükleniyor --" -ForegroundColor Yellow
+    npx --yes eas-cli@latest metadata:push
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "$ad : metinler yüklenemedi; daha sonra '$ad' klasöründe 'npx eas-cli@latest metadata:push' ile tekrar deneyin." -ForegroundColor DarkYellow
+    }
     Add-Content -Path $kayit -Value $ad
     Write-Host "$ad sıraya alındı." -ForegroundColor Green
 }
