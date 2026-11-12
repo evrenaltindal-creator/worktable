@@ -12,12 +12,19 @@ cd huzur
 
 Daha sonra kodda güncelleme olursa: `cd $HOME\Documents\huzur` ve `git pull`.
 
-## Her oyun için
+## Hepsini sırayla derleyip göndermek
 
-1. Derle ve gönder (PowerShell, `huzur` klasöründe):
-   ```powershell
-   powershell -ExecutionPolicy Bypass -File shared\yukle.ps1 <klasör>
-   ```
+```powershell
+powershell -ExecutionPolicy Bypass -File shared\yukle.ps1
+```
+
+Betik 10 oyunu sırayla Expo'da derlemeye alır ve her biri bitince App Store Connect'e kendisi gönderir.
+Yarıda kalırsa aynı komutu yeniden çalıştırın: biten oyunlar (`shared\yuklenenler.txt`) atlanır.
+Tek bir oyun için sonuna adını yazın, örneğin `shared\yukle.ps1 sudoku`.
+
+## Her oyun için App Store Connect'te
+
+1. Build TestFlight'ta görünene kadar bekleyin (derleme + Apple işlemesi, yaklaşık 30-60 dakika).
 2. App Store Connect'te uygulamayı açın ve `<klasör>\store\APP-STORE-CONNECT.md` dosyasındaki adımları izleyin:
    ad, alt başlık, açıklama, anahtar kelimeler (7 dil), yaş derecelendirmesi, gizlilik, destek URL'si, telif.
 3. Ekran görüntülerini `<klasör>\store\screenshots\<dil>\` klasörlerinden yükleyin
