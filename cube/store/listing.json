@@ -1,0 +1,75 @@
+{
+  "appName": "Huzur Mahjong Cube",
+  "bundleId": "com.evrenaltindal.huzurcube",
+  "category": "Games → Puzzle",
+  "category2": "Games → Board",
+  "screenshots": ["1-home", "2-start", "3-play", "4-win"],
+  "reviewNotes": "Huzur Mahjong Cube is an offline single-player 3D tile matching puzzle with endless levels and a daily game. There is no timer. No account, sign-in, network connection, in-app purchases or ads. All progress is stored only on the device. Tap two open cubes with the same symbol to remove them; the Turn button rotates the view. Rules are available via the \"How to play\" button.",
+  "faq": {
+    "tr": [
+      ["Nasıl oynanır?", "Aynı sembollü iki açık küpe dokunun; ikisi birlikte kalkar. Tüm küpleri kaldırınca seviye biter."],
+      ["Hangi küp açıktır?", "Üstünde küp olmayan ve dört yanından en az biri boş olan küp. Kapalı küpler biraz koyu görünür."],
+      ["Arkadaki küpleri nasıl görürüm?", "\"Döndür\" düğmesi kuleyi çeyrek tur çevirir."],
+      ["Takılırsam ne olur?", "Her seviyenin en az bir çözümü vardır. Eşleşme kalmazsa semboller kendiliğinden karışır; İpucu da eşleşebilecek iki küpü gösterir."],
+      ["İlerlemem nerede saklanır?", "Sadece telefonunuzda. Uygulamayı silerseniz ilerleme de silinir."]
+    ],
+    "en": [
+      ["How do I play?", "Tap two open cubes with the same symbol and they are removed together. Clear every cube to finish the level."],
+      ["Which cubes are open?", "A cube with nothing on top of it and at least one of its four sides free. Blocked cubes look a little darker."],
+      ["How do I see the cubes at the back?", "The \"Turn\" button rotates the tower a quarter turn."],
+      ["What if I get stuck?", "Every level has at least one solution. If no match is left, the symbols shuffle by themselves, and Hint shows two cubes that can be matched."],
+      ["Where is my progress stored?", "Only on your phone. Deleting the app also deletes your progress."]
+    ]
+  },
+  "langs": {
+    "tr": {
+      "name": "Huzur Mahjong Küp",
+      "subtitle": "Döndürülebilir 3B eşleştirme",
+      "promo": "Büyük, sembollü küplerle süresiz 3B mahjong. Kuleyi döndürün, açık küpleri eşleştirin; her seviyenin bir çözümü var.",
+      "keywords": "mahjong,küp,3b,eşleştirme,taş,bulmaca,kule,sembol,zeka,rahatlatıcı,kolay,çevrimdışı,günlük",
+      "description": "Huzur Mahjong Küp, sevilen taş eşleştirme oyununu üç boyuta taşır: küplerden bir kule, büyük ve net semboller, sakin, hareketli sahneler. Süre baskısı yok, reklam yok.\n\nNASIL OYNANIR\nAynı sembollü iki açık küpe dokunun; ikisi birlikte kalkar. Bir küp açıktır: üstünde küp yoksa ve dört yanından en az biri boşsa. Kapalı küpler biraz koyu görünür.\n\nKULEYİ DÖNDÜRÜN\n\"Döndür\" düğmesiyle kuleyi çeyrek tur çevirip arkada kalan küpleri görün.\n\nGÖZ DOSTU\n• Büyük küpler, her yüzünde aynı sembol\n• Her sembolün kendi rengi ve biçimi var: kalp, yıldız, yaprak, güneş, ay, damla, çiçek, elmas, çan, balık, bulut, taç\n\nHER SEVİYENİN ÇÖZÜMÜ VAR\nSeviyeler çözümü baştan bilinerek kurulur. Eşleşme kalmazsa semboller kendiliğinden karışır.\n\nBOL BOL OYUN\n• Sınırsız seviye; kule yavaş yavaş büyür\n• Her gün yeni bir Günün Oyunu\n• İpucu eşleşebilecek iki küpü gösterir\n• Bitirince konfeti ve 1-3 yıldız\n\nİNTERNET GEREKMEZ\nÇevrimdışı çalışır, hiçbir kişisel veri toplamaz ve 7 dilde oynanabilir."
+    },
+    "en": {
+      "name": "Huzur Mahjong Cube",
+      "subtitle": "Calm 3D matching you can turn",
+      "promo": "Untimed 3D mahjong with big symbol cubes. Turn the tower, match open cubes; every level has a solution.",
+      "keywords": "mahjong,cube,3d,match,tile,puzzle,tower,symbol,brain,relaxing,easy,offline,daily,classic",
+      "description": "Huzur Mahjong Cube takes the much-loved tile matching game into three dimensions: a tower of cubes, big clear symbols and calm, animated scenes. No timer, no ads.\n\nHOW TO PLAY\nTap two open cubes with the same symbol and they are removed together. A cube is open when nothing sits on top of it and at least one of its four sides is free. Blocked cubes look a little darker.\n\nTURN THE TOWER\nUse the \"Turn\" button to rotate the tower a quarter turn and see the cubes at the back.\n\nEASY ON THE EYES\n• Big cubes with the same symbol on every face\n• Every symbol has its own colour and shape: heart, star, leaf, sun, moon, drop, flower, diamond, bell, fish, cloud, crown\n\nEVERY LEVEL HAS A SOLUTION\nLevels are built with a known solution. If no match is left, the symbols shuffle by themselves.\n\nPLENTY TO PLAY\n• Endless levels; the tower grows gently\n• A new Daily Game every day\n• Hint shows two cubes that can be matched\n• Confetti and 1-3 stars when you finish\n\nNO INTERNET NEEDED\nWorks offline, collects no personal data and can be played in 7 languages."
+    },
+    "pt": {
+      "name": "Huzur Mahjong Cubo",
+      "subtitle": "Combinação 3D que você gira",
+      "promo": "Mahjong 3D sem relógio, com cubos grandes de símbolos. Gire a torre e combine cubos livres; todo nível tem solução.",
+      "keywords": "mahjong,cubo,3d,combinar,peças,quebra-cabeça,torre,símbolo,raciocínio,relaxante,fácil,offline",
+      "description": "Huzur Mahjong Cubo leva o querido jogo de combinar peças para três dimensões: uma torre de cubos, símbolos grandes e claros e cenários calmos e animados. Sem relógio, sem anúncios.\n\nCOMO JOGAR\nToque em dois cubos livres com o mesmo símbolo e eles saem juntos. Um cubo está livre quando não há nada em cima dele e pelo menos um dos quatro lados está aberto. Cubos presos ficam um pouco mais escuros.\n\nGIRE A TORRE\nUse o botão \"Girar\" para virar a torre um quarto de volta e ver os cubos de trás.\n\nFÁCIL DE VER\n• Cubos grandes com o mesmo símbolo em todas as faces\n• Cada símbolo tem sua cor e forma: coração, estrela, folha, sol, lua, gota, flor, diamante, sino, peixe, nuvem, coroa\n\nTODO NÍVEL TEM SOLUÇÃO\nOs níveis são montados com uma solução conhecida. Sem pares, os símbolos se embaralham sozinhos.\n\nMUITO PARA JOGAR\n• Níveis sem fim; a torre cresce aos poucos\n• Um Jogo do Dia novo todo dia\n• A dica mostra dois cubos que combinam\n• Confete e 1-3 estrelas ao terminar\n\nSEM INTERNET\nFunciona offline, não coleta dados pessoais e pode ser jogado em 7 idiomas."
+    },
+    "de": {
+      "name": "Huzur Mahjong Würfel",
+      "subtitle": "Ruhiges 3D-Paaren zum Drehen",
+      "promo": "3D-Mahjong ohne Zeitdruck mit großen Symbolwürfeln. Turm drehen, freie Würfel paaren; jedes Level ist lösbar.",
+      "keywords": "mahjong,würfel,3d,paaren,steine,rätsel,turm,symbol,denken,entspannend,leicht,offline,täglich",
+      "description": "Huzur Mahjong Würfel bringt das beliebte Steine-Paaren in die dritte Dimension: ein Turm aus Würfeln, große klare Symbole und ruhige, bewegte Szenen. Keine Uhr, keine Werbung.\n\nSO WIRD GESPIELT\nTippe auf zwei freie Würfel mit gleichem Symbol, dann verschwinden sie zusammen. Ein Würfel ist frei, wenn nichts auf ihm liegt und mindestens eine seiner vier Seiten offen ist. Blockierte Würfel sind etwas dunkler.\n\nTURM DREHEN\nMit der Taste „Drehen“ drehst du den Turm um eine Vierteldrehung und siehst die hinteren Würfel.\n\nANGENEHM FÜR DIE AUGEN\n• Große Würfel mit demselben Symbol auf jeder Seite\n• Jedes Symbol hat eigene Farbe und Form: Herz, Stern, Blatt, Sonne, Mond, Tropfen, Blume, Raute, Glocke, Fisch, Wolke, Krone\n\nJEDES LEVEL IST LÖSBAR\nDie Level werden mit bekannter Lösung gebaut. Gibt es kein Paar mehr, werden die Symbole von selbst gemischt.\n\nVIEL ZU SPIELEN\n• Endlose Level; der Turm wächst sanft\n• Jeden Tag ein neues Tagesspiel\n• Der Tipp zeigt zwei passende Würfel\n• Konfetti und 1-3 Sterne zum Abschluss\n\nKEIN INTERNET NÖTIG\nFunktioniert offline, sammelt keine persönlichen Daten und ist in 7 Sprachen spielbar."
+    },
+    "fr": {
+      "name": "Huzur Mahjong Cube",
+      "subtitle": "Paires en 3D à faire tourner",
+      "promo": "Un mahjong 3D sans chrono avec de grands cubes à symboles. Tournez la tour, associez les cubes libres ; chaque niveau a une solution.",
+      "keywords": "mahjong,cube,3d,paires,tuiles,casse-tête,tour,symbole,réflexion,relaxant,facile,hors ligne",
+      "description": "Huzur Mahjong Cube emmène le jeu de paires bien-aimé en trois dimensions : une tour de cubes, de grands symboles bien nets et des décors calmes et animés. Pas de chrono, pas de publicité.\n\nCOMMENT JOUER\nTouchez deux cubes libres au même symbole : ils partent ensemble. Un cube est libre quand rien n’est posé dessus et qu’au moins un de ses quatre côtés est dégagé. Les cubes bloqués sont un peu plus sombres.\n\nFAITES TOURNER LA TOUR\nLe bouton « Tourner » fait pivoter la tour d’un quart de tour pour voir les cubes de derrière.\n\nAGRÉABLE POUR LES YEUX\n• Grands cubes avec le même symbole sur chaque face\n• Chaque symbole a sa couleur et sa forme : cœur, étoile, feuille, soleil, lune, goutte, fleur, losange, cloche, poisson, nuage, couronne\n\nCHAQUE NIVEAU A UNE SOLUTION\nLes niveaux sont construits avec une solution connue. S’il ne reste aucune paire, les symboles se mélangent tout seuls.\n\nDE QUOI JOUER LONGTEMPS\n• Niveaux sans fin ; la tour grandit doucement\n• Une nouvelle Partie du jour chaque jour\n• L’indice montre deux cubes à associer\n• Confettis et 1 à 3 étoiles à la fin\n\nSANS INTERNET\nFonctionne hors ligne, ne collecte aucune donnée personnelle et se joue en 7 langues."
+    },
+    "ja": {
+      "name": "Huzur 麻雀キューブ",
+      "subtitle": "回せる3Dのんびりペア合わせ",
+      "promo": "マーク付きの大きなキューブで遊ぶ、時間制限なしの3D麻雀パズル。塔を回して、取れるキューブを合わせよう。",
+      "keywords": "麻雀,マージャン,キューブ,3D,ペア,パズル,塔,マーク,脳トレ,のんびり,かんたん,オフライン,毎日",
+      "description": "Huzur 麻雀キューブは、おなじみの牌合わせパズルを3Dにしました。キューブの塔、大きくはっきりしたマーク、穏やかで動きのある風景。時間制限も広告もありません。\n\n遊び方\n同じマークの取れるキューブを2つタップすると、いっしょに消えます。上に何ものっておらず、4つの横のうち1つ以上があいているキューブが取れます。取れないキューブは少し暗く見えます。\n\n塔を回せる\n「回す」ボタンで塔を4分の1回転させ、うしろのキューブを見られます。\n\n目にやさしい\n• 大きなキューブ、どの面にも同じマーク\n• マークごとに色と形がちがいます：ハート、星、葉、太陽、月、しずく、花、ダイヤ、鐘、魚、雲、王冠\n\nどのレベルにも解き方がある\nレベルは解き方がわかる形で作られています。合わせられるキューブがなくなると、マークが自動で混ざります。\n\nたっぷり遊べる\n• レベルは無限。塔はゆっくり大きくなります\n• 毎日新しい「今日のゲーム」\n• ヒントは合わせられる2つのキューブを教えます\n• クリアすると紙吹雪と1〜3つ星\n\nインターネット不要\nオフラインで遊べ、個人データは一切集めません。7言語に対応。"
+    },
+    "ko": {
+      "name": "Huzur 마작 큐브",
+      "subtitle": "돌려 보는 여유로운 3D 짝 맞추기",
+      "promo": "모양이 그려진 큰 큐브로 시간 제한 없이 즐기는 3D 마작 퍼즐. 탑을 돌리고 열린 큐브를 짝지어요.",
+      "keywords": "마작,큐브,3D,짝맞추기,타일,퍼즐,탑,모양,두뇌,힐링,쉬운,오프라인,매일",
+      "description": "Huzur 마작 큐브는 사랑받는 타일 짝 맞추기를 3D로 옮겼어요. 큐브로 쌓은 탑, 크고 또렷한 모양, 잔잔하게 움직이는 풍경. 시간 제한도, 광고도 없어요.\n\n플레이 방법\n같은 모양의 열린 큐브 두 개를 누르면 함께 사라져요. 위에 아무것도 없고 네 옆면 중 하나 이상이 비어 있으면 열린 큐브예요. 막힌 큐브는 조금 어둡게 보여요.\n\n탑을 돌려요\n\"돌리기\" 버튼으로 탑을 4분의 1바퀴 돌려 뒤쪽 큐브를 볼 수 있어요.\n\n눈이 편한 디자인\n• 모든 면에 같은 모양이 있는 큰 큐브\n• 모양마다 색과 형태가 달라요: 하트, 별, 잎, 해, 달, 물방울, 꽃, 다이아몬드, 종, 물고기, 구름, 왕관\n\n모든 레벨에 풀이가 있어요\n레벨은 풀이가 정해진 방식으로 만들어져요. 짝이 남지 않으면 모양이 저절로 섞여요.\n\n즐길 거리 가득\n• 끝없는 레벨, 탑은 천천히 커져요\n• 매일 새로운 오늘의 게임\n• 힌트는 짝지을 수 있는 큐브 두 개를 보여 줘요\n• 완료하면 축하 꽃가루와 별 1~3개\n\n인터넷 필요 없음\n오프라인으로 작동하고 개인 정보를 전혀 수집하지 않으며 7개 언어로 즐길 수 있어요."
+    }
+  }
+}
