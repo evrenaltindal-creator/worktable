@@ -1,0 +1,75 @@
+{
+  "appName": "Huzur Words",
+  "bundleId": "com.evrenaltindal.huzurwords",
+  "category": "Games → Word",
+  "category2": "Games → Puzzle",
+  "screenshots": ["1-home", "2-start", "3-play", "4-win"],
+  "reviewNotes": "Huzur Words is an offline single-player word search game with themed word lists in 7 languages, endless levels and a daily puzzle. There is no timer. No account, sign-in, network connection, in-app purchases or ads. All progress is stored only on the device. Slide a finger from the first to the last letter of a word to mark it. Rules are available via the \"How to play\" button.",
+  "faq": {
+    "tr": [
+      ["Nasıl oynanır?", "Alttaki listede yazan kelimeler harf tablosunda gizli. Parmağınızı kelimenin ilk harfinden son harfine kaydırın."],
+      ["Kelimeler hangi yönde yazılı?", "İlk seviyelerde yalnız soldan sağa ve yukarıdan aşağı; ilerledikçe çapraz ve ters kelimeler de gelir. Süre sınırı yoktur."],
+      ["Kelimeler hangi dilde?", "Oyunun dilinde. Ana sayfa → Ayarlar → Dil bölümünden 7 dilden birini seçebilirsiniz."],
+      ["Takıldım, ne yapabilirim?", "İpucu, bulunmamış bir kelimenin ilk harfini parlatır."],
+      ["İlerlemem nerede saklanır?", "Sadece telefonunuzda. Uygulamayı silerseniz ilerleme de silinir."]
+    ],
+    "en": [
+      ["How do I play?", "The words in the list below are hidden in the letter grid. Slide your finger from the first letter of a word to its last letter."],
+      ["Which way do the words run?", "In the first levels only left to right and top to bottom; later, diagonal and backwards words appear too. There is no time limit."],
+      ["Which language are the words in?", "In the game language. Choose one of 7 languages in Home → Settings → Language."],
+      ["I am stuck. What can I do?", "Hint makes the first letter of a word you have not found glow."],
+      ["Where is my progress stored?", "Only on your phone. Deleting the app also deletes your progress."]
+    ]
+  },
+  "langs": {
+    "tr": {
+      "name": "Huzur Kelime Avı",
+      "subtitle": "Büyük harfli sakin kelime avı",
+      "promo": "Büyük harfler, temalı kelime listeleri ve sakin sahnelerle süresiz kelime avı. 7 dilde kelimeler, her gün yeni bir bulmaca.",
+      "keywords": "kelime,avı,bulmaca,harf,sözcük,gizli,arama,türkçe,zeka,hafıza,rahatlatıcı,kolay,çevrimdışı",
+      "description": "Huzur Kelime Avı, sevilen kelime bulmacasını büyük harfler ve sakin, hareketli sahnelerle sunar. Süre baskısı yok, reklam yok; dilediğiniz hızda arayın.\n\nNASIL OYNANIR\nAlttaki listede yazan kelimeler harf tablosunda gizli. Parmağınızı kelimenin ilk harfinden son harfine kaydırın. Bulduğunuz kelime renkli bir şeritle işaretlenir.\n\nGÖZ DOSTU\n• Büyük, kalın harfler\n• Bulunan her kelime ayrı renkte\n• İlk seviyelerde kelimeler yalnız soldan sağa ve yukarıdan aşağı yazılır\n\nTEMALI LİSTELER\nMeyveler, hayvanlar, ev, doğa, mutfak, renkler ve hava. Kelimeler oyunun dilinde gelir: Türkçe, İngilizce, Portekizce, Almanca, Fransızca, Japonca ve Korece.\n\nBOL BOL OYUN\n• Sınırsız seviye; tablo ve kelime sayısı yavaş yavaş büyür, sonra çapraz ve ters kelimeler gelir\n• Her gün yeni bir Günün Bulmacası\n• İpucu bir kelimenin ilk harfini gösterir\n• Bitirince konfeti ve 1-3 yıldız\n\nİNTERNET GEREKMEZ\nÇevrimdışı çalışır ve hiçbir kişisel veri toplamaz."
+    },
+    "en": {
+      "name": "Huzur Word Search: Calm",
+      "subtitle": "Big-letter word search",
+      "promo": "Untimed word search with big letters, themed word lists and calm scenes. Words in 7 languages and a new puzzle every day.",
+      "keywords": "word,search,find,puzzle,letters,hidden,brain,vocabulary,relaxing,easy,offline,daily,large print",
+      "description": "Huzur Word Search brings the much-loved word puzzle to you with big letters and calm, animated scenes. No timer, no ads: search at your own pace.\n\nHOW TO PLAY\nThe words in the list below are hidden in the letter grid. Slide your finger from the first letter of a word to its last letter. Each word you find is marked with a coloured band.\n\nEASY ON THE EYES\n• Big, bold letters\n• Each found word gets its own colour\n• In the first levels, words only run left to right and top to bottom\n\nTHEMED LISTS\nFruits, animals, home, nature, kitchen, colours and weather. Words come in the game language: Turkish, English, Portuguese, German, French, Japanese and Korean.\n\nPLENTY TO PLAY\n• Endless levels; the grid and word count grow gently, then diagonal and backwards words appear\n• A new Daily Puzzle every day\n• Hint shows the first letter of a word\n• Confetti and 1-3 stars when you finish\n\nNO INTERNET NEEDED\nWorks offline and collects no personal data."
+    },
+    "pt": {
+      "name": "Huzur Caça-Palavras",
+      "subtitle": "Caça-palavras de letra grande",
+      "promo": "Caça-palavras sem relógio, com letras grandes, listas por tema e cenários calmos. Palavras em 7 idiomas e um jogo por dia.",
+      "keywords": "caça,palavras,procurar,letras,quebra-cabeça,escondidas,raciocínio,vocabulário,relaxante,fácil",
+      "description": "Huzur Caça-Palavras traz o querido passatempo de palavras com letras grandes e cenários calmos e animados. Sem relógio, sem anúncios: procure no seu ritmo.\n\nCOMO JOGAR\nAs palavras da lista abaixo estão escondidas no quadro de letras. Deslize o dedo da primeira até a última letra da palavra. Cada palavra encontrada ganha uma faixa colorida.\n\nFÁCIL DE VER\n• Letras grandes e fortes\n• Cada palavra encontrada tem sua cor\n• Nos primeiros níveis, as palavras vão só da esquerda para a direita e de cima para baixo\n\nLISTAS POR TEMA\nFrutas, animais, casa, natureza, cozinha, cores e tempo. As palavras vêm no idioma do jogo: turco, inglês, português, alemão, francês, japonês e coreano. Os acentos são omitidos no quadro.\n\nMUITO PARA JOGAR\n• Níveis sem fim; o quadro e o número de palavras crescem aos poucos, depois vêm diagonais e palavras ao contrário\n• Um Desafio do Dia novo todo dia\n• A dica mostra a primeira letra de uma palavra\n• Confete e 1-3 estrelas ao terminar\n\nSEM INTERNET\nFunciona offline e não coleta dados pessoais."
+    },
+    "de": {
+      "name": "Huzur Wortsuche",
+      "subtitle": "Wortsuche in großer Schrift",
+      "promo": "Wortsuche ohne Zeitdruck mit großen Buchstaben, Themenlisten und ruhigen Szenen. Wörter in 7 Sprachen, jeden Tag ein neues Rätsel.",
+      "keywords": "wortsuche,wörter,suchen,buchstaben,rätsel,versteckt,denken,wortschatz,entspannend,leicht,offline",
+      "description": "Huzur Wortsuche bringt das beliebte Wörterrätsel mit großen Buchstaben und ruhigen, bewegten Szenen. Keine Uhr, keine Werbung: Such in deinem eigenen Tempo.\n\nSO WIRD GESPIELT\nDie Wörter aus der Liste unten sind im Buchstabengitter versteckt. Fahre mit dem Finger vom ersten bis zum letzten Buchstaben eines Wortes. Jedes gefundene Wort bekommt ein farbiges Band.\n\nANGENEHM FÜR DIE AUGEN\n• Große, kräftige Buchstaben\n• Jedes gefundene Wort hat seine eigene Farbe\n• In den ersten Levels laufen die Wörter nur von links nach rechts und von oben nach unten\n\nTHEMENLISTEN\nObst, Tiere, Zuhause, Natur, Küche, Farben und Wetter. Die Wörter erscheinen in der Spielsprache: Türkisch, Englisch, Portugiesisch, Deutsch, Französisch, Japanisch und Koreanisch.\n\nVIEL ZU SPIELEN\n• Endlose Level; Gitter und Wortzahl wachsen sanft, später kommen schräge und rückwärts geschriebene Wörter\n• Jeden Tag ein neues Tagesrätsel\n• Der Tipp zeigt den ersten Buchstaben eines Wortes\n• Konfetti und 1-3 Sterne zum Abschluss\n\nKEIN INTERNET NÖTIG\nFunktioniert offline und sammelt keine persönlichen Daten."
+    },
+    "fr": {
+      "name": "Huzur Mots Cachés",
+      "subtitle": "Mots cachés en gros caractères",
+      "promo": "Des mots cachés sans chrono, en gros caractères, avec des listes à thème et des décors apaisants. 7 langues, une grille par jour.",
+      "keywords": "mots,cachés,mélangés,lettres,grille,chercher,casse-tête,vocabulaire,relaxant,facile,hors ligne,jour",
+      "description": "Huzur Mots Cachés vous propose le jeu de lettres bien-aimé en gros caractères, avec des décors calmes et animés. Pas de chrono, pas de publicité : cherchez à votre rythme.\n\nCOMMENT JOUER\nLes mots de la liste du bas sont cachés dans la grille. Faites glisser le doigt de la première à la dernière lettre d’un mot. Chaque mot trouvé reçoit une bande colorée.\n\nAGRÉABLE POUR LES YEUX\n• Grandes lettres bien lisibles\n• Chaque mot trouvé a sa couleur\n• Aux premiers niveaux, les mots vont seulement de gauche à droite et de haut en bas\n\nLISTES À THÈME\nFruits, animaux, maison, nature, cuisine, couleurs et météo. Les mots sont dans la langue du jeu : turc, anglais, portugais, allemand, français, japonais et coréen. Les accents sont omis dans la grille.\n\nDE QUOI JOUER LONGTEMPS\n• Niveaux sans fin ; la grille et le nombre de mots grandissent doucement, puis viennent diagonales et mots à l’envers\n• Une nouvelle Grille du jour chaque jour\n• L’indice montre la première lettre d’un mot\n• Confettis et 1 à 3 étoiles à la fin\n\nSANS INTERNET\nFonctionne hors ligne et ne collecte aucune donnée personnelle."
+    },
+    "ja": {
+      "name": "Huzur ことばさがし",
+      "subtitle": "大きな文字ののんびり言葉探し",
+      "promo": "大きな文字とテーマ別のことばリスト、穏やかな風景で楽しむ、時間制限なしの言葉探し。7言語、毎日新しいパズル。",
+      "keywords": "ことばさがし,言葉,文字,探す,パズル,ひらがな,脳トレ,語彙,のんびり,かんたん,オフライン,毎日",
+      "description": "Huzur ことばさがしは、おなじみの言葉探しパズルを大きな文字と穏やかで動きのある風景で楽しめます。時間制限も広告もありません。自分のペースで探せます。\n\n遊び方\n下のリストのことばが、文字の表にかくれています。ことばの最初の文字から最後の文字まで指をすべらせます。見つけたことばには色の帯がつきます。\n\n目にやさしい\n• 大きく太い文字\n• 見つけたことばはそれぞれちがう色に\n• はじめのレベルでは、ことばは左から右、上から下だけ\n\nテーマ別リスト\nくだもの、どうぶつ、いえ、しぜん、だいどころ、いろとてんき。ことばはゲームの言語で出てきます：トルコ語、英語、ポルトガル語、ドイツ語、フランス語、日本語、韓国語。\n\nたっぷり遊べる\n• レベルは無限。表とことばの数はゆっくり増え、やがてななめや逆向きも登場\n• 毎日新しい「今日のパズル」\n• ヒントはことばの最初の文字を教えます\n• クリアすると紙吹雪と1〜3つ星\n\nインターネット不要\nオフラインで遊べ、個人データは一切集めません。"
+    },
+    "ko": {
+      "name": "Huzur 낱말 찾기",
+      "subtitle": "큰 글씨로 즐기는 낱말 찾기",
+      "promo": "큰 글씨와 주제별 낱말 목록, 잔잔한 풍경으로 시간 제한 없이 즐기는 낱말 찾기. 7개 언어, 매일 새로운 퍼즐.",
+      "keywords": "낱말,찾기,단어,글자,퍼즐,숨은,두뇌,어휘,힐링,쉬운,오프라인,매일,큰글씨",
+      "description": "Huzur 낱말 찾기는 사랑받는 낱말 퍼즐을 큰 글씨와 잔잔하게 움직이는 풍경으로 선보입니다. 시간 제한도, 광고도 없어요. 내 속도대로 찾아보세요.\n\n플레이 방법\n아래 목록의 낱말이 글자판에 숨어 있어요. 낱말의 첫 글자부터 마지막 글자까지 손가락을 미세요. 찾은 낱말에는 색 띠가 표시돼요.\n\n눈이 편한 디자인\n• 크고 굵은 글씨\n• 찾은 낱말마다 다른 색\n• 처음 레벨에서는 왼쪽에서 오른쪽, 위에서 아래로만 쓰여 있어요\n\n주제별 목록\n과일, 동물, 집, 자연, 부엌, 색깔과 날씨. 낱말은 게임 언어로 나와요: 터키어, 영어, 포르투갈어, 독일어, 프랑스어, 일본어, 한국어.\n\n즐길 거리 가득\n• 끝없는 레벨, 판과 낱말 수가 천천히 늘고 나중에는 대각선과 거꾸로 쓴 낱말도 나와요\n• 매일 새로운 오늘의 퍼즐\n• 힌트는 낱말의 첫 글자를 보여 줘요\n• 완료하면 축하 꽃가루와 별 1~3개\n\n인터넷 필요 없음\n오프라인으로 작동하고 개인 정보를 전혀 수집하지 않아요."
+    }
+  }
+}
