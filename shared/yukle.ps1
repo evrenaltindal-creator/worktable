@@ -1,4 +1,4 @@
-# Huzur oyunlarını derleyip App Store Connect'e gönderir (Windows PowerShell).
+﻿# Huzur oyunlarını derleyip App Store Connect'e gönderir (Windows PowerShell).
 #
 # Kullanım ("huzur" klasöründe, yani depo kökünde):
 #   Hepsi, sırayla:   powershell -ExecutionPolicy Bypass -File shared\yukle.ps1
