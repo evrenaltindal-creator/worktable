@@ -151,7 +151,7 @@ function SceneBackgroundView({ theme }: { theme: Theme }) {
     <View style={[StyleSheet.absoluteFill, styles.clip]} pointerEvents="none">
       <LinearGradient colors={[theme.top, theme.bottom]} style={StyleSheet.absoluteFill} />
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: fade }]}>
-        <Image source={SCENES[theme.id]} style={StyleSheet.absoluteFill} resizeMode="cover" />
+        <Image source={SCENES[theme.id]} style={[StyleSheet.absoluteFill, styles.scene]} resizeMode="cover" />
         {particles.map(({ spec, seed }) => (
           <Particle key={seed} spec={spec} seed={seed} width={width} height={height} />
         ))}
@@ -165,4 +165,6 @@ export const SceneBackground = memo(SceneBackgroundView);
 const styles = StyleSheet.create({
   particle: { position: 'absolute' },
   clip: { overflow: 'hidden' },
+  // Web'de resim kendi genişliğini almasın, ekranı tam kaplasın
+  scene: { width: '100%', height: '100%' },
 });

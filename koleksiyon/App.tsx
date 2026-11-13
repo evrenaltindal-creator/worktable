@@ -87,7 +87,8 @@ function Menu({ onOpen }: { onOpen: (id: GameId) => void }) {
   const { width } = useWindowDimensions();
   const lang = deviceLanguage();
   const text = HUB_TEXT[lang];
-  const columns = width >= 700 ? 3 : 2;
+  // iPad'de 8 oyun iki düzgün sıra olsun
+  const columns = width >= 900 ? 4 : width >= 700 ? 3 : 2;
 
   return (
     <View style={styles.root}>
@@ -156,7 +157,7 @@ const styles = StyleSheet.create({
   logo: { width: 120, height: 120 },
   title: { color: '#FFFFFF', fontSize: 44, fontWeight: '900', textAlign: 'center', ...shadow },
   tagline: { color: '#FFFFFF', fontSize: 20, fontWeight: '700', textAlign: 'center', marginBottom: 18, ...shadow },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', width: '100%', maxWidth: 760 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', width: '100%', maxWidth: 960 },
   card: {
     flex: 1,
     minHeight: 190,
