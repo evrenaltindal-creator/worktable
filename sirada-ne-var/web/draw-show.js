@@ -57,14 +57,20 @@ export function showMarkup({
   winnerId = "",
   angle = 0,
   drawing = false,
+  taskTitle = "",
+  taskPosition = "",
+  people = members,
 }) {
   const winner = members.find((m) => m.id === winnerId);
   const initial = members.length
     ? [members[members.length - 1], members[0], members[1 % members.length]]
     : [];
-  return `<section id="draw-stage" class="draw-show ${winner ? "has-winner" : ""}" aria-label="${escape(t("showTitle"))}" aria-busy="${drawing}"><div class="show-header"><span class="show-kicker">${escape(t("showTitle"))}</span><div class="show-switch" role="group" aria-label="${escape(t("showTitle"))}">${["wheel", "slot"].map((k) => `<button type="button" data-action="presentation" data-kind="${k}" aria-pressed="${kind === k}">${escape(t(k === "wheel" ? "showWheel" : "showSlot"))}</button>`).join("")}</div></div><div class="show-arena ${kind === "slot" ? "is-slot" : ""}">${kind === "wheel" ? wheel(members, weighted, angle, winnerId) : `<div class="slot-cabinet"><div class="slot-crown" aria-hidden="true">✦ &nbsp; ✦ &nbsp; ✦</div><div class="slot-window"><div class="slot-track">${(winner ? [members[(members.indexOf(winner) + members.length - 1) % members.length], winner, members[(members.indexOf(winner) + 1) % members.length]] : initial).map((m) => `<div class="slot-row">${escape(shorten(m.name, 22))}</div>`).join("")}</div><div class="slot-center" aria-hidden="true"></div></div><div class="slot-plate" aria-hidden="true">● &nbsp; ● &nbsp; ● &nbsp; ● &nbsp; ●</div></div>`}<div class="show-confetti" aria-hidden="true">${winner ? Array.from({ length: 24 }, (_, i) => `<i style="--x:${(i * 29) % 100}%;--r:${i * 47}deg;--delay:${(i % 5) * 0.05}s;--c:${palette[i % palette.length]}"></i>`).join("") : ""}</div></div><div class="show-readout" role="status" aria-live="polite"><span class="show-phase">${escape(t(winner ? "showWinner" : drawing ? "showDrawing" : "showReady"))}</span><strong class="show-name">${winner ? escape(winner.name) : '<span aria-hidden="true">✦</span>'}</strong><span class="show-subline">${escape(t(winner ? "showOnce" : "showHint"))}</span></div><div class="show-tools"><button type="button" data-action="sound" aria-pressed="${sound}" class="show-sound">${escape(t(sound ? "showSoundOn" : "showSoundOff"))}</button><button type="button" data-action="reveal" class="show-reveal" ${drawing ? "" : "hidden"}>${escape(t("showReveal"))}</button></div></section>`;
+  return `<section id="draw-stage" class="draw-show ${winner ? "has-winner" : ""}" aria-label="${escape(t("showTitle"))}" aria-busy="${drawing}"><div class="show-header"><span class="show-kicker">${escape(t("showTitle"))}</span><div class="show-switch" role="group" aria-label="${escape(t("showTitle"))}">${["wheel", "slot"].map((k) => `<button type="button" data-action="presentation" data-kind="${k}" aria-pressed="${kind === k}">${escape(t(k === "wheel" ? "showWheel" : "showSlot"))}</button>`).join("")}</div></div>${taskTitle ? taskCue(taskTitle, taskPosition, t) : ""}<div class="show-arena ${kind === "slot" ? "is-slot" : ""}"><span class="show-countdown" aria-hidden="true" hidden></span>${kind === "wheel" ? wheel(members, weighted, angle, winnerId) : `<div class="slot-cabinet"><div class="slot-crown" aria-hidden="true">✦ &nbsp; ✦ &nbsp; ✦</div><div class="slot-window"><div class="slot-track">${(winner ? [members[(members.indexOf(winner) + members.length - 1) % members.length], winner, members[(members.indexOf(winner) + 1) % members.length]] : initial).map((m) => `<div class="slot-row">${escape(shorten(m.name, 22))}</div>`).join("")}</div><div class="slot-center" aria-hidden="true"></div></div><div class="slot-plate" aria-hidden="true">● &nbsp; ● &nbsp; ● &nbsp; ● &nbsp; ●</div></div>`}<div class="show-confetti" aria-hidden="true">${winner ? Array.from({ length: 24 }, (_, i) => `<i style="--x:${(i * 29) % 100}%;--r:${i * 47}deg;--delay:${(i % 5) * 0.05}s;--c:${palette[i % palette.length]}"></i>`).join("") : ""}</div></div>${participantLights(people, members, winnerId)}<div class="show-readout" role="status" aria-live="polite"><span class="show-phase">${escape(t(winner ? "showWinner" : drawing ? "showDrawing" : "showReady"))}</span><strong class="show-name">${winner ? escape(winner.name) : '<span aria-hidden="true">✦</span>'}</strong><span class="show-subline">${escape(t(winner ? "showOnce" : "showHint"))}</span></div><div class="show-tools"><button type="button" data-action="sound" aria-pressed="${sound}" class="show-sound">${escape(t(sound ? "showSoundOn" : "showSoundOff"))}</button><button type="button" data-action="reveal" class="show-reveal" ${drawing ? "" : "hidden"}>${escape(t("showReveal"))}</button></div></section>`;
 }
 let audio;
+export function countdownTone(n) {
+  tone(420 + (4 - n) * 100, 0.09, 0.025);
+}
 export function prepareAudio(enabled) {
   if (!enabled) return;
   try {
@@ -166,4 +172,42 @@ export function playShow(
     end();
   }
   return { finished, finish: end };
+}
+
+function taskCue(title, position, t) {
+  return (
+    '<div class="task-deck"><i aria-hidden="true"></i><i aria-hidden="true"></i><div class="task-cue-card"><div class="task-cue-front"><span>' +
+    escape(t("task")) +
+    "</span><strong>" +
+    escape(title) +
+    "</strong><small>" +
+    escape(position) +
+    '</small></div><div class="task-cue-back" aria-hidden="true">✦</div></div></div>'
+  );
+}
+function participantLights(people, eligible, winnerId) {
+  return (
+    '<div class="participant-lights" role="list">' +
+    people
+      .map(
+        (m, i) =>
+          '<span role="listitem" data-light-member="' +
+          escape(m.id) +
+          '" class="participant-light ' +
+          (m.id === winnerId ? "is-winner " : "") +
+          (eligible.some((x) => x.id === m.id) ? "is-eligible " : "") +
+          (!m.available ? "is-off" : "") +
+          '" style="--person-i:' +
+          i +
+          '"><span class="light-avatar">' +
+          escape(Array.from(m.name)[0] || "·") +
+          '<small class="light-count">' +
+          (m.count || 0) +
+          '</small></span><span class="light-name">' +
+          escape(m.name) +
+          "</span></span>",
+      )
+      .join("") +
+    "</div>"
+  );
 }

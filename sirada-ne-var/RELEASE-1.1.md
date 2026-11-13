@@ -1,10 +1,14 @@
 # Sırada Ne Var? 1.1.0
 
-## Web trial update after build 2
+## Task-list and animation update for build 3
+
+The owner approved packaging and upload after the web trial on 13 November 2026. A group can now keep up to 30 task lists with up to 100 tasks each. Each spin assigns the next pending task exactly once; rounds and workload are independent per list. Pending tasks can be edited, appended or removed. Per-person lists track assigned and completed work and can be copied or shared. Local version-2 groups/backups migrate to version 3 without deleting existing records.
+
+Presentation now includes a task-card flip, 3–2–1 countdown, participant lights, wheel/reel slowdown, result celebration, a card flying to the recipient, counters and the final allocation summary. Skip and reduced-motion modes reveal the same saved result. These effects do not alter selection probabilities or create extra assignments.
 
 The group home screen now includes a selectable animated wheel or slot stage. The selection engine saves one result before presentation, locks changes during playback, then reveals the same person under the pointer/reel and in the task record. Full motion lasts approximately 5.2 seconds for the wheel and 4.6 seconds for the reel; reduced motion uses a short reveal. A skip button shows the recorded result immediately. Procedural tick/chime sound is opt-in and stored as a device preference. All new labels have seven translations. No new dependencies, data uploads or server services were added.
 
-Thirteen automated tests pass, including weighted wheel landing and slot center alignment. Local browser checks verified wheel/reel/history agreement, controls locked until reveal, exactly one task per selection, skip and persistence. These changes are prepared in source and the private web trial; they are not yet in TestFlight build 2. No new iOS upload should run before the owner's requested web trial.
+Twenty-two automated tests pass, including fair task distribution, isolated lists, cancellation/reassignment, migration, backup round trips, seven-language completeness, weighted wheel landing and slot center alignment. Local browser checks verified wheel/reel/history agreement, controls locked until reveal, exactly one task per selection, skip, final lists, completion marks, clipboard export and backup restoration. These changes are not in TestFlight build 2; the next upload includes them.
 
 ## Product changes
 

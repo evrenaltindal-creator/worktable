@@ -11,12 +11,31 @@ import {
   setStatus,
   migrate,
   validate,
-} from "./groups-core.js";
+} from "./groups-core.js?v=tasks-3";
 import { translations, nativeNames } from "./groups-i18n.js";
 import { showTranslations } from "./show-i18n.js";
-import { showMarkup, playShow, prepareAudio } from "./draw-show.js";
+import { showMarkup, prepareAudio } from "./draw-show.js?v=tasks-3";
+import { planTranslations } from "./plan-i18n.js";
+import {
+  activePlan,
+  planContext,
+  progress,
+  createPlan,
+  appendTasks,
+  editPendingTask,
+  removePendingTask,
+  assignNextTask,
+  planText,
+} from "./plan-core.js?v=tasks-3";
+import { renderBoard } from "./plan-board.js?v=tasks-3";
+import { stagePeople } from "./plan-view.js?v=tasks-3";
+import { playTaskShow, deliverTask } from "./task-motion.js";
 for (const lang of LANGS)
-  Object.assign(translations[lang], showTranslations[lang]);
+  Object.assign(
+    translations[lang],
+    showTranslations[lang],
+    planTranslations[lang],
+  );
 const $ = (s) => document.querySelector(s);
 const app = $("#app"),
   dialog = $("#dialog");
@@ -38,7 +57,8 @@ let importData = null;
 let drawing = false,
   activeShow = null,
   showMemory = null;
-let presentation = { kind: "wheel", sound: false };
+let celebratePlanId = null;
+let presentation = { kind: "wheel", sound: false, flow: "plan" };
 try {
   const saved = JSON.parse(
     localStorage.getItem("sirada-presentation-v1") || "null",
@@ -47,6 +67,7 @@ try {
     presentation = {
       kind: saved.kind === "slot" ? "slot" : "wheel",
       sound: !!saved.sound,
+      flow: saved.flow === "single" ? "single" : "plan",
     };
 } catch {}
 function savePresentation() {
@@ -165,45 +186,67 @@ function render() {
   app.innerHTML = `<main class="shell ${g ? "has-groups" : ""}"><header class="top"><a href="index.html" class="brand"><span class="mark" aria-hidden="true">↻</span>${esc(t("title"))}</a><div class="top-actions">${language()}${button("settings", "settings")}</div></header><section class="intro"><div><p class="eyebrow">${esc(t("local"))}</p><h1>${esc(t("tagline"))}</h1><p class="muted">${esc(t("emptyHelp"))}</p></div></section><div class="workspace"><aside class="sidebar"><p class="eyebrow">${esc(t("groups"))}</p><nav class="group-list" aria-label="${esc(t("groups"))}">${s.groups.map((x) => `<button class="group-button" data-action="open" data-id="${esc(x.id)}" aria-current="${x.id === s.activeId}"><span>${esc(x.name)}</span><small>${x.members.length}</small></button>`).join("")}</nav>${button("new", "newGroup")}<footer><a href="quick.html#${s.lang}">${esc(t("quick"))} ↗</a><a href="privacy.html#${s.lang}">${esc(t("privacy"))}</a><a href="support.html#${s.lang}">${esc(t("support"))}</a></footer></aside><section id="board">${g ? board(g) : `<div class="empty"><span class="orbit" aria-hidden="true">◎</span><h2>${esc(t("emptyTitle"))}</h2><p class="muted">${esc(t("emptyHelp"))}</p><div class="empty-actions">${button("new", "newGroup", "primary")}${button("sample", "sample")}</div></div>`}</section></div><footer class="bottom"><p id="status" role="status" aria-live="polite" class="status ${error ? "error" : ""}">${message ? esc(t(message)) : esc(t("local"))}</p>${button("undo", "undo", "small", undoState ? "" : "disabled")}${button("about", "about", "small")}</footer></main>`;
 }
 function board(g) {
-  const c = candidates(g),
-    pending = g.events.filter((e) => e.status === "assigned");
-  const selected = g.events.find((e) => e.id === resultId);
-  return `<div class="board-heading"><div><p class="eyebrow">${esc(t("groups"))}</p><h2 class="board-title">${esc(g.name)}</h2></div>${button("editGroup", "edit", "small")}</div><div class="board-grid"><section class="card chooser">${groupShow(g)}<details class="draw-rules"><summary>${esc(t("showRule"))}: ${esc(t(g.mode))}</summary><div class="rule-grid" role="group" aria-label="${esc(t("rule"))}">${["round", "random", "balance"].map((mode) => button("mode", mode, "", `data-mode="${mode}" aria-pressed="${g.mode === mode}"`)).join("")}</div><p class="hint">${esc(t(g.mode + "Help"))}</p><div class="stats"><div class="stat"><span class="hint">${esc(t(g.mode === "round" ? "remaining" : "available"))}</span><strong>${g.mode === "round" ? c.members.length : g.members.filter((m) => m.available).length}</strong></div><div class="stat"><span class="hint">${esc(t(g.mode === "round" ? "roundNumber" : "pending"))}</span><strong>${g.mode === "round" ? g.round.number + (c.nextRound ? 1 : 0) : pending.length}</strong></div></div></details><label class="draw-task" for="task">${esc(t("task"))}<input id="task" maxlength="120" value="${esc(draft.title)}" placeholder="${esc(t("taskHint"))}" autocomplete="off"></label><div class="effort-row"><p class="hint">${esc(t("effort"))} · 1–5</p><label class="hide" for="points">${esc(t("effort"))}</label><select id="points" aria-label="${esc(t("effort"))}">${[1, 2, 3, 4, 5].map((n) => `<option ${n === draft.points ? "selected" : ""}>${n}</option>`).join("")}</select></div>${button("assign", "showStart", "primary draw-start", !c.members.length ? "disabled" : "")}${selected ? `<section class="result" id="selection-result" tabindex="-1" role="status" aria-live="polite"><span class="eyebrow">${esc(t("assigned"))}</span><strong>${esc(selected.memberName)}</strong><p>${esc(selected.title)}</p><p>${esc(reason(selected))}</p></section>` : ""}</section><section class="card"><div class="section-heading"><h2>${esc(t("members"))}</h2><span class="hint">${g.members.length}/30</span></div><p class="hint">${esc(t("availableHelp"))}</p><div class="member-list">${g.members.map((m) => `<div class="person ${m.available ? "" : "off"}"><span class="avatar" aria-hidden="true">${esc(Array.from(m.name)[0] || "·")}</span><span class="person-name">${esc(m.name)}${g.mode === "random" ? `<small>${esc(t("weight"))}: ${m.weight}</small>` : ""}</span><label><span class="hide">${esc(m.name)}: ${esc(t("available"))}</span><input type="checkbox" data-member="${esc(m.id)}" ${m.available ? "checked" : ""} aria-label="${esc(m.name)}: ${esc(t("available"))}"></label>${button("editPerson", "edit", "", `data-id="${esc(m.id)}" aria-label="${esc(t("editPerson"))}: ${esc(m.name)}"`)}</div>`).join("")}</div>${button("addPerson", "addPerson", "small", g.members.length >= 30 ? "disabled" : "")}</section></div><section class="card history-card"><div class="section-heading"><div><h2>${esc(t("load"))}</h2><p class="hint">${esc(t("period"))}: ${esc(date(g.periodStart))}</p></div>${button("period", "newPeriod", "small")}</div><div class="load-list">${g.members
-    .map((m) => {
-      const p = g.events.filter(
-        (e) => e.memberId === m.id && e.at >= g.periodStart,
-      );
-      const done = p
-          .filter((e) => e.status === "done")
-          .reduce((a, e) => a + e.points, 0),
-        wait = p
-          .filter((e) => e.status === "assigned")
-          .reduce((a, e) => a + e.points, 0);
-      const max = Math.max(1, ...g.members.map((x) => loadPoints(g, x.id)));
-      return `<div><div class="load-line"><span>${esc(m.name)}</span><span>${esc(t("pending"))} ${wait} · ${esc(t("completed"))} ${done}</span></div><div class="bar" aria-hidden="true"><span style="width:${((wait + done) / max) * 100}%"></span></div></div>`;
-    })
-    .join(
-      "",
-    )}</div></section><section class="card history-card"><div class="section-heading"><h2>${esc(t("history"))}</h2><span class="hint">${g.events.length}</span></div><p class="hint">${esc(t("skipHelp"))} ${esc(t("cancelHelp"))}</p><div class="history-list" style="margin-top:16px">${g.events.slice(0, 30).map(eventHtml).join("") || `<p class="hint">${esc(t("noHistory"))}</p>`}</div>${g.events.length > 30 ? button("history", "allHistory", "small") : ""}</section>`;
+  return renderBoard(g, {
+    t,
+    esc,
+    button,
+    eventHtml,
+    groupShow,
+    date,
+    draft,
+    reason,
+    flow: presentation.flow,
+    resultId,
+    celebrate: celebratePlanId,
+  });
 }
 function groupShow(g) {
   const last =
     showMemory?.eventId === resultId && showMemory.groupId === g.id
       ? showMemory
       : null;
+  const p = presentation.flow === "plan" ? activePlan(g) : null,
+    ctx = p ? planContext(g, p) : g,
+    status = progress(g, p);
   return showMarkup({
-    members: last?.members || candidates(g).members,
-    weighted: last?.weighted ?? g.mode === "random",
+    members: last?.members || candidates(ctx).members,
+    weighted: last?.weighted ?? ctx.mode === "random",
     kind: presentation.kind,
     sound: presentation.sound,
     t,
     winnerId: last?.chosenId || "",
     angle: last?.angle || 0,
+    taskTitle:
+      last?.title ||
+      (p
+        ? status.next?.title || t("planFinished")
+        : draft.title || t("taskHint")),
+    taskPosition:
+      last?.position ||
+      (p
+        ? t("planTaskNumber", {
+            n:
+              status.assigned + 1 > status.total
+                ? status.total
+                : status.assigned + 1,
+            total: status.total,
+          })
+        : ""),
+    people:
+      p || presentation.flow === "single"
+        ? stagePeople(g, p)
+        : g.members.map((m) => ({ ...m, count: 0 })),
   });
 }
 async function animatedAssignment(g) {
   if (g.events.length >= 5000) return info("historyFull", true);
-  if (!draft.title.trim()) {
+  const p = presentation.flow === "plan" ? activePlan(g) : null,
+    status = progress(g, p);
+  if (presentation.flow === "plan" && !p) return planEditor(g);
+  if (p && status.finished) return info("planFinished");
+  const title = p ? status.next.title : draft.title,
+    points = p ? status.next.points : draft.points;
+  if (!title.trim()) {
     info("invalid", true);
     const field = $("#task");
     field.setCustomValidity(t("invalid"));
@@ -211,12 +254,14 @@ async function animatedAssignment(g) {
     field.focus();
     return;
   }
-  const members = copy(candidates(g).members),
-    weighted = g.mode === "random";
+  const ctx = p ? planContext(g, p) : g;
+  const members = copy(candidates(ctx).members),
+    people = stagePeople(g, p),
+    weighted = ctx.mode === "random";
   let picked;
   if (
     !commit(() => {
-      picked = assign(g, draft.title, draft.points);
+      picked = p ? assignNextTask(g, p) : assign(g, title, points);
     })
   ) {
     render();
@@ -235,10 +280,16 @@ async function animatedAssignment(g) {
     sound: presentation.sound,
     t,
     drawing: true,
+    taskTitle: picked.title,
+    taskPosition: p
+      ? t("planTaskNumber", {
+          n: p.tasks.findIndex((task) => task.id === picked.taskId) + 1,
+          total: p.tasks.length,
+        })
+      : "",
+    people,
   });
-  app.querySelectorAll("button,input,select,textarea").forEach((control) => {
-    control.disabled = control.dataset.action !== "reveal";
-  });
+  lockDrawingControls();
   const root = $("#draw-stage");
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   root.scrollIntoView({
@@ -253,18 +304,50 @@ async function animatedAssignment(g) {
     weighted,
     chosenId: picked.memberId,
     angle: 0,
+    title: picked.title,
+    position: p
+      ? t("planTaskNumber", {
+          n: p.tasks.findIndex((task) => task.id === picked.taskId) + 1,
+          total: p.tasks.length,
+        })
+      : "",
   };
   try {
-    activeShow = playShow(root, {
+    activeShow = playTaskShow(root, {
       members,
       chosenId: picked.memberId,
       weighted,
       kind: presentation.kind,
       sound: presentation.sound,
       reduced,
+      t,
     });
     const outcome = await activeShow.finished;
     showMemory.angle = outcome.angle;
+    const from = root.querySelector(".task-cue-card")?.getBoundingClientRect();
+    resultId = picked.id;
+    render();
+    lockDrawingControls();
+    const tray = [...app.querySelectorAll("[data-tray-member]")].find(
+      (el) => el.dataset.trayMember === picked.memberId,
+    );
+    const light = [...app.querySelectorAll("[data-light-member]")].find(
+      (el) => el.dataset.lightMember === picked.memberId,
+    );
+    light?.scrollIntoView({
+      inline: "center",
+      block: "nearest",
+      behavior: "auto",
+    });
+    const bounds = tray?.getBoundingClientRect();
+    const target =
+      bounds && bounds.top >= 0 && bounds.bottom < innerHeight ? tray : light;
+    activeShow = deliverTask(from, target, {
+      title: picked.title,
+      reduced: reduced || outcome.skipped,
+    });
+    await activeShow.finished;
+    if (p && progress(g, p).finished) celebratePlanId = p.id;
   } finally {
     activeShow = null;
     drawing = false;
@@ -275,11 +358,73 @@ async function animatedAssignment(g) {
     const readout = $(".show-readout");
     readout?.setAttribute("tabindex", "-1");
     readout?.focus({ preventScroll: true });
+    if (celebratePlanId) {
+      $(".plan-summary")?.scrollIntoView({
+        block: "start",
+        behavior: reduced ? "auto" : "smooth",
+      });
+      celebratePlanId = null;
+    }
     try {
       window.Capacitor?.nativePromise?.("Haptics", "notification", {
         type: "SUCCESS",
       })?.catch(() => {});
     } catch {}
+  }
+}
+function lockDrawingControls() {
+  app.querySelectorAll("button,input,select,textarea").forEach((control) => {
+    control.disabled = control.dataset.action !== "reveal";
+  });
+  const reveal = app.querySelector('[data-action="reveal"]');
+  if (reveal) reveal.hidden = false;
+}
+function taskLines(value) {
+  return String(value)
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+function planEditor(g, append = false) {
+  if (!append && g.plans.length >= 30) return info("planLimit", true);
+  modal(
+    append ? "planAppend" : "planNew",
+    `<form id="plan-form" data-append="${append}">${append ? "" : `<label>${esc(t("planName"))}<input name="title" maxlength="60" value="${esc(t("planDefault"))}" required></label>`}<label>${esc(t("planTasks"))}<textarea name="tasks" rows="7" maxlength="12100" required></textarea></label><p class="hint">${esc(t("planHint"))}</p><div class="dialog-actions">${button("close", "cancel")}<button class="primary">${esc(t(append ? "planAppend" : "planCreate"))}</button></div></form>`,
+  );
+}
+function planTaskEditor(g, taskId) {
+  const p = activePlan(g),
+    task = p?.tasks.find((task) => task.id === taskId);
+  if (!task || task.eventId) return;
+  modal(
+    "planEdit",
+    `<form id="plan-task-form" data-task="${esc(taskId)}"><label>${esc(t("task"))}<input name="title" maxlength="120" value="${esc(task.title)}" required></label><label>${esc(t("effort"))}<select name="points">${[1, 2, 3, 4, 5].map((n) => `<option ${n === task.points ? "selected" : ""}>${n}</option>`).join("")}</select></label><div class="dialog-actions">${button("close", "cancel")}<button class="primary">${esc(t("save"))}</button></div></form>`,
+  );
+}
+async function sharePlan(g, copyOnly = false) {
+  const p = activePlan(g);
+  if (!p) return;
+  const text = planText(g, p, translations[s.lang]);
+  try {
+    if (!copyOnly && window.Capacitor?.isNativePlatform?.()) {
+      await window.Capacitor.nativePromise("Share", "share", {
+        title: p.title,
+        text,
+      });
+      return;
+    }
+    if (!copyOnly && navigator.share) {
+      await navigator.share({ title: p.title, text });
+      return;
+    }
+    await navigator.clipboard.writeText(text);
+    info("planCopied");
+  } catch (e) {
+    if (e.name === "AbortError") return;
+    modal(
+      "planShare",
+      `<p class="hint">${esc(t("planShareHelp"))}</p><textarea class="plan-copy" readonly aria-label="${esc(t("planShare"))}">${esc(text)}</textarea>`,
+    );
   }
 }
 function eventHtml(e) {
@@ -379,6 +524,35 @@ async function action(e) {
     return;
   }
   if (drawing) return;
+  if (a === "flow") {
+    presentation.flow = b.dataset.flow === "single" ? "single" : "plan";
+    savePresentation();
+    resultId = "";
+    showMemory = null;
+    render();
+    return;
+  }
+  if (a === "planNew") return planEditor(g);
+  if (a === "planAppend") return planEditor(g, true);
+  if (a === "planEdit") return planTaskEditor(g, b.dataset.task);
+  if (a === "planShare") return sharePlan(g);
+  if (a === "planCopy") return sharePlan(g, true);
+  if (a === "planRemove") {
+    commit(() => removePendingTask(g, activePlan(g), b.dataset.task));
+    resultId = "";
+    showMemory = null;
+    render();
+    return;
+  }
+  if (a === "planSample") {
+    commit(() =>
+      createPlan(g, t("planDefault"), t("planSampleTasks").split("\n")),
+    );
+    resultId = "";
+    showMemory = null;
+    render();
+    return;
+  }
   if (a === "presentation") {
     presentation.kind = b.dataset.kind === "slot" ? "slot" : "wheel";
     savePresentation();
@@ -397,7 +571,14 @@ async function action(e) {
   if (a === "sample") {
     if (s.groups.length >= 30) return info("limit", true);
     commit(() => {
-      const x = group(t("sampleGroup"), t("samplePeople").split("\n"));
+      const x = group(
+        t("sampleGroup"),
+        t(presentation.flow === "plan" ? "planPeople" : "samplePeople").split(
+          "\n",
+        ),
+      );
+      if (presentation.flow === "plan")
+        createPlan(x, t("planDefault"), t("planSampleTasks").split("\n"));
       s.groups.push(x);
       s.activeId = x.id;
     });
@@ -413,7 +594,10 @@ async function action(e) {
   }
   if (a === "mode")
     commit(() => {
-      g.mode = b.dataset.mode;
+      const p = presentation.flow === "plan" ? activePlan(g) : null;
+      (p || g).mode = b.dataset.mode;
+      resultId = "";
+      showMemory = null;
     });
   if (a === "assign") {
     return animatedAssignment(g);
@@ -535,6 +719,15 @@ document.addEventListener("input", (e) => {
   if (e.target.id === "points") draft.points = Number(e.target.value);
 });
 document.addEventListener("change", async (e) => {
+  if (drawing) return;
+  if (e.target.id === "plan-select") {
+    commit(() => {
+      current().activePlanId = e.target.value;
+    });
+    resultId = "";
+    showMemory = null;
+    render();
+  }
   if (e.target.id === "language") {
     commit(() => {
       s.lang = e.target.value;
@@ -565,9 +758,39 @@ document.addEventListener("change", async (e) => {
 });
 document.addEventListener("submit", (e) => {
   e.preventDefault();
+  if (drawing) return;
   const f = e.target,
     data = new FormData(f),
     g = current();
+  if (f.id === "plan-form") {
+    const names = taskLines(data.get("tasks"));
+    if (
+      commit(() => {
+        if (f.dataset.append === "true") appendTasks(activePlan(g), names);
+        else createPlan(g, String(data.get("title")), names);
+      })
+    ) {
+      dialog.close();
+      resultId = "";
+      showMemory = null;
+    }
+  }
+  if (f.id === "plan-task-form") {
+    if (
+      commit(() =>
+        editPendingTask(
+          activePlan(g),
+          f.dataset.task,
+          String(data.get("title")),
+          Number(data.get("points")),
+        ),
+      )
+    ) {
+      dialog.close();
+      resultId = "";
+      showMemory = null;
+    }
+  }
   if (f.id === "new-form") {
     const names = String(data.get("people"))
         .split("\n")

@@ -11,7 +11,7 @@ export function id() {
 }
 export const copy = (value) => JSON.parse(JSON.stringify(value));
 export function empty(lang = "tr") {
-  return { version: 2, lang, activeId: "", groups: [] };
+  return { version: 3, lang, activeId: "", groups: [] };
 }
 export function group(name, names) {
   return {
@@ -27,6 +27,8 @@ export function group(name, names) {
       available: true,
     })),
     events: [],
+    plans: [],
+    activePlanId: "",
   };
 }
 export function loadPoints(g, memberId) {
@@ -112,19 +114,35 @@ export function setStatus(g, eventId, status) {
   if (!statuses.includes(status)) throw new Error("invalid");
   const e = g.events.find((e) => e.id === eventId);
   if (!e) throw new Error("invalid");
+  const plan = e.planId ? g.plans?.find((p) => p.id === e.planId) : null;
+  const task = plan?.tasks.find((t) => t.id === e.taskId);
+  if (
+    e.planId &&
+    (!task || (status !== "canceled" && task.eventId && task.eventId !== e.id))
+  )
+    throw Error("invalid");
   e.status = status;
   e.updatedAt = new Date().toISOString();
+  if (task)
+    task.eventId =
+      status === "canceled"
+        ? task.eventId === e.id
+          ? null
+          : task.eventId
+        : e.id;
   // Canceling a current-round assignment gives that turn back; skipping consumes it.
-  if (e.mode === "round" && e.round === g.round.number) {
+  const owner = plan || g;
+  if (e.mode === "round" && e.round === owner.round.number) {
     const consumed = g.events.some(
       (x) =>
         x.memberId === e.memberId &&
+        (x.planId || null) === (e.planId || null) &&
         x.mode === "round" &&
         x.round === e.round &&
         x.status !== "canceled",
     );
-    g.round.drawn = g.round.drawn.filter((key) => key !== e.memberId);
-    if (consumed) g.round.drawn.push(e.memberId);
+    owner.round.drawn = owner.round.drawn.filter((key) => key !== e.memberId);
+    if (consumed) owner.round.drawn.push(e.memberId);
   }
 }
 export function migrate(legacy, lang = "tr") {
@@ -160,7 +178,7 @@ export function validate(raw) {
     new Set(rows.map((x) => x.id)).size === rows.length;
   if (
     !raw ||
-    raw.version !== 2 ||
+    ![2, 3].includes(raw.version) ||
     !LANGS.includes(raw.lang) ||
     !Array.isArray(raw.groups) ||
     raw.groups.length > 30 ||
@@ -190,6 +208,8 @@ export function validate(raw) {
       periodStart: new Date(r.periodStart).toISOString(),
       members: [],
       events: [],
+      plans: [],
+      activePlanId: r.activePlanId || "",
       round: r.round && {
         number: r.round.number,
         drawn: Array.isArray(r.round.drawn) ? [...r.round.drawn] : null,
@@ -219,6 +239,56 @@ export function validate(raw) {
       g.round.drawn.some((mid) => !g.members.some((m) => m.id === mid))
     )
       fail();
+    const plans = r.plans || [];
+    if (!Array.isArray(plans) || plans.length > 30 || !unique(plans)) fail();
+    for (const p of plans) {
+      if (
+        !text(p.id, 100) ||
+        !text(p.title, 60) ||
+        !date(p.createdAt) ||
+        !modes.includes(p.mode) ||
+        !Array.isArray(p.tasks) ||
+        !p.tasks.length ||
+        p.tasks.length > 100 ||
+        !unique(p.tasks) ||
+        !p.round ||
+        !integer(p.round.number, 1, 1000000) ||
+        !Array.isArray(p.round.drawn) ||
+        new Set(p.round.drawn).size !== p.round.drawn.length ||
+        p.round.drawn.some((mid) => !g.members.some((m) => m.id === mid))
+      )
+        fail();
+      const clean = {
+        id: p.id,
+        title: p.title,
+        createdAt: new Date(p.createdAt).toISOString(),
+        mode: p.mode,
+        round: { number: p.round.number, drawn: [...p.round.drawn] },
+        tasks: [],
+      };
+      for (const task of p.tasks) {
+        if (
+          !text(task.id, 100) ||
+          !text(task.title, 120) ||
+          !integer(task.points, 1, 5) ||
+          (task.eventId !== null && !text(task.eventId, 100))
+        )
+          fail();
+        clean.tasks.push({
+          id: task.id,
+          title: task.title,
+          points: task.points,
+          eventId: task.eventId,
+        });
+      }
+      g.plans.push(clean);
+    }
+    if (
+      g.plans.length
+        ? !g.plans.some((p) => p.id === g.activePlanId)
+        : g.activePlanId !== ""
+    )
+      fail();
     for (const e of r.events) {
       if (
         !e ||
@@ -239,6 +309,16 @@ export function validate(raw) {
         (e.reason.minimum !== null && !integer(e.reason.minimum, 0, 25000))
       )
         fail();
+      if (e.planId !== undefined || e.taskId !== undefined) {
+        if (
+          !text(e.planId, 100) ||
+          !text(e.taskId, 100) ||
+          !g.plans.some(
+            (p) => p.id === e.planId && p.tasks.some((t) => t.id === e.taskId),
+          )
+        )
+          fail();
+      }
       g.events.push({
         id: e.id,
         memberId: e.memberId,
@@ -249,6 +329,7 @@ export function validate(raw) {
         mode: e.mode,
         round: e.round,
         at: e.at,
+        ...(e.planId ? { planId: e.planId, taskId: e.taskId } : {}),
         ...(e.updatedAt ? { updatedAt: e.updatedAt } : {}),
         reason: {
           pool: e.reason.pool,
@@ -258,6 +339,20 @@ export function validate(raw) {
         },
       });
     }
+    for (const p of g.plans)
+      for (const task of p.tasks)
+        if (task.eventId) {
+          const e = g.events.find((e) => e.id === task.eventId);
+          if (
+            !e ||
+            e.planId !== p.id ||
+            e.taskId !== task.id ||
+            e.status === "canceled" ||
+            e.title !== task.title ||
+            e.points !== task.points
+          )
+            fail();
+        }
     s.groups.push(g);
   }
   if (raw.groups.length && !s.groups.some((g) => g.id === raw.activeId)) fail();
