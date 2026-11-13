@@ -1,0 +1,7 @@
+1.1.0 (3): Görevleri topluca yazın; çark veya slot her çevirmede sıradaki işi bir kişiye atasın.
+
+Kart açılması, 3–2–1 geri sayım, katılımcı ışıkları, yavaşlama ve görev kartının kişinin listesine uçmasını deneyin. İki kişilik grupta dört görevin tekrarsız turla 2–2 dağıtıldığını kontrol edin.
+
+Tamamlandı işaretlerini, yeniden açınca kalıcılığı, liste kopyalama/paylaşma ve yedek indir/yükle akışını test edin. Atla ve Azaltılmış Hareket aynı kaydedilmiş sonucu göstermeli. Önceki kayıtlar korunmalı.
+
+Bu sürümde çevrim içi ortak oda/canlı izleme yoktur; kayıtlar cihazda tutulur.

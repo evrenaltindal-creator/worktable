@@ -1,2 +1,2 @@
-build
-# 2026-11-13: owner approved task-list animations after web trial; upload next 1.1.0 build to existing app 6833144391.
+prepare
+# 2026-11-13: build 3 uploaded; attach to existing 1.1.0 draft and verify metadata, without review submission.

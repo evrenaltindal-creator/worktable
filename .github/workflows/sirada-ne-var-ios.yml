@@ -16,7 +16,7 @@ on:
       lane:
         description: 'Yapılacak iş'
         type: choice
-        options: [status, register, archive, build, testers, metadata]
+        options: [status, register, archive, build, testers, metadata, prepare]
         default: status
 
 concurrency:
@@ -50,7 +50,7 @@ jobs:
         run: |
           LANE="$INPUT_LANE"
           if [ -z "$LANE" ]; then LANE=$(head -n1 sirada-ne-var/store/istek.txt | tr -d '[:space:]'); fi
-          case "$LANE" in status|register|archive|build|testers|metadata) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
+          case "$LANE" in status|register|archive|build|testers|metadata|prepare) ;; *) echo "::error::Bilinmeyen is: '$LANE'"; exit 1;; esac
           echo "lane=$LANE" >> "$GITHUB_OUTPUT"
           echo "Is: $LANE"
 
@@ -110,6 +110,15 @@ jobs:
         run: |
           command -v fastlane >/dev/null || sudo gem install fastlane --no-document
           fastlane ios "$LANE"
+
+      - name: Apple taslak dogrulamasini sakla
+        if: success() && env.LANE == 'prepare'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sirada-build3-asc-verification
+          path: sirada-ne-var/store/verification/build3.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Imzali paketi sakla
         if: success() && (env.LANE == 'build' || env.LANE == 'archive')

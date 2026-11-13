@@ -178,6 +178,13 @@ platform :ios do
     UI.success("#{testers.size} App Store Connect kullanicisi ic test grubuna eklendi")
   end
 
+  desc 'Yuklenmis 1.1.0 (3) paketini mevcut taslaga baglar ve metinleri dogrular; incelemeye gondermez'
+  lane :prepare do
+    api_key
+    require File.join(APP_DIR, 'scripts', 'asc-prepare.rb')
+    SNVPrepare.call(Spaceship::ConnectAPI.token.text, STORE)
+  end
+
   desc '7 dilde magaza metinlerini ve ekran goruntulerini yukler (incelemeye gondermez)'
   lane :metadata do
     key = api_key
