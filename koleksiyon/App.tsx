@@ -5,7 +5,7 @@
  */
 import { StatusBar } from 'expo-status-bar';
 import { ComponentType, useCallback, useEffect, useMemo, useState } from 'react';
-import { BackHandler, Image, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Alert, BackHandler, Image, Linking, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import BubblesGame from './src/games/bubbles/Game';
 import ColorpopGame from './src/games/colorpop/Game';
@@ -32,6 +32,17 @@ const GAMES: Record<GameId, ComponentType> = {
   jigsaw: JigsawGame,
   words: WordsGame,
   cube: CubeGame,
+};
+
+const PRIVACY_URL = 'https://evrenaltindal-creator.github.io/vardiox-legal/huzur-mahjong/gizlilik.html';
+const PRIVACY_TEXT = {
+  tr: { label: 'Gizlilik Politikası', error: 'Bağlantı açılamadı. Lütfen daha sonra tekrar deneyin.' },
+  en: { label: 'Privacy Policy', error: 'The link could not be opened. Please try again later.' },
+  pt: { label: 'Política de Privacidade', error: 'Não foi possível abrir o link. Tente novamente mais tarde.' },
+  de: { label: 'Datenschutzerklärung', error: 'Der Link konnte nicht geöffnet werden. Bitte versuche es später erneut.' },
+  fr: { label: 'Politique de confidentialité', error: 'Impossible d’ouvrir le lien. Veuillez réessayer plus tard.' },
+  ja: { label: 'プライバシーポリシー', error: 'リンクを開けませんでした。しばらくしてからもう一度お試しください。' },
+  ko: { label: '개인정보 처리방침', error: '링크를 열 수 없습니다. 나중에 다시 시도해 주세요.' },
 };
 
 export default function App() {
@@ -123,6 +134,17 @@ function Menu({ onOpen }: { onOpen: (id: GameId) => void }) {
             </View>
           ))}
         </View>
+        <Pressable
+          accessibilityRole="link"
+          onPress={() => {
+            void Linking.openURL(`${PRIVACY_URL}#${lang}`).catch(() => {
+              Alert.alert(PRIVACY_TEXT[lang].label, PRIVACY_TEXT[lang].error);
+            });
+          }}
+          style={styles.privacyLink}
+        >
+          <Text style={styles.privacyText}>{PRIVACY_TEXT[lang].label}</Text>
+        </Pressable>
       </ScrollView>
     </View>
   );
@@ -186,4 +208,6 @@ const styles = StyleSheet.create({
   },
   backIcon: { width: 24, height: 24, tintColor: '#FFFFFF' },
   backText: { color: '#FFFFFF', fontSize: 18, fontWeight: '800' },
+  privacyLink: { minHeight: 48, padding: 14, justifyContent: 'center', marginTop: 12 },
+  privacyText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700', textDecorationLine: 'underline' },
 });
