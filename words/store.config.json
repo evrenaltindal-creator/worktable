@@ -29,7 +29,9 @@
           "rahatlatıcı",
           "kolay",
           "çevrimdışı"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "en-US": {
         "title": "Huzur Word Search: Calm",
@@ -50,7 +52,9 @@
           "offline",
           "daily",
           "large print"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "pt-BR": {
         "title": "Huzur Caça-Palavras",
@@ -68,7 +72,9 @@
           "vocabulário",
           "relaxante",
           "fácil"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "de-DE": {
         "title": "Huzur Wortsuche",
@@ -87,7 +93,9 @@
           "entspannend",
           "leicht",
           "offline"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "fr-FR": {
         "title": "Huzur Mots Cachés",
@@ -107,7 +115,9 @@
           "facile",
           "hors ligne",
           "jour"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "ja": {
         "title": "Huzur ことばさがし",
@@ -127,7 +137,9 @@
           "かんたん",
           "オフライン",
           "毎日"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "ko": {
         "title": "Huzur 낱말 찾기",
@@ -148,7 +160,9 @@
           "오프라인",
           "매일",
           "큰글씨"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       }
     },
     "advisory": {

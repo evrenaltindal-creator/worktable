@@ -17,6 +17,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAMES = ['mahjong', 'sudoku', 'mines', 'bubbles', 'jewels', 'blocks', 'colorpop', 'jigsaw', 'words', 'cube']
 COPYRIGHT = '2026 EVREN ALTINDAL'  # Apple geliştirici hesabındaki ad; isterseniz değiştirin
+# Tüm Huzur oyunları için ortak destek ve gizlilik sayfası (herkese açık paylaşılmış olmalı)
+SUPPORT_URL = 'https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd'
 LOCALES = {'tr': 'tr', 'en': 'en-US', 'pt': 'pt-BR', 'de': 'de-DE', 'fr': 'fr-FR', 'ja': 'ja', 'ko': 'ko'}
 CATEGORY = {'Puzzle': 'GAMES_PUZZLE', 'Board': 'GAMES_BOARD', 'Casual': 'GAMES_CASUAL', 'Family': 'GAMES_FAMILY', 'Word': 'GAMES_WORD'}
 
@@ -91,6 +93,9 @@ def build(game):
     base = os.path.join(ROOT, game, 'store')
     src = os.path.join(base, 'listing.json')
     info, cats = from_json(src) if os.path.exists(src) else from_md(os.path.join(base, 'app-store-listing.md'))
+    for f in info.values():
+        f['supportUrl'] = SUPPORT_URL
+        f['privacyPolicyUrl'] = SUPPORT_URL
     check(game, info)
     config = {
         'configVersion': 0,

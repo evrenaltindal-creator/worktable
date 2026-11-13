@@ -28,7 +28,9 @@
           "rahatlatıcı",
           "kolay",
           "çevrimdışı"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "en-US": {
         "title": "Huzur Blocks: Calm Puzzle",
@@ -50,7 +52,9 @@
           "offline",
           "daily",
           "classic"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "pt-BR": {
         "title": "Huzur Blocos: Quebra-Cabeça",
@@ -70,7 +74,9 @@
           "relaxante",
           "fácil",
           "offline"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "de-DE": {
         "title": "Huzur Blöcke: Ruhiges Rätsel",
@@ -91,7 +97,9 @@
           "offline",
           "täglich",
           "klassisch"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "fr-FR": {
         "title": "Huzur Blocs : Casse-tête",
@@ -111,7 +119,9 @@
           "relaxant",
           "facile",
           "hors ligne"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "ja": {
         "title": "Huzur ブロック",
@@ -131,7 +141,9 @@
           "のんびり",
           "かんたん",
           "オフライン"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "ko": {
         "title": "Huzur 블록",
@@ -153,7 +165,9 @@
           "오프라인",
           "매일",
           "클래식"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       }
     },
     "advisory": {

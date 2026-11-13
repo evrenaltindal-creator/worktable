@@ -29,7 +29,9 @@
           "kolay",
           "çevrimdışı",
           "günlük"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "en-US": {
         "title": "Huzur Mahjong Cube",
@@ -51,7 +53,9 @@
           "offline",
           "daily",
           "classic"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "pt-BR": {
         "title": "Huzur Mahjong Cubo",
@@ -71,7 +75,9 @@
           "relaxante",
           "fácil",
           "offline"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "de-DE": {
         "title": "Huzur Mahjong Würfel",
@@ -92,7 +98,9 @@
           "leicht",
           "offline",
           "täglich"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "fr-FR": {
         "title": "Huzur Mahjong Cube",
@@ -112,7 +120,9 @@
           "relaxant",
           "facile",
           "hors ligne"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "ja": {
         "title": "Huzur 麻雀キューブ",
@@ -133,7 +143,9 @@
           "かんたん",
           "オフライン",
           "毎日"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       },
       "ko": {
         "title": "Huzur 마작 큐브",
@@ -154,7 +166,9 @@
           "쉬운",
           "오프라인",
           "매일"
-        ]
+        ],
+        "supportUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd",
+        "privacyPolicyUrl": "https://claude.ai/artifact/LGybtMMhQYr1gtW8pPcrgd"
       }
     },
     "advisory": {
