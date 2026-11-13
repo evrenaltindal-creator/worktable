@@ -13,6 +13,10 @@ import {
   validate,
 } from "./groups-core.js";
 import { translations, nativeNames } from "./groups-i18n.js";
+import { showTranslations } from "./show-i18n.js";
+import { showMarkup, playShow, prepareAudio } from "./draw-show.js";
+for (const lang of LANGS)
+  Object.assign(translations[lang], showTranslations[lang]);
 const $ = (s) => document.querySelector(s);
 const app = $("#app"),
   dialog = $("#dialog");
@@ -31,6 +35,28 @@ let s,
   error = false,
   message = "";
 let importData = null;
+let drawing = false,
+  activeShow = null,
+  showMemory = null;
+let presentation = { kind: "wheel", sound: false };
+try {
+  const saved = JSON.parse(
+    localStorage.getItem("sirada-presentation-v1") || "null",
+  );
+  if (saved)
+    presentation = {
+      kind: saved.kind === "slot" ? "slot" : "wheel",
+      sound: !!saved.sound,
+    };
+} catch {}
+function savePresentation() {
+  try {
+    localStorage.setItem(
+      "sirada-presentation-v1",
+      JSON.stringify(presentation),
+    );
+  } catch {}
+}
 // iOS 15.0–15.3 predates native <dialog>. Keep modal access usable there too.
 if (typeof dialog.showModal !== "function") {
   dialog.showModal = () => {
@@ -136,13 +162,13 @@ function render() {
   document.documentElement.lang = s.lang;
   document.title = t("title");
   const g = current();
-  app.innerHTML = `<main class="shell"><header class="top"><a href="index.html" class="brand"><span class="mark" aria-hidden="true">↻</span>${esc(t("title"))}</a><div class="top-actions">${language()}${button("settings", "settings")}</div></header><section class="intro"><div><p class="eyebrow">${esc(t("local"))}</p><h1>${esc(t("tagline"))}</h1><p class="muted">${esc(t("emptyHelp"))}</p></div></section><div class="workspace"><aside class="sidebar"><p class="eyebrow">${esc(t("groups"))}</p><nav class="group-list" aria-label="${esc(t("groups"))}">${s.groups.map((x) => `<button class="group-button" data-action="open" data-id="${esc(x.id)}" aria-current="${x.id === s.activeId}"><span>${esc(x.name)}</span><small>${x.members.length}</small></button>`).join("")}</nav>${button("new", "newGroup")}<footer><a href="quick.html#${s.lang}">${esc(t("quick"))} ↗</a><a href="privacy.html#${s.lang}">${esc(t("privacy"))}</a><a href="support.html#${s.lang}">${esc(t("support"))}</a></footer></aside><section id="board">${g ? board(g) : `<div class="empty"><span class="orbit" aria-hidden="true">◎</span><h2>${esc(t("emptyTitle"))}</h2><p class="muted">${esc(t("emptyHelp"))}</p><div class="empty-actions">${button("new", "newGroup", "primary")}${button("sample", "sample")}</div></div>`}</section></div><footer class="bottom"><p id="status" role="status" aria-live="polite" class="status ${error ? "error" : ""}">${message ? esc(t(message)) : esc(t("local"))}</p>${button("undo", "undo", "small", undoState ? "" : "disabled")}${button("about", "about", "small")}</footer></main>`;
+  app.innerHTML = `<main class="shell ${g ? "has-groups" : ""}"><header class="top"><a href="index.html" class="brand"><span class="mark" aria-hidden="true">↻</span>${esc(t("title"))}</a><div class="top-actions">${language()}${button("settings", "settings")}</div></header><section class="intro"><div><p class="eyebrow">${esc(t("local"))}</p><h1>${esc(t("tagline"))}</h1><p class="muted">${esc(t("emptyHelp"))}</p></div></section><div class="workspace"><aside class="sidebar"><p class="eyebrow">${esc(t("groups"))}</p><nav class="group-list" aria-label="${esc(t("groups"))}">${s.groups.map((x) => `<button class="group-button" data-action="open" data-id="${esc(x.id)}" aria-current="${x.id === s.activeId}"><span>${esc(x.name)}</span><small>${x.members.length}</small></button>`).join("")}</nav>${button("new", "newGroup")}<footer><a href="quick.html#${s.lang}">${esc(t("quick"))} ↗</a><a href="privacy.html#${s.lang}">${esc(t("privacy"))}</a><a href="support.html#${s.lang}">${esc(t("support"))}</a></footer></aside><section id="board">${g ? board(g) : `<div class="empty"><span class="orbit" aria-hidden="true">◎</span><h2>${esc(t("emptyTitle"))}</h2><p class="muted">${esc(t("emptyHelp"))}</p><div class="empty-actions">${button("new", "newGroup", "primary")}${button("sample", "sample")}</div></div>`}</section></div><footer class="bottom"><p id="status" role="status" aria-live="polite" class="status ${error ? "error" : ""}">${message ? esc(t(message)) : esc(t("local"))}</p>${button("undo", "undo", "small", undoState ? "" : "disabled")}${button("about", "about", "small")}</footer></main>`;
 }
 function board(g) {
   const c = candidates(g),
     pending = g.events.filter((e) => e.status === "assigned");
   const selected = g.events.find((e) => e.id === resultId);
-  return `<div class="board-heading"><div><p class="eyebrow">${esc(t("groups"))}</p><h2 class="board-title">${esc(g.name)}</h2></div>${button("editGroup", "edit", "small")}</div><div class="board-grid"><section class="card chooser"><h2>${esc(t("rule"))}</h2><div class="rule-grid" role="group" aria-label="${esc(t("rule"))}">${["round", "random", "balance"].map((mode) => button("mode", mode, "", `data-mode="${mode}" aria-pressed="${g.mode === mode}"`)).join("")}</div><p class="hint">${esc(t(g.mode + "Help"))}</p><div class="stats"><div class="stat"><span class="hint">${esc(t(g.mode === "round" ? "remaining" : "available"))}</span><strong>${g.mode === "round" ? c.members.length : g.members.filter((m) => m.available).length}</strong></div><div class="stat"><span class="hint">${esc(t(g.mode === "round" ? "roundNumber" : "pending"))}</span><strong>${g.mode === "round" ? g.round.number + (c.nextRound ? 1 : 0) : pending.length}</strong></div></div><label for="task">${esc(t("task"))}<input id="task" maxlength="120" value="${esc(draft.title)}" placeholder="${esc(t("taskHint"))}" autocomplete="off"></label><div class="effort-row"><p class="hint">${esc(t("effort"))} · 1–5</p><label class="hide" for="points">${esc(t("effort"))}</label><select id="points" aria-label="${esc(t("effort"))}">${[1, 2, 3, 4, 5].map((n) => `<option ${n === draft.points ? "selected" : ""}>${n}</option>`).join("")}</select></div>${button("assign", "assign", "primary", !c.members.length ? "disabled" : "")}${selected ? `<section class="result" role="status" aria-live="polite"><span class="eyebrow">${esc(t("assigned"))}</span><strong>${esc(selected.memberName)}</strong><p>${esc(selected.title)}</p><p>${esc(reason(selected))}</p></section>` : ""}</section><section class="card"><div class="section-heading"><h2>${esc(t("members"))}</h2><span class="hint">${g.members.length}/30</span></div><p class="hint">${esc(t("availableHelp"))}</p><div class="member-list">${g.members.map((m) => `<div class="person ${m.available ? "" : "off"}"><span class="avatar" aria-hidden="true">${esc(Array.from(m.name)[0] || "·")}</span><span class="person-name">${esc(m.name)}${g.mode === "random" ? `<small>${esc(t("weight"))}: ${m.weight}</small>` : ""}</span><label><span class="hide">${esc(m.name)}: ${esc(t("available"))}</span><input type="checkbox" data-member="${esc(m.id)}" ${m.available ? "checked" : ""} aria-label="${esc(m.name)}: ${esc(t("available"))}"></label>${button("editPerson", "edit", "", `data-id="${esc(m.id)}" aria-label="${esc(t("editPerson"))}: ${esc(m.name)}"`)}</div>`).join("")}</div>${button("addPerson", "addPerson", "small", g.members.length >= 30 ? "disabled" : "")}</section></div><section class="card history-card"><div class="section-heading"><div><h2>${esc(t("load"))}</h2><p class="hint">${esc(t("period"))}: ${esc(date(g.periodStart))}</p></div>${button("period", "newPeriod", "small")}</div><div class="load-list">${g.members
+  return `<div class="board-heading"><div><p class="eyebrow">${esc(t("groups"))}</p><h2 class="board-title">${esc(g.name)}</h2></div>${button("editGroup", "edit", "small")}</div><div class="board-grid"><section class="card chooser">${groupShow(g)}<details class="draw-rules"><summary>${esc(t("showRule"))}: ${esc(t(g.mode))}</summary><div class="rule-grid" role="group" aria-label="${esc(t("rule"))}">${["round", "random", "balance"].map((mode) => button("mode", mode, "", `data-mode="${mode}" aria-pressed="${g.mode === mode}"`)).join("")}</div><p class="hint">${esc(t(g.mode + "Help"))}</p><div class="stats"><div class="stat"><span class="hint">${esc(t(g.mode === "round" ? "remaining" : "available"))}</span><strong>${g.mode === "round" ? c.members.length : g.members.filter((m) => m.available).length}</strong></div><div class="stat"><span class="hint">${esc(t(g.mode === "round" ? "roundNumber" : "pending"))}</span><strong>${g.mode === "round" ? g.round.number + (c.nextRound ? 1 : 0) : pending.length}</strong></div></div></details><label class="draw-task" for="task">${esc(t("task"))}<input id="task" maxlength="120" value="${esc(draft.title)}" placeholder="${esc(t("taskHint"))}" autocomplete="off"></label><div class="effort-row"><p class="hint">${esc(t("effort"))} · 1–5</p><label class="hide" for="points">${esc(t("effort"))}</label><select id="points" aria-label="${esc(t("effort"))}">${[1, 2, 3, 4, 5].map((n) => `<option ${n === draft.points ? "selected" : ""}>${n}</option>`).join("")}</select></div>${button("assign", "showStart", "primary draw-start", !c.members.length ? "disabled" : "")}${selected ? `<section class="result" id="selection-result" tabindex="-1" role="status" aria-live="polite"><span class="eyebrow">${esc(t("assigned"))}</span><strong>${esc(selected.memberName)}</strong><p>${esc(selected.title)}</p><p>${esc(reason(selected))}</p></section>` : ""}</section><section class="card"><div class="section-heading"><h2>${esc(t("members"))}</h2><span class="hint">${g.members.length}/30</span></div><p class="hint">${esc(t("availableHelp"))}</p><div class="member-list">${g.members.map((m) => `<div class="person ${m.available ? "" : "off"}"><span class="avatar" aria-hidden="true">${esc(Array.from(m.name)[0] || "·")}</span><span class="person-name">${esc(m.name)}${g.mode === "random" ? `<small>${esc(t("weight"))}: ${m.weight}</small>` : ""}</span><label><span class="hide">${esc(m.name)}: ${esc(t("available"))}</span><input type="checkbox" data-member="${esc(m.id)}" ${m.available ? "checked" : ""} aria-label="${esc(m.name)}: ${esc(t("available"))}"></label>${button("editPerson", "edit", "", `data-id="${esc(m.id)}" aria-label="${esc(t("editPerson"))}: ${esc(m.name)}"`)}</div>`).join("")}</div>${button("addPerson", "addPerson", "small", g.members.length >= 30 ? "disabled" : "")}</section></div><section class="card history-card"><div class="section-heading"><div><h2>${esc(t("load"))}</h2><p class="hint">${esc(t("period"))}: ${esc(date(g.periodStart))}</p></div>${button("period", "newPeriod", "small")}</div><div class="load-list">${g.members
     .map((m) => {
       const p = g.events.filter(
         (e) => e.memberId === m.id && e.at >= g.periodStart,
@@ -159,6 +185,102 @@ function board(g) {
     .join(
       "",
     )}</div></section><section class="card history-card"><div class="section-heading"><h2>${esc(t("history"))}</h2><span class="hint">${g.events.length}</span></div><p class="hint">${esc(t("skipHelp"))} ${esc(t("cancelHelp"))}</p><div class="history-list" style="margin-top:16px">${g.events.slice(0, 30).map(eventHtml).join("") || `<p class="hint">${esc(t("noHistory"))}</p>`}</div>${g.events.length > 30 ? button("history", "allHistory", "small") : ""}</section>`;
+}
+function groupShow(g) {
+  const last =
+    showMemory?.eventId === resultId && showMemory.groupId === g.id
+      ? showMemory
+      : null;
+  return showMarkup({
+    members: last?.members || candidates(g).members,
+    weighted: last?.weighted ?? g.mode === "random",
+    kind: presentation.kind,
+    sound: presentation.sound,
+    t,
+    winnerId: last?.chosenId || "",
+    angle: last?.angle || 0,
+  });
+}
+async function animatedAssignment(g) {
+  if (g.events.length >= 5000) return info("historyFull", true);
+  if (!draft.title.trim()) {
+    info("invalid", true);
+    const field = $("#task");
+    field.setCustomValidity(t("invalid"));
+    field.reportValidity();
+    field.focus();
+    return;
+  }
+  const members = copy(candidates(g).members),
+    weighted = g.mode === "random";
+  let picked;
+  if (
+    !commit(() => {
+      picked = assign(g, draft.title, draft.points);
+    })
+  ) {
+    render();
+    return;
+  }
+  // Save exactly once before animating, but leave the rest of the old UI unchanged
+  // until reveal, so the task history and point bars cannot spoil the result.
+  drawing = true;
+  prepareAudio(presentation.sound);
+  app.classList.add("draw-running");
+  app.setAttribute("aria-busy", "true");
+  $("#draw-stage").outerHTML = showMarkup({
+    members,
+    weighted,
+    kind: presentation.kind,
+    sound: presentation.sound,
+    t,
+    drawing: true,
+  });
+  app.querySelectorAll("button,input,select,textarea").forEach((control) => {
+    control.disabled = control.dataset.action !== "reveal";
+  });
+  const root = $("#draw-stage");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  root.scrollIntoView({
+    block: "center",
+    behavior: reduced ? "auto" : "smooth",
+  });
+  root.querySelector('[data-action="reveal"]').focus({ preventScroll: true });
+  showMemory = {
+    eventId: picked.id,
+    groupId: g.id,
+    members,
+    weighted,
+    chosenId: picked.memberId,
+    angle: 0,
+  };
+  try {
+    activeShow = playShow(root, {
+      members,
+      chosenId: picked.memberId,
+      weighted,
+      kind: presentation.kind,
+      sound: presentation.sound,
+      reduced,
+    });
+    const outcome = await activeShow.finished;
+    showMemory.angle = outcome.angle;
+  } finally {
+    activeShow = null;
+    drawing = false;
+    resultId = picked.id;
+    app.classList.remove("draw-running");
+    app.removeAttribute("aria-busy");
+    render();
+    const readout = $(".show-readout");
+    readout?.setAttribute("tabindex", "-1");
+    readout?.focus({ preventScroll: true });
+    try {
+      window.Capacitor?.nativePromise?.("Haptics", "notification", {
+        type: "SUCCESS",
+      })?.catch(() => {});
+    } catch {}
+  }
 }
 function eventHtml(e) {
   return `<article class="event"><div class="event-head"><div><h3>${esc(e.memberName)}</h3><p class="event-title">${esc(e.title)}</p><span class="badge">${e.points} · ${esc(t("effort"))}</span></div><time datetime="${esc(e.at)}">${esc(date(e.at))}</time></div><p class="hint">${esc(reason(e))}</p><div class="event-actions" role="group" aria-label="${esc(e.title)}">${["assigned", "done", "skipped", "canceled"].map((status) => button("status", status, "", `data-event="${esc(e.id)}" data-status="${status}" aria-pressed="${e.status === status}"`)).join("")}</div></article>`;
@@ -244,10 +366,32 @@ async function exportBackup() {
   render();
 }
 async function action(e) {
+  if (drawing && e.target.closest("a")) {
+    e.preventDefault();
+    return;
+  }
   const b = e.target.closest("[data-action]");
   if (!b) return;
   const a = b.dataset.action,
     g = current();
+  if (a === "reveal") {
+    activeShow?.finish();
+    return;
+  }
+  if (drawing) return;
+  if (a === "presentation") {
+    presentation.kind = b.dataset.kind === "slot" ? "slot" : "wheel";
+    savePresentation();
+    render();
+    return;
+  }
+  if (a === "sound") {
+    presentation.sound = !presentation.sound;
+    prepareAudio(presentation.sound);
+    savePresentation();
+    render();
+    return;
+  }
   if (a === "close") return dialog.close();
   if (a === "new") return newGroup();
   if (a === "sample") {
@@ -272,25 +416,7 @@ async function action(e) {
       g.mode = b.dataset.mode;
     });
   if (a === "assign") {
-    if (g.events.length >= 5000) return info("historyFull", true);
-    if (!draft.title.trim()) {
-      $("#task").reportValidity();
-      $("#task").focus();
-      return info("invalid", true);
-    }
-    let picked;
-    if (
-      commit(() => {
-        picked = assign(g, draft.title, draft.points);
-      })
-    ) {
-      resultId = picked.id;
-      try {
-        window.Capacitor?.nativePromise?.("Haptics", "impact", {
-          style: "LIGHT",
-        })?.catch(() => {});
-      } catch {}
-    }
+    return animatedAssignment(g);
   }
   if (a === "status") {
     commit(() => setStatus(g, b.dataset.event, b.dataset.status));
@@ -402,7 +528,10 @@ async function action(e) {
 }
 document.addEventListener("click", action);
 document.addEventListener("input", (e) => {
-  if (e.target.id === "task") draft.title = e.target.value;
+  if (e.target.id === "task") {
+    draft.title = e.target.value;
+    e.target.setCustomValidity("");
+  }
   if (e.target.id === "points") draft.points = Number(e.target.value);
 });
 document.addEventListener("change", async (e) => {

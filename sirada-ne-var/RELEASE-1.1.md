@@ -1,5 +1,11 @@
 # Sırada Ne Var? 1.1.0
 
+## Web trial update after build 2
+
+The group home screen now includes a selectable animated wheel or slot stage. The selection engine saves one result before presentation, locks changes during playback, then reveals the same person under the pointer/reel and in the task record. Full motion lasts approximately 5.2 seconds for the wheel and 4.6 seconds for the reel; reduced motion uses a short reveal. A skip button shows the recorded result immediately. Procedural tick/chime sound is opt-in and stored as a device preference. All new labels have seven translations. No new dependencies, data uploads or server services were added.
+
+Thirteen automated tests pass, including weighted wheel landing and slot center alignment. Local browser checks verified wheel/reel/history agreement, controls locked until reveal, exactly one task per selection, skip and persistence. These changes are prepared in source and the private web trial; they are not yet in TestFlight build 2. No new iOS upload should run before the owner's requested web trial.
+
 ## Product changes
 
 - A persistent small-group workspace is now the home screen. Up to 30 groups, 30 participants/options per group.
