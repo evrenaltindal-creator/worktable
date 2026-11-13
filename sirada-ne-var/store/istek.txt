@@ -1,4 +1,2 @@
-build
-# TestFlight upload after creating the Apple app record.
-
-# Ilk satira yapilacak isi yazip bu dala gonderin: status, register, build, testers, metadata
+archive
+# 2026-11-13: compile, sign and verify version 1.1.0; do not upload or delete an Apple record.

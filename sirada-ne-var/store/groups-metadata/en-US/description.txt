@@ -1,0 +1,17 @@
+Create a group and keep track of turns and tasks.
+
+My groups
+
+Everyone taking part gets a turn before anyone repeats. Weights are ignored.
+
+Each draw is independent. Weights set the odds; equal results are not guaranteed.
+
+Picks equally among available people with the lowest pending + completed effort points this period.
+
+Skipped: no points, but the turn is used.
+
+Canceled: no points; the turn is returned within the same round.
+
+Group names, participants, tasks, rounds and history stay on this device. No accounts, ads, analytics or automatic sync. You download backup files; sharing them sends their contents to your chosen recipient. Uninstalling the app or clearing browser data may erase local records.
+
+There is no automatic cloud backup. Download backups regularly to protect your groups.

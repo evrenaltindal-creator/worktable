@@ -149,7 +149,14 @@ platform :ios do
     build_number = latest.to_i + 1
     uuid = app_store_profile(distribution_certificate)
     UI.message("Surum #{version}, derleme #{build_number}, profil #{uuid}")
-    sh(File.join(APP_DIR, 'scripts', 'ios-build.sh'), id, version, build_number.to_s, uuid, app ? 'upload' : 'no-upload')
+    mode = app && ENV['SNV_ARCHIVE_ONLY'] != '1' ? 'upload' : 'no-upload'
+    sh(File.join(APP_DIR, 'scripts', 'ios-build.sh'), id, version, build_number.to_s, uuid, mode)
+  end
+
+  desc 'Derler ve imzalar; App Store Connect kaydini degistirmez, yukleme yapmaz'
+  lane :archive do
+    ENV['SNV_ARCHIVE_ONLY'] = '1'
+    build
   end
 
   desc 'TestFlight ic test grubunu kurar (butun derlemeleri otomatik alir) ve App Store Connect kullanicilarini ekler'

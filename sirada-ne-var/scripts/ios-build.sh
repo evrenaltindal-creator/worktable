@@ -88,7 +88,7 @@ codesign --verify --deep --strict --verbose=2 "$APP"
 echo "IPA hazır: $(basename "$IPA") ($(du -h "$IPA" | cut -f1))"
 
 if [ "$MODE" != upload ]; then
-  echo "Yükleme atlandı (App Store Connect'te uygulama kaydı yok). Derleme ve imza doğrulandı."
+  echo "Yükleme atlandı (yalnızca arşiv veya uygulama kaydı yok). Derleme ve imza doğrulandı."
   [ -n "${GITHUB_STEP_SUMMARY:-}" ] && echo "### Derlendi ve imzalandı (yüklenmedi): Sırada Ne Var? $VERSION ($BUILD)" >> "$GITHUB_STEP_SUMMARY"
   exit 0
 fi

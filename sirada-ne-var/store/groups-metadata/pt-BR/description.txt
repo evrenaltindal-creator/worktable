@@ -1,0 +1,17 @@
+Crie um grupo e acompanhe as vezes e tarefas.
+
+Meus grupos
+
+Todos os participantes têm uma vez antes de repetir. Os pesos não são usados.
+
+Cada sorteio é independente. Os pesos definem as chances; resultados iguais não são garantidos.
+
+Sorteia entre as pessoas disponíveis com menos pontos de esforço pendentes + concluídos neste período.
+
+Pulada: não soma pontos, mas usa a vez.
+
+Cancelada: não soma pontos e devolve a vez na mesma rodada.
+
+Nomes de grupos, participantes, tarefas, rodadas e histórico ficam neste dispositivo. Não há contas, anúncios, análise de uso ou sincronização automática. Você baixa os backups; ao compartilhá-los, envia seu conteúdo ao destinatário escolhido. Desinstalar o aplicativo ou limpar os dados do navegador pode apagar os registros locais.
+
+Não há backup automático na nuvem. Baixe backups regularmente para proteger seus grupos.

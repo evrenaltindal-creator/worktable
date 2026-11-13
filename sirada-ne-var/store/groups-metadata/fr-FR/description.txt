@@ -1,0 +1,17 @@
+Créez un groupe et suivez les tours et les tâches.
+
+Mes groupes
+
+Chaque participant passe une fois avant toute répétition. Les poids sont ignorés.
+
+Chaque tirage est indépendant. Les poids fixent les chances, sans garantir des résultats égaux.
+
+Choisit à chances égales parmi les personnes disponibles ayant le moins de points en attente + terminés sur la période.
+
+Passée : aucun point, mais le tour est utilisé.
+
+Annulée : aucun point ; le tour est rendu dans la même ronde.
+
+Les noms de groupes, participants, tâches, tours et historique restent sur cet appareil. Aucun compte, publicité, analyse d’usage ou synchronisation automatique. Vous téléchargez les sauvegardes ; les partager transmet leur contenu au destinataire choisi. Désinstaller l’application ou effacer les données du navigateur peut supprimer les enregistrements locaux.
+
+Aucune sauvegarde automatique dans le cloud. Téléchargez régulièrement des sauvegardes pour protéger vos groupes.
