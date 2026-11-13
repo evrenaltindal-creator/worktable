@@ -23,7 +23,7 @@
 
 The existing App Store Connect record is 6833144391, bundle ID `com.evrenaltindal.siradanevar`. The last observed 1.0.0 build 1 is Rejected. No deletion is performed by this branch.
 
-Owner was asked whether to preserve this record or create a replacement using a new bundle ID after Apple's reuse restriction was explained. Keep any upload/deletion dependent on that answer. An `archive` lane compiles, signs and verifies without uploading; the IPA is retained privately for seven days by GitHub Actions.
+Owner explicitly chose to preserve this record and upload the new version on 13 November 2026. Keep the existing bundle ID. No app record deletion or replacement is authorized by that choice. The `archive` lane compiled and signed 1.1.0 (2) without upload; the `build` lane now uploads to the existing record. IPAs are retained privately for seven days by GitHub Actions.
 
 Seven-language store description/promotional drafts are under `store/groups-metadata`. They are not uploaded automatically. Existing metadata localizations remain in `fastlane/metadata`. New screenshots must replace obsolete screenshots when the owner-selected record is prepared; do not represent the old wheel-only screenshots as the new group's main experience.
 
