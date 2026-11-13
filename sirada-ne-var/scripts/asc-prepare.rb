@@ -64,7 +64,8 @@ module SNVPrepare
       raise "Description readback failed: #{update['code']}" unless actual == update['expected']
       { locale: update['code'], description: actual, verified: true }
     end
-    report = { app_id: app, version: version, build: attrs['version'], processing_state: attrs['processingState'], version_state: draft.dig('attributes', 'appStoreState'), attached_build_id: selected['id'], beta_notes_verified: true, localizations: verified, submitted_for_review: false }
+    final_draft = request.call('get', "appStoreVersions/#{id}")['data']
+    report = { app_id: app, version: version, build: attrs['version'], processing_state: attrs['processingState'], initial_version_state: draft.dig('attributes', 'appStoreState'), version_state: final_draft.dig('attributes', 'appStoreState'), attached_build_id: selected['id'], beta_notes_verified: true, localizations: verified, submitted_for_review: false }
     FileUtils.mkdir_p(File.join(store, 'verification'))
     File.write(File.join(store, 'verification', 'build3.json'), JSON.pretty_generate(report))
     puts JSON.generate(report.reject { |key, _| key == :localizations }.merge(verified_locales: verified.map { |loc| loc[:locale] }))
